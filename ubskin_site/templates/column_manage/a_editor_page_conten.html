@@ -13,56 +13,45 @@
 <body>
     <div class="row" style="padding:20px;">
         
-        
-        <textarea name="editor1" id="editor1">&lt;p&gt;Initial editor content.&lt;/p&gt;</textarea>
+        <div id="editor">
+
+        </div>
         
     </div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/js/myadmin/wangEditor/release/wangEditor.min.js"></script>
 
-<!-- <script src="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css"></script> -->
-<!-- Page specific script -->
-<script src="/static/js/myadmin/ckeditor/ckeditor.js"></script>
 <script>
- $(function(){
-        CKEDITOR.replace( 'editor1', {
-            toolbar: [
-                { name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
-                { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-                { name: 'editing', items: [ 'Scayt' ] },
-                { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                { name: 'tools', items: [ 'Maximize' ] },
-                // { name: 'document', items: [ 'Source' ] },
-                '/',
-                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Strike', '-', 'RemoveFormat' ] },
-                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
-                { name: 'styles', items: [ 'Styles', 'Format' ] },
-                
-            ]
-        
-        });
-    //     CKEDITOR.editorConfig = function( config ) {
-    //     config.toolbarGroups = [
-    //         { name: 'insert', groups: [ 'insert' ] },
-    //         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-    //         { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-    //         { name: 'links', groups: [ 'links' ] },
-    //         { name: 'forms', groups: [ 'forms' ] },
-    //         { name: 'tools', groups: [ 'tools' ] },
-    //         { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-    //         { name: 'others', groups: [ 'others' ] },
-    //         '/',
-    //         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-    //         { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
-    //         { name: 'styles', groups: [ 'styles' ] },
-    //         { name: 'colors', groups: [ 'colors' ] },
-    //         { name: 'about', groups: [ 'about' ] }
-    //     ];
-
-    //     config.removeButtons = 'Underline,Subscript,Superscript';
-    // };
-    })
+$(function(){
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    editor.customConfig.menus = [
+        'head',  // 标题
+        'bold',  // 粗体
+        'fontSize',  // 字号
+        'fontName',  // 字体
+        'italic',  // 斜体
+        'underline',  // 下划线
+        'strikeThrough',  // 删除线
+        'foreColor',  // 文字颜色
+        'backColor',  // 背景颜色
+        'link',  // 插入链接
+        'list',  // 列表
+        'justify',  // 对齐方式
+        'quote',  // 引用
+        'emoticon',  // 表情
+        'image',  // 插入图片
+        'table',  // 表格
+        'video',  // 插入视频
+        'code',  // 插入代码
+        'undo',  // 撤销
+        'redo'  // 重复
+    ]
+    editor.customConfig.uploadImgShowBase64 = true 
+    editor.create()
+})
 </script>
 </html>
