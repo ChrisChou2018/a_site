@@ -122,7 +122,7 @@ class Article(models.Model):
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
-        return True if cls.objects.filter(columns_id=data_id, status='normal').values() else False
+        return cls.objects.filter(columns_id=data_id, status='normal').values()
 
 
 class ColumnScrollingImage(models.Model):

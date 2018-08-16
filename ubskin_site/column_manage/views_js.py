@@ -5,16 +5,6 @@ from ubskin_site.column_manage import models as column_models
 
 
 
-def get_tr_str_by_columns_id(request):
-    return_value = {
-        'status': 'error',
-        'message': ''
-    }
-    data_id = request.GET.get('data_id')
-    data = column_models.Columns.build_child_tr_data(data_id)
-    return_value['status'] = 'success'
-    return_value['data'] = data
-    return JsonResponse(return_value)
 
 def get_tree_child_by_columns_id(request):
     '''
@@ -70,5 +60,5 @@ def select_tree_item(request):
         return_value['message'] = '元素不存在，请刷新页面'
         return JsonResponse(return_value)
         
-    
+
     

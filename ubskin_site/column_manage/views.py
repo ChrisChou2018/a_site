@@ -121,9 +121,17 @@ def add_a_child_column(request):
 def editor_page_content(request):
     data_id = request.GET.get('data_id')
     if request.method == 'GET':
-        return my_render(
-            request,
-            'column_manage/a_editor_page_conten.html'
-        )
+        article_obj = column_models.Article.has_articlr_by_columns_id(data_id)
+        if not article_obj :
+            return my_render(
+                request,
+                'column_manage/a_editor_page_conten.html'
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_editor_page_conten.html',
+                form_data = article_obj,
+            )
     else:
         pass

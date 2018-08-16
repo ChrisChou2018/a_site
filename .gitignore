@@ -55,6 +55,9 @@ coverage.xml
 .static_storage/
 .media/
 local_settings.py
+ubskin_site/member_manage/migrations/
+ubskin_site/column_manage/migrations/
+ubskin_site/column_manage/expand_manage/
 
 # Flask stuff:
 instance/
