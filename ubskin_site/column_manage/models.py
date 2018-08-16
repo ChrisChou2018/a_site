@@ -99,6 +99,7 @@ class Article(models.Model):
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
         return cls.objects.filter(columns_id=data_id, status='normal').first()
+    
 
 
 class ColumnScrollingImage(models.Model):

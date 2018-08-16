@@ -9,6 +9,7 @@ urlpatterns = [
     path('myadmin/add_child_column/', views.add_child_column, name='add_child_column'),
     path('myadmin/editor_page_content/', views.editor_page_content, name='editor_page_content'),
     path('myadmin/article_list/', views.article_list, name='article_list'),
+    path('myadmin/add_article/', views.add_article, name='add_article'),
 ]
 
 urlpatterns += [
