@@ -167,6 +167,7 @@ def build_child_tr(data_list):
                 
     return build_func(data_list, tr_str)
 
+
 @register.simple_tag
 def build_child_select(data_list):
     select_list = list()

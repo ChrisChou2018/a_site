@@ -36,33 +36,8 @@ class Columns(models.Model):
     class Meta:
         db_table = 'columns'
     
-
     @classmethod
-    def get_style_table_head(cls):
-        return dict(
-            column_name = '栏目名称',
-            columns_id = '栏目ID',
-            columns_type = '栏目类型',
-            more = '更多'
-        )
-    
-    @classmethod
-    def get_column_table_data(cls):
-        def find_all_child(data_list):
-            for i in data_list:
-                child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
-                if child:
-                    i['child'] = find_all_child(child)
-            return data_list
-        column_index_list = cls.objects.filter(status='normal', columns_type=1).values()
-        if column_index_list:
-            data_list =  find_all_child(column_index_list)
-            return data_list
-        else:
-            return list()
-    
-    @classmethod
-    def get_all_select_columns(cls):
+    def get_all_select_columns(cls, self_id=None):
         def find_all_child(data_list, parent=None):
             for i in data_list:
                 child = cls.objects.filter(status='normal', parent_id=i['columns_id'], columns_type=3).values('columns_id', 'column_name')
@@ -71,28 +46,16 @@ class Columns(models.Model):
                 if child:
                     i['child'] = find_all_child(child, parent=i['column_name'])
             return data_list
-        column_index_list = cls.objects.filter(status='normal', columns_type=1).values('columns_id', 'column_name')
+        column_index_list = None
+        if self_id is not None:
+            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), ~Q(columns_id=self_id),status='normal').values('columns_id', 'column_name')
+        else:
+            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), status='normal').values('columns_id', 'column_name')
         if column_index_list:
             data_list = find_all_child(column_index_list)
             return data_list
         else:
             return list()
-    
-    @classmethod
-    def build_child_tr_data(cls, data_id):
-        tr_str = ''
-        data_list = cls.objects.filter(status='normal', parent_id=data_id).values()
-        for i in data_list:
-            tr_str += '''<tr parent_id={}>
-                <td>{}{}</td><td>{}</td><td>{}</td><td><a href=''>编辑</a></td>
-            </tr>'''.format(
-                data_id,
-                i['column_name'],
-                '<span class="glyphicon glyphicon-chevron-right"></span>' if i.get('child') else '',
-                i['columns_id'],
-                dict(cls.type_choises)[i['columns_type']],
-            )
-        return tr_str
     
     @classmethod
     def get_column_link(cls):
@@ -102,7 +65,10 @@ class Columns(models.Model):
     def get_child_data_by_parent_id(cls, data_id):
         return cls.objects.filter(status='normal', parent_id=data_id).values()
 
-
+    @classmethod
+    def get_column_name_by_pk(cls, data_id):
+        obj = cls.objects.filter(pk=data_id).first()
+        return obj.column_name if obj else '空'
 
 
 class Article(models.Model):
@@ -113,12 +79,22 @@ class Article(models.Model):
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
     create_time = models.IntegerField(db_column="create_time", verbose_name="创建时间", default=int(time.time()))
+    read_colunt = models.IntegerField(db_column='read_colunt', verbose_name='阅读量', default=0)
     status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
 
     class Meta:
         db_table = 'article'
     
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            article_title = '文章标题',
+            read_colunt = '人气',
+            columns_id = '所属栏目',
+            more = '更多'
+        )
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
@@ -166,6 +142,6 @@ def create_model_data(model, data):
 
 def get_model_by_pk(model, pk):
     try:
-        return model.objects.get(pk=pk)
+        return model.objects.get(pk=pk, status='normal')
     except model.DoesNotExist:
         return None

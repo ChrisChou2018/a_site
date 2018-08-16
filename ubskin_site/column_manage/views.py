@@ -14,109 +14,213 @@ def my_render(request, templater_path, **kwargs):
 
 def column_manage(request):
     if request.method == "GET":
-        data_list = column_models.Columns.get_column_table_data()
         return my_render(
             request,
             'column_manage/a_column_manage.html',
-            data_list = data_list,
-            data_table_head = column_models.Columns.get_style_table_head,
-            column_type = dict(column_models.Columns.type_choises),
         )
 
 def add_column_link(request):
-    if request.method == 'GET':
-        return my_render(
-            request,
-            'column_manage/a_add_column_link.html'
+    data_id = request.GET.get('data_id')
+    column_obj = None
+    if data_id is not None:
+        column_obj = column_models.get_model_by_pk(
+            column_models.Columns,
+            data_id,
         )
-    else:
-        column_name = request.POST.get('column_name')
-        if not column_name:
+    if request.method == 'GET':
+        if not column_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_column_link.html'
+            )
+        else:
             return my_render(
                 request,
                 'column_manage/a_add_column_link.html',
-                form_data = request.POST,
-                form_errors = {'column_name': '不可为空'}
+                form_data = column_obj,
             )
+    else:
+        column_name = request.POST.get('column_name')
         files = request.FILES
-        model_obj = column_models.create_model_data(
-            column_models.Columns,
-            {'column_name': column_name, "columns_type": 1}
-        )
-        if files:
-            for i in files:
-                file_obj = files[i]
-                if not os.path.exists(settings.MEDIA_ROOT,):
-                    os.makedirs(settings.MEDIA_ROOT,)
-                data = page_image.save_upload_photo(
-                    file_obj,
-                    settings.MEDIA_ROOT,
+        if not column_obj:
+            if not column_name:
+                return my_render(
+                    request,
+                    'column_manage/a_add_column_link.html',
+                    form_data = request.POST,
+                    form_errors = {'column_name': '不可为空'}
                 )
-                if data:
-                    setattr(model_obj, i, data['photo_id'])
-                    model_obj.save()
+            model_obj = column_models.create_model_data(
+                column_models.Columns,
+                {'column_name': column_name, "columns_type": 1}
+            )
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        else:
+            if column_name:
+                column_obj.column_name = column_name
+                column_obj.save()
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(column_obj, i, data['photo_id'])
+                        column_obj.save()
         return redirect('/myadmin/column_manage/')
 
 def add_a_page(request):
+    data_id = request.GET.get('data_id')
+    column_obj = None
+    if data_id is not None:
+        column_obj = column_models.get_model_by_pk(
+            column_models.Columns,
+            data_id,
+        )
     page_type = column_models.Columns.page_type_choices
     columns_select = column_models.Columns.get_all_select_columns()
     if request.method == 'GET':
-        return my_render(
-            request,
-            'column_manage/a_add_a_page.html',
-            page_type = page_type,
-            columns_select = columns_select,
-        )
+        if not column_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_a_page.html',
+                page_type = page_type,
+                columns_select = columns_select,
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_a_page.html',
+                page_type = page_type,
+                columns_select = columns_select,
+                form_data = column_obj,
+            )
     else:
         column_name = request.POST.get('column_name')
         page_type = request.POST.get('page_type')
         parent_id = request.POST.get('parent_id')
-        from_errors = dict()
-        if not column_name:
-            from_errors['column_name'] = '不能为空'
-        elif not page_type:
-            from_errors['page_type'] = '选择一个页面类型'
-        elif not parent_id:
-            from_errors['parent_id'] = '选择父级元素'
-        if from_errors:
-            return my_render(
-                request,
-                'column_manage/a_add_a_page.html',
-                form_data = request.POST,
-                form_errors = from_errors,
-                page_type = page_type,
-                columns_select = columns_select,
-            )
         files = request.FILES
-        model_obj = column_models.create_model_data(
-            column_models.Columns,
-            {
-                'column_name': column_name, "columns_type": 2, 'page_type': page_type,
-                'parent_id': parent_id if parent_id else None
-            }
-        )
-        if files:
-            for i in files:
-                file_obj = files[i]
-                if not os.path.exists(settings.MEDIA_ROOT,):
-                    os.makedirs(settings.MEDIA_ROOT,)
-                data = page_image.save_upload_photo(
-                    file_obj,
-                    settings.MEDIA_ROOT,
+        if not column_obj:
+            from_errors = dict()
+            if not column_name:
+                from_errors['column_name'] = '不能为空'
+            elif not page_type:
+                from_errors['page_type'] = '选择一个页面类型'
+            elif not parent_id:
+                from_errors['parent_id'] = '选择父级元素'
+            if from_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_a_page.html',
+                    form_data = request.POST,
+                    form_errors = from_errors,
+                    page_type = page_type,
+                    columns_select = columns_select,
                 )
-                if data:
-                    setattr(model_obj, i, data['photo_id'])
-                    model_obj.save()
+            model_obj = column_models.create_model_data(
+                column_models.Columns,
+                {
+                    'column_name': column_name, "columns_type": 2, 'page_type': page_type,
+                    'parent_id': parent_id if parent_id else None
+                }
+            )
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        else:
+            if column_name:
+                column_obj.column_name = column_name
+            if page_type:
+                column_obj.page_type = page_type
+            if parent_id:
+                column_obj.parent_id = parent_id
+            column_obj.save()
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(column_obj, i, data['photo_id'])
+                        column_obj.save()
         return redirect(reverse('column_manage'))
 
-def add_a_child_column(request):
+def add_child_column(request):
     data_id = request.GET.get('data_id')
+    column_obj = None
+    if data_id is not None:
+        column_obj = column_models.get_model_by_pk(
+            column_models.Columns,
+            data_id,
+        )
     if request.method == 'GET':
-        if column_models.Article.has_articlr_by_columns_id(data_id):
-            pass
+        if not column_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_child_column.html',
+                columns_select = column_models.Columns.get_all_select_columns(),
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_child_column.html',
+                columns_select = column_models.Columns.get_all_select_columns(data_id),
+                form_data = column_obj
+            )
     else:
-        pass
-
+        column_name = request.POST.get('column_name')
+        parent_id = request.POST.get('parent_id')
+        if not column_obj:
+            form_errors = dict()
+            if not column_name:
+                form_errors['column_name'] = '不能为空'
+            elif not parent_id:
+                form_errors['parent_id'] = '选择父级元素'
+            if form_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_child_column.html',
+                    form_data = request.POST,
+                    form_errors = form_errors,
+                    columns_select = column_models.Columns.get_all_select_columns(data_id),
+                )
+            column_models.create_model_data(
+                column_models.Columns,
+                {'column_name': column_name, 'parent_id': parent_id, 'columns_type': 3}
+            )
+        else:
+            column_obj.column_name = column_name
+            column_obj.parent_id = parent_id
+            column_obj.save()
+        return redirect(reverse('column_manage'))
 
 def editor_page_content(request):
     data_id = request.GET.get('data_id')
@@ -141,7 +245,50 @@ def editor_page_content(request):
                 {'columns_id': data_id, 'article_content': article_conten}
             )
         else:
-            print(article_conten)
             article_obj.article_content = article_conten
             article_obj.save()
         return redirect(reverse('editor_page_content'))
+
+def article_list(request):
+    search_dict = {
+        'search_value': 'article_title__icontains',
+        'data_id': 'columns_id',
+    }
+    search_value = dict()
+    current_page = request.GET.get('page', 1)
+    filter_args = ""
+    for i in search_dict:
+        value = request.GET.get(i)
+        if value is not None:
+            search_value[search_dict[i]] = value
+            filter_args  += "&{}={}".format(i, value)
+    else:
+        if not filter_args:
+            filter_args = None
+    if search_value:
+        data_list = column_models.get_data_list(
+            column_models.Article,
+            current_page,
+            search_value=search_value
+        )
+        data_count = column_models.get_data_count(
+            column_models.Article,
+            search_value,
+        )
+    else:
+        data_list = column_models.get_data_list(
+            column_models.Article,
+            current_page,
+        )
+        data_count = column_models.get_data_count(
+            column_models.Article,
+        )
+    return my_render(
+        request,
+        'column_manage/a_article_list.html',
+        current_page = current_page,
+        form_data = request.GET,
+        filter_args = filter_args,
+        data_list = data_list,
+        data_count = data_count,
+    )

@@ -22,11 +22,15 @@
           {% if form_errors and form_errors.column_name %}<span style="color: red">{{ form_errors.column_name }}</span>{% endif %}
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail1">栏目类型</label>
+            <label for="exampleInputEmail1">页面类型</label>
             <select name="page_type" class="form-control">
                 <option value="">选择页面类型</option>
                 {% for i in page_type %}
-                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% if form_data.page_type == i.0 %}
+                        <option value="{{ i.0 }}" selected>{{ i.1 }}</option>
+                    {% else %}
+                    <option value="{{ i.0 }}" >{{ i.1 }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             {% if form_errors and form_errors.page_type %}<span style="color: red">{{ form_errors.page_type }}</span>{% endif %}
@@ -37,7 +41,12 @@
                 <option value="">选择父级</option>
                 {% build_child_select columns_select as select_list %}
                 {% for i in select_list %}
-                    <option value="{{ i.columns_id }}">{{ i.column_name }}</option>
+                    {% if form_data.parent_id == i.columns_id %}
+                        <option value="{{ i.columns_id }}" selected>{{ i.column_name }}</option>
+                    {% else %}
+                        <option value="{{ i.columns_id }}">{{ i.column_name }}</option>
+                    {% endif %}
+                    
                 {% endfor %}
             </select>
         </div>
@@ -46,7 +55,7 @@
             <input type="file" class="form-control" name="photo_id">
         </div>
         <div class="image-box">
-            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
+            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
         </div>
         <br>
         <div class="form-group">
@@ -54,7 +63,7 @@
             <input type="file" class="form-control" name="thumb_photo_id">
         </div>
         <div class="image-box">
-            <img class="thumb_photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
+            <img class="thumb_photo_id" src="{%if form_data and form_data.thumb_photo_id %}{% build_photo_url form_data.thumb_photo_id 'page_thumb' %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
         </div>
       </div><!-- /.box-body -->
 
