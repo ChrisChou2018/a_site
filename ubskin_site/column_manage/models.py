@@ -62,7 +62,7 @@ class Columns(models.Model):
             return list()
     
     @classmethod
-    def get_all_select_columns(cls):
+    def get_all_select_columns(cls, self_id=None):
         def find_all_child(data_list, parent=None):
             for i in data_list:
                 child = cls.objects.filter(status='normal', parent_id=i['columns_id'], columns_type=3).values('columns_id', 'column_name')
@@ -71,28 +71,17 @@ class Columns(models.Model):
                 if child:
                     i['child'] = find_all_child(child, parent=i['column_name'])
             return data_list
-        column_index_list = cls.objects.filter(status='normal', columns_type=1).values('columns_id', 'column_name')
+        column_index_list = None
+        if self_id is not None:
+            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), ~Q(columns_id=self_id),status='normal').values('columns_id', 'column_name')
+        else:
+            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), status='normal').values('columns_id', 'column_name')
         if column_index_list:
             data_list = find_all_child(column_index_list)
             return data_list
         else:
             return list()
     
-    @classmethod
-    def build_child_tr_data(cls, data_id):
-        tr_str = ''
-        data_list = cls.objects.filter(status='normal', parent_id=data_id).values()
-        for i in data_list:
-            tr_str += '''<tr parent_id={}>
-                <td>{}{}</td><td>{}</td><td>{}</td><td><a href=''>编辑</a></td>
-            </tr>'''.format(
-                data_id,
-                i['column_name'],
-                '<span class="glyphicon glyphicon-chevron-right"></span>' if i.get('child') else '',
-                i['columns_id'],
-                dict(cls.type_choises)[i['columns_type']],
-            )
-        return tr_str
     
     @classmethod
     def get_column_link(cls):
@@ -166,6 +155,6 @@ def create_model_data(model, data):
 
 def get_model_by_pk(model, pk):
     try:
-        return model.objects.get(pk=pk)
+        return model.objects.get(pk=pk, status='normal')
     except model.DoesNotExist:
         return None

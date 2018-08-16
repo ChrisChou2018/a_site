@@ -10,7 +10,7 @@
 {% block content %}
 <div class="box box-primary" style="padding: 30px">
     <div class="box-header">
-      <h3 class="box-title">添加导航栏目</h3>
+      <h3 class="box-title">添加子栏目</h3>
     </div><!-- /.box-header -->
     <!-- form start -->
     <form role="form" method="POST" action="" enctype="multipart/form-data">
@@ -22,20 +22,6 @@
           {% if form_errors and form_errors.column_name %}<span style="color: red">{{ form_errors.column_name }}</span>{% endif %}
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail1">页面类型</label>
-            <select name="page_type" class="form-control">
-                <option value="">选择页面类型</option>
-                {% for i in page_type %}
-                    {% if form_data.page_type == i.0 %}
-                        <option value="{{ i.0 }}" selected>{{ i.1 }}</option>
-                    {% else %}
-                    <option value="{{ i.0 }}" >{{ i.1 }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            {% if form_errors and form_errors.page_type %}<span style="color: red">{{ form_errors.page_type }}</span>{% endif %}
-        </div>
-        <div class="form-group">
             <label for="exampleInputEmail1">所属父级栏目</label>
             <select name="parent_id" class="form-control">
                 <option value="">选择父级</option>
@@ -44,29 +30,13 @@
                     {% if form_data.parent_id == i.columns_id %}
                         <option value="{{ i.columns_id }}" selected>{{ i.column_name }}</option>
                     {% else %}
-                        <option value="{{ i.columns_id }}">{{ i.column_name }}</option>
+                        <option value="{{ i.columns_id }}" >{{ i.column_name }}</option>
                     {% endif %}
-                    
                 {% endfor %}
             </select>
+            {% if form_errors and form_errors.parent_id %}<span style="color: red">{{ form_errors.parent_id }}</span>{% endif %}
         </div>
-        <div class="form-group">
-            <label for="from_country">栏目图片</label>
-            <input type="file" class="form-control" name="photo_id">
-        </div>
-        <div class="image-box">
-            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
-        </div>
-        <br>
-        <div class="form-group">
-            <label for="from_country">菜单栏小图</label>
-            <input type="file" class="form-control" name="thumb_photo_id">
-        </div>
-        <div class="image-box">
-            <img class="thumb_photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
-        </div>
-      </div><!-- /.box-body -->
-
+        
       <div class="box-footer">
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>

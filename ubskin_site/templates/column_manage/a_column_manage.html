@@ -7,7 +7,7 @@
 {% block title %}
 <ul class="nav nav-tabs">
     <li role="presentation" class="active"><a href="{% url 'column_manage' %}">栏目管理</a></li>
-    <!-- <li role="presentation"><a href="">内容管理</a></li> -->
+    <li role="presentation"><a href="">扩展管理</a></li>
 </ul>              
 {% endblock %}
 {% block page_header %}
@@ -31,7 +31,7 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         <li><a href="{% url 'add_column_link' %}">添加导航栏目</a></li>
                         <li><a href="{% url 'add_a_page' %}">添加单页面</a></li>
-                        <li><a href="#">添加子栏目</a></li>
+                        <li><a href="{% url 'add_child_column' %}">添加子栏目</a></li>
                     </ul>
                 </div>
             </div>
@@ -75,37 +75,48 @@ $(function(){
         'contextmenu':{
             'items':{
                 "ccp":null,
-                "create" : {
-					"separator_before"	: false,
-					"separator_after"	: true,
-					"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
-					"label"				: "Create",
-					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.create_node(obj, {}, "last", function (new_node) {
-							try {
-								inst.edit(new_node);
-							} catch (ex) {
-								setTimeout(function () { inst.edit(new_node); },0);
-							}
-						});
-					}
-				},
+                // "create" : {
+				// 	"separator_before"	: false,
+				// 	"separator_after"	: true,
+				// 	"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
+				// 	"label"				: "Create",
+				// 	"action"			: function (data) {
+				// 		var inst = $.jstree.reference(data.reference),
+				// 			obj = inst.get_node(data.reference);
+				// 		inst.create_node(obj, {}, "last", function (new_node) {
+				// 			try {
+				// 				inst.edit(new_node);
+				// 			} catch (ex) {
+				// 				setTimeout(function () { inst.edit(new_node); },0);
+				// 			}
+				// 		});
+				// 	}
+				// },
 				"rename" : {
 					"separator_before"	: false,
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Rename",
+					"label"				: "编辑栏目",
 					/*!
 					"shortcut"			: 113,
 					"shortcut_label"	: 'F2',
 					"icon"				: "glyphicon glyphicon-leaf",
 					*/
 					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.edit(obj);
+                        let obj = $.jstree.reference(data.reference);
+                        obj = obj.get_node(data.reference);
+                        $.get(
+                            '{% url "editor_tree_item" %}?data_id=' + obj.id,
+                            function(value){
+                                if(value.status == 'success'){
+                                    window.location.href = value.data.url
+                                }else{
+                                    alert(value.message)
+                                }
+                                
+                            },
+                        )
+						
 					}
 				},
 				"remove" : {
@@ -113,16 +124,16 @@ $(function(){
 					"icon"				: false,
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("delete_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Delete",
+					"label"				: "删除栏目",
 					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						if(inst.is_selected(obj)) {
-							inst.delete_node(inst.get_selected());
-						}
-						else {
-							inst.delete_node(obj);
-						}
+						// var inst = $.jstree.reference(data.reference),
+						// 	obj = inst.get_node(data.reference);
+						// if(inst.is_selected(obj)) {
+						// 	inst.delete_node(inst.get_selected());
+						// }
+						// else {
+						// 	inst.delete_node(obj);
+						// }
 					}
 				},
             }
