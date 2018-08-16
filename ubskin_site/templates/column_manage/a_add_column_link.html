@@ -27,7 +27,7 @@
             <input type="file" class="form-control" name="photo_id">
         </div>
         <div class="image-box">
-            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
+            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
         </div>
         <br>
         <div class="form-group">
@@ -35,7 +35,7 @@
             <input type="file" class="form-control" name="thumb_photo_id">
         </div>
         <div class="image-box">
-            <img class="thumb_photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
+            <img class="thumb_photo_id" src="{%if form_data and form_data.thumb_photo_id %}{% build_photo_url form_data.thumb_photo_id 'page_thumb' %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
         </div>
       </div><!-- /.box-body -->
 

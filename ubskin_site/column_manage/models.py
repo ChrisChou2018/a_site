@@ -36,31 +36,6 @@ class Columns(models.Model):
     class Meta:
         db_table = 'columns'
     
-
-    @classmethod
-    def get_style_table_head(cls):
-        return dict(
-            column_name = '栏目名称',
-            columns_id = '栏目ID',
-            columns_type = '栏目类型',
-            more = '更多'
-        )
-    
-    @classmethod
-    def get_column_table_data(cls):
-        def find_all_child(data_list):
-            for i in data_list:
-                child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
-                if child:
-                    i['child'] = find_all_child(child)
-            return data_list
-        column_index_list = cls.objects.filter(status='normal', columns_type=1).values()
-        if column_index_list:
-            data_list =  find_all_child(column_index_list)
-            return data_list
-        else:
-            return list()
-    
     @classmethod
     def get_all_select_columns(cls, self_id=None):
         def find_all_child(data_list, parent=None):
@@ -82,7 +57,6 @@ class Columns(models.Model):
         else:
             return list()
     
-    
     @classmethod
     def get_column_link(cls):
         return cls.objects.filter(columns_type=1, status='normal').values()
@@ -91,7 +65,10 @@ class Columns(models.Model):
     def get_child_data_by_parent_id(cls, data_id):
         return cls.objects.filter(status='normal', parent_id=data_id).values()
 
-
+    @classmethod
+    def get_column_name_by_pk(cls, data_id):
+        obj = cls.objects.filter(pk=data_id).first()
+        return obj.column_name if obj else '空'
 
 
 class Article(models.Model):
@@ -102,12 +79,22 @@ class Article(models.Model):
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
     create_time = models.IntegerField(db_column="create_time", verbose_name="创建时间", default=int(time.time()))
+    read_colunt = models.IntegerField(db_column='read_colunt', verbose_name='阅读量', default=0)
     status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
 
     class Meta:
         db_table = 'article'
     
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            article_title = '文章标题',
+            read_colunt = '人气',
+            columns_id = '所属栏目',
+            more = '更多'
+        )
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):

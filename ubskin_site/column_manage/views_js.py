@@ -46,7 +46,7 @@ def select_tree_item(request):
         1: reverse('editor_page_content'),
         2: '留言页面',
         3: '物流查询',
-        4: '文章列表类型',
+        4: reverse('article_list'),
     }
     data_id = request.GET.get('data_id')
     model_obj = column_models.get_model_by_pk(

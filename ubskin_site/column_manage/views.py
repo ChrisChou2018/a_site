@@ -14,13 +14,9 @@ def my_render(request, templater_path, **kwargs):
 
 def column_manage(request):
     if request.method == "GET":
-        data_list = column_models.Columns.get_column_table_data()
         return my_render(
             request,
             'column_manage/a_column_manage.html',
-            data_list = data_list,
-            data_table_head = column_models.Columns.get_style_table_head,
-            column_type = dict(column_models.Columns.type_choises),
         )
 
 def add_column_link(request):
@@ -252,3 +248,47 @@ def editor_page_content(request):
             article_obj.article_content = article_conten
             article_obj.save()
         return redirect(reverse('editor_page_content'))
+
+def article_list(request):
+    search_dict = {
+        'search_value': 'article_title__icontains',
+        'data_id': 'columns_id',
+    }
+    search_value = dict()
+    current_page = request.GET.get('page', 1)
+    filter_args = ""
+    for i in search_dict:
+        value = request.GET.get(i)
+        if value is not None:
+            search_value[search_dict[i]] = value
+            filter_args  += "&{}={}".format(i, value)
+    else:
+        if not filter_args:
+            filter_args = None
+    if search_value:
+        data_list = column_models.get_data_list(
+            column_models.Article,
+            current_page,
+            search_value=search_value
+        )
+        data_count = column_models.get_data_count(
+            column_models.Article,
+            search_value,
+        )
+    else:
+        data_list = column_models.get_data_list(
+            column_models.Article,
+            current_page,
+        )
+        data_count = column_models.get_data_count(
+            column_models.Article,
+        )
+    return my_render(
+        request,
+        'column_manage/a_article_list.html',
+        current_page = current_page,
+        form_data = request.GET,
+        filter_args = filter_args,
+        data_list = data_list,
+        data_count = data_count,
+    )
