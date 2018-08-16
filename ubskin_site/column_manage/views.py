@@ -120,8 +120,8 @@ def add_a_child_column(request):
 
 def editor_page_content(request):
     data_id = request.GET.get('data_id')
+    article_obj = column_models.Article.has_articlr_by_columns_id(data_id)
     if request.method == 'GET':
-        article_obj = column_models.Article.has_articlr_by_columns_id(data_id)
         if not article_obj :
             return my_render(
                 request,
@@ -134,4 +134,14 @@ def editor_page_content(request):
                 form_data = article_obj,
             )
     else:
-        pass
+        article_conten = request.POST.get('article_content')
+        if not article_obj:
+            column_models.create_model_data(
+                column_models.Article,
+                {'columns_id': data_id, 'article_content': article_conten}
+            )
+        else:
+            print(article_conten)
+            article_obj.article_content = article_conten
+            article_obj.save()
+        return redirect(reverse('editor_page_content'))
