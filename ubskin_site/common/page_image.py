@@ -8,6 +8,7 @@ from PIL import Image
 photo_specs = [
     {"type": "page_title", "width": 1200, 'height': 313, "is_square": False},
     {"type": "page_thumb", "width": 260, 'height': 91, "is_square": False},
+    {"type": "article_thumb_image", "width": 301},
 ]
 
 

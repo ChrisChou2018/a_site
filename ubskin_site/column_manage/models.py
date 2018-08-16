@@ -109,7 +109,7 @@ class Article(models.Model):
 
     article_id  = models.AutoField(db_column="article_id", primary_key=True, verbose_name="文章ID")
     columns_id = models.BigIntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
-    article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255)
+    article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255, null=True, blank=True)
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
     create_time = models.IntegerField(db_column="create_time", verbose_name="创建时间", default=int(time.time()))
@@ -122,7 +122,7 @@ class Article(models.Model):
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
-        return True if cls.objects.filter(columns_id=data_id, status='normal').values() else False
+        return cls.objects.filter(columns_id=data_id, status='normal').first()
 
 
 class ColumnScrollingImage(models.Model):
