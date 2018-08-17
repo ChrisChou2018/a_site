@@ -17,4 +17,5 @@ urlpatterns += [
     path('js/get_tree_child_by_columns_id/', views_js.get_tree_child_by_columns_id, name='get_tree_child_by_columns_id'),
     path('js/select_tree_item/', views_js.select_tree_item, name='select_tree_item'),
     path('js/editor_tree_item/', views_js.editor_tree_item, name='editor_tree_item'),
+    path('js/delete_item_tree/', views_js.delete_item_tree, name='delete_item_tree'),
 ]

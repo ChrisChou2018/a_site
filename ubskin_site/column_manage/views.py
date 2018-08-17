@@ -364,7 +364,8 @@ def add_article(request):
                     if data:
                         setattr(model_obj, i, data['photo_id'])
                         model_obj.save()
-        return JsonResponse({'status': 'success', 'data': reverse('article_list') + '?data_id={}'.format(columns_id)})
+        return JsonResponse({
+            'status': 'success',
+            'data': reverse('article_list') + '?data_id={}'.format(columns_id)
+        })
 
-
-        

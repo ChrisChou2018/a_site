@@ -69,6 +69,19 @@ class Columns(models.Model):
     def get_column_name_by_pk(cls, data_id):
         obj = cls.objects.filter(pk=data_id).first()
         return obj.column_name if obj else '空'
+    
+    @classmethod
+    def delete_columns(cls, data_id):
+        id_list = list()
+        id_list.append(data_id)
+        def find_all_child(data_id, id_list):
+            child = cls.objects.filter(status='normal', parent_id=data_id).values()
+            if child:
+                for i in child:
+                    id_list.append(i['columns_id'])
+                    find_all_child(i['columns_id'], id_list)
+        find_all_child(data_id, id_list)
+        cls.objects.filter(pk__in=(id_list)).update(status='deleted')
 
 
 class Article(models.Model):

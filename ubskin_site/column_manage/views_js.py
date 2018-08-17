@@ -5,8 +5,6 @@ from django.shortcuts import redirect
 from ubskin_site.column_manage import models as column_models
 
 
-
-
 def get_tree_child_by_columns_id(request):
     '''
     {'id':os.path.join(file_path, i),
@@ -80,3 +78,14 @@ def editor_tree_item(request):
     return_value['status'] = 'success'
     return_value['data'] = {'url': url_dict[model_obj.columns_type] + '?data_id={}'.format(data_id)}
     return JsonResponse(return_value)
+
+def delete_item_tree(request):
+    return_value = {
+        'status': 'error',
+        'message': '',
+    }
+    if request.method == 'POST':
+        data_id = request.POST.get('data_id')
+        column_models.Columns.delete_columns(data_id)
+        return_value['status'] = 'success'
+        return JsonResponse(return_value)
