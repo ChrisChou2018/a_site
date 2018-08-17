@@ -1,3 +1,4 @@
+{% load ui_method %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +22,8 @@
         <div class="col-md-3">
             <form action="" method="GET" class="search_input" ">
                 <div class="input-group" style="max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="搜索手机号或着用户名" name="search_value" value="{{ search_value }}">
+                    <input type="text" class="form-control" placeholder="搜索文章标题"" name="search_value" value="{{ form_data.search_value }}">
+                    <input type="text" style="display: none;" name="data_id" value="{{ form_data.data_id }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">搜索</button>
                     </span>
@@ -31,14 +33,40 @@
     </div>
     <div class="row">
         <div class="" style="float: right;padding-right: 25px;">
-            <button type="button" class="btn btn-info add_member_btn" type="button" data-toggle="modal" data-target="#exampleModal" >添加文章<span class="glyphicon glyphicon-plus"></span></button>
+            <a href="{% url 'add_article' %}?columns_id={{ form_data.data_id }}" type="button" class="btn btn-info" type="button" >添加文章<span class="glyphicon glyphicon-plus"></span></a>
             <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
             <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
         </div>
     </div>
     <div style="overflow: auto;padding: 15px;"> 
         <table class="table table-striped member_table" >
-            
+            <thead>
+                <tr>
+                    {% for key, value in table_head.items %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+                {% for i in data_list %}
+                    <tr>
+                        {% for key, value in table_head.items %}
+                            {% if key != 'more' %}
+                                {% if key == 'columns_id' %}
+                                    {% get_value_by_key i key as data_id %}
+                                    <td>{% get_column_name_by_id data_id %}</td>
+                                {% else %}
+                                    <td>
+                                        {% get_value_by_key i key %}
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <td><a href="{% url 'add_article' %}?data_id={{ i.article_id }}&columns_id={{ i.columns_id }}">编辑文章</a></td>
+                    </tr>
+                {% endfor %}
+            <tbody>
+
+            </tbody>
         </table>
     </div>
 

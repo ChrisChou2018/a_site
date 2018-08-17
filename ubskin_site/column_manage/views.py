@@ -1,6 +1,9 @@
 import os
+import time
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.http import HttpResponseRedirect as redirect
+from django.http import JsonResponse
 from django.conf import settings
 from django.urls import reverse
 
@@ -291,4 +294,78 @@ def article_list(request):
         filter_args = filter_args,
         data_list = data_list,
         data_count = data_count,
+        table_head = column_models.Article.get_style_table_head,
     )
+
+def add_article(request):
+    columns_id = request.GET.get('columns_id')
+    data_id = request.GET.get('data_id')
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.Article,
+            data_id
+        )
+    if request.method == 'GET':
+        if not model_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_article.html'
+            )
+        else:
+            print(model_obj.photo_id)
+            return my_render(
+                request,
+                'column_manage/a_add_article.html',
+                form_data = model_obj
+            )
+    else:
+        article_content = request.POST.get('article_content')
+        article_title = request.POST.get('article_title')
+        files = request.FILES 
+        print(files)
+        if not model_obj:
+            new_obj = column_models.create_model_data(
+                column_models.Article,
+                {
+                    'article_content': article_content,
+                    'article_title': article_title,
+                    'create_time': int(time.time()),
+                    'columns_id': columns_id,
+                }
+            )
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(new_obj, i, data['photo_id'])
+                        new_obj.save()
+        else:
+            if article_title:
+                model_obj.article_title = article_title
+            if article_content:
+                model_obj.article_content = article_content
+            model_obj.save()
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        return JsonResponse({
+            'status': 'success',
+            'data': reverse('article_list') + '?data_id={}'.format(columns_id)
+        })
+

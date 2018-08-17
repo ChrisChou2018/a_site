@@ -179,3 +179,8 @@ def build_child_select(data_list):
         else:
             return select_list
     return build_func(data_list, select_list)
+
+
+@register.simple_tag
+def get_column_name_by_id(data_id):
+    return column_models.Columns.get_column_name_by_pk(data_id)
