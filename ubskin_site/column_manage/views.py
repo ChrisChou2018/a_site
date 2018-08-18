@@ -132,7 +132,7 @@ def add_a_page(request):
                     'column_manage/a_add_a_page.html',
                     form_data = request.POST,
                     form_errors = from_errors,
-                    page_type = page_type,
+                    page_type = column_models.Columns.page_type_choices,
                     columns_select = columns_select,
                 )
             model_obj = column_models.create_model_data(

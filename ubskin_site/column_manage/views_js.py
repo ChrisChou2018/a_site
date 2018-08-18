@@ -89,3 +89,14 @@ def delete_item_tree(request):
         column_models.Columns.delete_columns(data_id)
         return_value['status'] = 'success'
         return JsonResponse(return_value)
+
+def delete_articles(request):
+    if request.method == 'POST':
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            column_models.update_model_data_by_pk(
+                column_models.Article,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})

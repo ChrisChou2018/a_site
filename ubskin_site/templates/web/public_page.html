@@ -4,6 +4,7 @@
 {% block css %}
 {% endblock %}
 {% block js %}
+
 {% endblock %}
 
 <!-- <li><a href="http://www.ubskin.net/list.asp?classid=3" class="nav_a">关于优贝施</a>
@@ -50,9 +51,11 @@
         <div class="y_left">
             <div class="left_tit left_t4">关于优贝施</div>
             <ul class="left_ul">
-            
               
-              <li id="leftnav2"><a href="http://www.ubskin.net/list.asp?classid=2" title="什么是药妆？">什么是药妆？</a></li>
+              {% build_page_tree_column column_data_list select_columns_ids as str_data %}
+              {{ str_data|safe }}
+              
+              <!-- <li id="leftnav2"><a href="http://www.ubskin.net/list.asp?classid=2" title="什么是药妆？">什么是药妆？</a></li>
               
               
               <li class="left_p" id="leftnav3"><a href="http://www.ubskin.net/list.asp?classid=3" title="企业简介">企业简介</a></li>
@@ -61,7 +64,7 @@
               <li  id="leftnav4"><a href="http://www.ubskin.net/list.asp?classid=4" title="发展历程">发展历程</a></li>
               
               
-              <li id="leftnav6"><a href="http://www.ubskin.net/list.asp?classid=6" title="企业动态">企业动态</a></li>
+              <li id="leftnav6"><a href="http://www.ubskin.net/list.asp?classid=6" title="企业动态">企业动态</a></li> -->
                 
             </ul>
             <div class="clean"></div>
@@ -85,9 +88,23 @@
         </ul> -->
         <div class="clean"></div>
         <div class="right_tit">{{ page_content.article_title }}</div>
-        <div class="cont_page">
-        {{ page_content.article_content|safe }}
-        </div>
+          {% if page_type == 1 %}
+          <div class="cont_page">
+            {{ page_content.article_content|safe }}
+          </div>
+          
+          {% else %}
+            {% for i in page_content %}
+                <div class="hd_ed">
+                    <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
+                    <b><a href="" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
+                    <p>时间：{% parse_timestamps i.create_time %}</p>
+                    <p>{% get_article_content i.article_content %}</p>
+                <div class="clean"></div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        
     </div>
     <div class="clean"></div>
     </div>

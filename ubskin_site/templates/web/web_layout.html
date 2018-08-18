@@ -11,8 +11,6 @@
 {% block css %}
 {% endblock %}
 
-{% block js %}
-{% endblock %}
 <script src="/static/web/hm.js"></script><script src="/static/web/hm.js"></script><script type="text/javascript" src="/static/web/jquery.js"></script>
 <script type="text/javascript" src="/static/web/youbeishi.js"></script>
 <script type="text/javascript" src="/static/web/jquery.slides.js"></script>
@@ -30,6 +28,8 @@ $(document).ready(function(e) {
 		});
 });
 </script>
+{% block js %}
+{% endblock %}
 <!-- ubskin.net Baidu tongji analytics -->
 <script>
 var _hmt = _hmt || [];
@@ -80,7 +80,7 @@ s.parentNode.insertBefore(hm, s);
     <div class="clean"></div>
   </div>
   {% block photo_id %}
-  
+
   {% endblock %}
   <!--<div class="y_banner_m"></div>-->
   <div class="y_banner_m1">  

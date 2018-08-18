@@ -25,7 +25,7 @@ class Columns(models.Model):
     page_type_choices = (
         (1, '文本图片'),
         (2, '留言页面'),
-        (3, '物流查询'),
+        (3, '店铺查询'),
         (4, '文章列表类型'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
@@ -38,22 +38,10 @@ class Columns(models.Model):
     
     @classmethod
     def get_all_select_columns(cls, self_id=None):
-        def find_all_child(data_list, parent=None):
-            for i in data_list:
-                child = cls.objects.filter(status='normal', parent_id=i['columns_id'], columns_type=3).values('columns_id', 'column_name')
-                if parent is not None:
-                    i['column_name'] = parent + '__' + i['column_name']
-                if child:
-                    i['child'] = find_all_child(child, parent=i['column_name'])
-            return data_list
-        column_index_list = None
-        if self_id is not None:
-            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), ~Q(columns_id=self_id),status='normal').values('columns_id', 'column_name')
-        else:
-            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), status='normal').values('columns_id', 'column_name')
+        column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
         if column_index_list:
-            data_list = find_all_child(column_index_list)
-            return data_list
+            
+            return column_index_list
         else:
             return list()
     
@@ -81,7 +69,8 @@ class Columns(models.Model):
                     id_list.append(i['columns_id'])
                     find_all_child(i['columns_id'], id_list)
         find_all_child(data_id, id_list)
-        cls.objects.filter(pk__in=(id_list)).update(status='deleted')
+        cls.objects.filter(pk__in=id_list).update(status='deleted')
+        Article.objects.filter(status='normal', columns_id__in=id_list).update(status='deleted')
     
     @classmethod
     def build_column_links(cls):
@@ -96,7 +85,7 @@ class Columns(models.Model):
     def get_page_columns_list(cls, data_id):
         def find_all_child(data_list):
             for i in data_list:
-                child = cls.objects.filter(status='normal', parent_id=i.columns_id)
+                child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
                 if child:
                     i['child'] = find_all_child(child)
             else:
@@ -104,7 +93,7 @@ class Columns(models.Model):
         obj = cls.objects.filter(columns_id = data_id, status = 'normal').first()
         if obj:
             parent_obj = cls.objects.filter(status='normal', columns_id=obj.parent_id).first()
-            child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id)
+            child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id).values()
             data_list = find_all_child(child_list)
             return data_list
         else:
@@ -138,6 +127,7 @@ class Article(models.Model):
     @classmethod
     def get_style_table_head(cls):
         return dict(
+            article_id = '文章ID',
             article_title = '文章标题',
             read_colunt = '人气',
             columns_id = '所属栏目',
@@ -146,11 +136,11 @@ class Article(models.Model):
     
     @classmethod
     def get_article_obj_by_columns_id(cls, columns_id):
-        return cls.objects.filter(columns_id=columns_id).first()
+        return cls.objects.filter(columns_id=columns_id, status='normal').first()
     
     @classmethod
     def get_article_list_by_columns_id(cls, columns_id):
-        return cls.objects.filter(columns_id=columns_id)
+        return cls.objects.filter(columns_id=columns_id, status='normal')
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
@@ -201,3 +191,6 @@ def get_model_by_pk(model, pk):
         return model.objects.get(pk=pk, status='normal')
     except model.DoesNotExist:
         return None
+
+def update_model_data_by_pk(model, pk, data):
+    model.objects.filter(pk=pk).update(**data)

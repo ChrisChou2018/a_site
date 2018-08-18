@@ -32,15 +32,24 @@ def public_page(request, data_id):
         column_models.Columns,
         data_id
     )
+    select_columns_ids = list()
     column_data_list = column_models.Columns.get_page_columns_list(data_id)
     page_type = None
     page_content = None
     photo_dict = None
     if model_obj.columns_type == 2:
         if model_obj.page_type == 1:
+            select_columns_ids.append(model_obj.columns_id)
+            parent_obj = column_models.get_model_by_pk(
+                column_models.Columns,
+                model_obj.parent_id
+            )
+            if parent_obj.columns_type != 1:
+                select_columns_ids.append(parent_obj.columns_id)
             page_type = 1
             page_content = column_models.Article.get_article_obj_by_columns_id(data_id)
         elif model_obj.page_type == 4:
+            select_columns_ids.append(model_obj.columns_id)
             page_type = 4
             page_content = column_models.Article.get_article_list_by_columns_id(data_id)
         photo_dict = {
@@ -60,5 +69,6 @@ def public_page(request, data_id):
         page_content = page_content,
         photo_dict = photo_dict,
         column_data = column_data,
+        select_columns_ids = select_columns_ids,
     )
     
