@@ -82,6 +82,41 @@ class Columns(models.Model):
                     find_all_child(i['columns_id'], id_list)
         find_all_child(data_id, id_list)
         cls.objects.filter(pk__in=(id_list)).update(status='deleted')
+    
+    @classmethod
+    def build_column_links(cls):
+        data_list = cls.objects.filter(columns_type=1, status='normal').values()
+        for i in data_list:
+            child = cls.objects.filter(parent_id=i['columns_id'], status='normal').values()
+            if child:
+                i['child'] = child
+        return data_list
+    
+    @classmethod
+    def get_page_columns_list(cls, data_id):
+        def find_all_child(data_list):
+            for i in data_list:
+                child = cls.objects.filter(status='normal', parent_id=i.columns_id)
+                if child:
+                    i['child'] = find_all_child(child)
+            else:
+                return data_list
+        obj = cls.objects.filter(columns_id = data_id, status = 'normal').first()
+        if obj:
+            parent_obj = cls.objects.filter(status='normal', columns_id=obj.parent_id).first()
+            child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id)
+            data_list = find_all_child(child_list)
+            return data_list
+        else:
+            return list()
+    
+    @classmethod
+    def get_prent_photo(cls, data_id):
+        photo_dict = dict()
+        parent_obj = cls.objects.filter(columns_id=data_id)
+        photo_dict['photo_id'] = parent_obj.photo_id
+        photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
+        return photo_dict
 
 
 class Article(models.Model):
@@ -108,11 +143,18 @@ class Article(models.Model):
             columns_id = '所属栏目',
             more = '更多'
         )
+    
+    @classmethod
+    def get_article_obj_by_columns_id(cls, columns_id):
+        return cls.objects.filter(columns_id=columns_id).first()
+    
+    @classmethod
+    def get_article_list_by_columns_id(cls, columns_id):
+        return cls.objects.filter(columns_id=columns_id)
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
         return cls.objects.filter(columns_id=data_id, status='normal').first()
-    
 
 
 class ColumnScrollingImage(models.Model):

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://www.ubskin.net/ -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="shortcut icon" href="http://www.ubskin.net/favicon.ico">
+<meta name="Keywords" content="优贝施、优贝施官网、优贝施进口药妆、药妆、日本药妆、药妆品牌、药妆加盟、药妆连锁">
+<meta name="Description" content="UBSKIN优贝施进口药妆，引进了来自全球50多个国家的200多个进口药妆品牌，涵盖了护肤、面膜、孕婴童、洗护等10大品类，全力打造进口药妆连锁品牌NO.1，加盟药妆品牌，就选优贝施进口药妆">
+<title>优贝施进口药妆-中国进口药妆领导者</title>
+<link href="/static/web/index_css.css" rel="stylesheet" type="text/css">
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+<script src="/static/web/hm.js"></script><script src="/static/web/hm.js"></script><script type="text/javascript" src="/static/web/jquery.js"></script>
+<script type="text/javascript" src="/static/web/youbeishi.js"></script>
+<script type="text/javascript" src="/static/web/jquery.slides.js"></script>
+<script type="text/javascript" src="/static/web/responsiveslides.min.js"></script>
+<script type="text/javascript">
+//首页大图动画
+$(document).ready(function(e) {
+	$("#slides").slidesjs({
+			width: 1200,
+			start: 1,//控制从第几张图开始播放 
+			navigation:{  //控制前后按钮
+			active: true,//是否开启左右按钮
+			effect: "fade"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
+			}
+		});
+});
+</script>
+<!-- ubskin.net Baidu tongji analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+var hm = document.createElement("script");
+hm.src = "https://hm.baidu.com/hm.js?e183d3c8b667e2145aef094d9e7062d7";
+var s = document.getElementsByTagName("script")[0];
+s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script type="text/javascript" charset="utf-8" src="/static/web/JS_Float.aspx"></script></head>
+
+<body>
+<!----------------------------------------------------top-------------------------------------------------------------------->
+<header>
+  <div class="y_top center">
+    <div class="top_logo"><a href="/"><img src="/static/web/y_logo.png" border="0" alt="" class="logo"><img src="/static/web/y_logo1.png" border="0" alt="" class="logo1"></a></div>
+    <div class="top_tel">
+      <a class="ewm_weixin"></a>
+      <a class="ewm_qq" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1761126790&amp;site=%D3%AD%B4%BA" target="_blank" title="点我咨询"></a>
+      <a class="ewm_weibo" href="http://weibo.com/ubskinchina/home?wvr=5&amp;sudaref=www.hao123.com&amp;retcode=6102" target="_blank" title="点我直达"></a>
+      <img src="/static/web/y_tel.png" border="0" alt="">
+      <div class="top_ewm top_weixin"><img src="/static/web/ewm_weixin.jpg" border="0" alt="0"></div>
+      <div class="top_ewm top_qq"><img src="/static/web/ewm_qq.jpg" border="0" alt="0"></div>
+      <div class="top_ewm top_weibo"><img src="/static/web/ewm_weibo.jpg" border="0" alt="0"></div>
+    </div>
+    <div class="clean"></div>
+  </div>
+  <div class="y_nav">
+    <ul class="nav_list center">
+      <li class="nav_kx"><a href="javascript:void(null);" class="nav_a"></a></li>
+      <li class="nav_home"><a href="/" class="nav_a">首页</a></li>
+      
+      {% for i in column_data %}
+        <li><a href="{% if i.child %}{% url 'public_page' i.child.0.columns_id %}{% else %}#{% endif %}" class="nav_a">{{ i.column_name }}</a>
+          <div class="nav_tt">
+            {% if i.child %}
+              {% for j in i.child %}
+                <p><a href="{% url 'public_page' j.columns_id %}">{{ j.column_name }}</a></p>
+              {% endfor %}
+            {% endif %}
+            
+          </div>
+        </li>
+      {% endfor %}
+
+    </ul>
+    <div class="clean"></div>
+  </div>
+  {% block photo_id %}
+  
+  {% endblock %}
+  <!--<div class="y_banner_m"></div>-->
+  <div class="y_banner_m1">  
+    <div class="slide_container">
+     <ul class="rslides slide slide1" id="slider">
+      
+      <li id="slide1_s0" class="slide1_on" style="display: block; float: left; position: relative; opacity: 1; z-index: 2; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=180"><img src="/static/web/2018081751212421.jpg" alt="移动端首页banner1" border="0"></a></li>   
+      
+      <li id="slide1_s1" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=154"><img src="/static/web/2018051761433325.jpg" alt="移动端首页banner2" border="0"></a></li>   
+      
+      <li id="slide1_s2" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=42"><img src="/static/web/2018072735674265.jpg" alt="移动端首页banner3" border="0"></a></li>   
+      
+      <li id="slide1_s3" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=27"><img src="/static/web/2018021242520941.jpg" alt="移动端首页banner4" border="0"></a></li>   
+       
+     </ul><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav prev">Previous</a><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav next">Next</a>
+   </div> 
+  </div>
+</header>
+<!----------------------------------------------------top-------------------------------------------------------------------->
+
+<!----------------------------------------------------content-------------------------------------------------------------------->
+{% block content %}
+
+{% endblock %}
+<!----------------------------------------------------content-------------------------------------------------------------------->
+
+<!----------------------------------------------------bottom-------------------------------------------------------------------->
+<footer>
+    <div class="y_bottom">
+    <div class="bottom_cont center">
+      <div class="bottom_div">
+        
+          {% for i in column_data %}
+            <ul class="bottom_ul">
+                <b><a href="#" target="">{{ i.column_name }}</a></b>
+                {% if i.child %}
+                  {% for j in i.child %}
+                    <li><a href="#" target="">{{ j.column_name }}</a></li>
+                  {% endfor %}
+                {% endif %}
+              
+            </ul>
+          {% endfor %}
+        
+        <div class="clean"></div>
+      </div>
+      <div class="bottom_div1">
+        <div class="bottom_copy">Copyright UBSKIN IMPORTED Cosmetios Co.,Ltd. ALL Rights Reserved<br><span>西安优贝施化妆品有限公司</span><span>陕ICP备14007274号</span><span><!-- ubskin.net Baidu tongji analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+var hm = document.createElement("script");
+hm.src = "https://hm.baidu.com/hm.js?e183d3c8b667e2145aef094d9e7062d7";
+var s = document.getElementsByTagName("script")[0];
+s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script language="javascript" type="text/javascript" src="/static/web/18966695.js"></script><a href="https://www.51.la/?comId=18966695" title="51.La 网站流量统计系统" target="_blank"><span style="display:inline-block;background-color:;color:#fff;padding:2px 5px;font-family:arial;font-size:12px;font-weight:bold;">51La</span></a></span>
+		<!--<span><script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?537033dd483668a197d461d2704c26c0"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s); })(); </script></span>-->
+        </div>
+        <div class="bottom_tel"><b>400-0405-666</b><p>服务时间：9:00-20:00</p></div>
+        <div class="clean"></div>
+      </div>
+    </div>
+  </div>
+  <!--<div class="b_zz"></div>
+  <div class="b_pp"></div>
+  <div class="b_lpf" id="b_lpf" href="#a"><img src="/theme/default/images/b_lpf.png" border="0"/><div class="lpf_close">X</div><a href="http://p.qiao.baidu.com/cps/chatIndex?reqParam=%7B%22from%22%3A0%2C%22sid%22%3A%22-100%22%2C%22tid%22%3A%22-1%22%2C%22ttype%22%3A1%2C%22siteId%22%3A%223988939%22%2C%22userId%22%3A%226946881%22%7D" target="_blank" class="lpf_a"></a></div>
+  
+  <div class="b_lpf" id="b_lpf" href="#a"><img src="/theme/default/images/b_lpf.png" border="0"/><div class="lpf_close">X</div><a onClick="openZoosUrl('chatwin','&e=right_bottom');"  href="javascript:void(0);" target="_blank" class="lpf_a"></a></div> 
+  <div class="b_cpf"><img src="/theme/default/images/b_cpf.png" border="0"/><a href="javascript:void(null);" class="close"></a><a href="javascript:void(null);" class="close1">X</a><a onClick="openZoosUrl('chatwin','&e=middle');"  href="javascript:void(0);" target="_blank" class="zx"></a></div>-->
+  <!--div class="b_cpf"><img src="/theme/default/images/b_cpf.png" border="0"/><a href="javascript:void(null);" class="close"></a><a href="javascript:void(null);" class="close1">X</a><a href="http://p.qiao.baidu.com/cps/chatIndex?reqParam=%7B%22from%22%3A0%2C%22sid%22%3A%22-100%22%2C%22tid%22%3A%22-1%22%2C%22ttype%22%3A1%2C%22siteId%22%3A%223988939%22%2C%22userId%22%3A%226946881%22%7D" target="_blank" class="zx"></a></div-->
+<!--ubs-->
+<script language="javascript" src="/static/web/LsJS.aspx"></script><link href="/static/web/JS5.css" rel="stylesheet" type="text/css"><div id="LRdiv1" style="display:none;"></div>
+
+
+</footer><div id="LRdiv0" style="display:none;"></div>
+<!----------------------------------------------------bottom-------------------------------------------------------------------->
+
+<!-- <div id="LRdiv2" style="display: block;"><div id="LRfloater2" style="z-index: 2147483647; right: 0px; bottom: 0px; position: fixed !important;"><div style="width:420px; height:463px;" id="LRMINIWIN"><div id="LRMINIWIN0" style="z-index: 2147483647; position: absolute; height: 30px; overflow: hidden; display: block;right:0"><span style="float:left;clear:none; width:103px;height:20px; overflow:hidden; margin:0 5px;"></span><span style="CURSOR:pointer;float:right;clear:none; width:20px;height:20px; margin:6px 2px 0 0; overflow:hidden;" onclick="lr_closemini(1);"><img style="cursor:pointer;" src="/static/web/close.png" border="0"></span><span style="CURSOR:pointer;float:right;overflow:hidden;width:20px;height:20px;clear:none;display:block;margin:6px 2px 0 0;" onclick="lrminiMin();"><img src="/static/web/da1.png" style="cursor:pointer;" border="0"></span><span style="CURSOR:pointer;float:right;overflow:hidden;width:20px;height:20px;clear:none;display:block;margin:6px 2px 0 0;" onclick="openZoosUrl(&#39;bchatwin&#39;);lrminiMin();"><img src="/static/web/da.png" style="cursor:pointer;" border="0"></span><span style="CURSOR:pointer;float:right;overflow:hidden;width:20px;height:20px;clear:none;display:block;margin:6px 2px 0 0;" onclick="lrmove();"><img src="/static/web/jiantou.png" style="cursor:pointer;" border="0"></span></div><iframe id="LR_miniframe" name="LR_miniframe" width="100%" height="463px" frameborder="0" scrolling="No" allowtransparency="true" src="/static/web/saved_resource.html"></iframe></div></div></div><div id="LRdiv3" style="display: block;"><div id="LRfloater3" style="z-index: 2147483647; right: 0px; bottom: 0px; position: fixed !important;"><div id="LRMINIBar" class="LR_Mini_ICON" style="display:none;right: 15px;bottom: 30px;" onclick="lrminiMax();"><a class="LR-BTN" style="background-color: #5ba4ed;"><span class="LR-ICON LR-ICON-CHAT1" id="LR-BTN-ICON"></span><span id="LR-CIRCLE" style="display:none;background-color: #5ba4ed;"></span> </a><div id="LR-BUBBLE" style="display:none;width:400px;right: 0;margin-right:34px;cursor:pointer;bottom: 30px;"><span class="LR-ICON" id="LR-BUBBLE-CLOSE" onclick="return closebarhtml(event);"></span><div id="LR-BUBBLE-INSIDE"><div id="LR-BUBBLE-title"><img id="LR-BUBBLE-AVATAR" src="http://www.ubskin.net/"><span id="LR-BUBBLE-NAME"></span></div><div id="LR-BUBBLE-MSG"></div></div></div></div></div></div></body></html> -->

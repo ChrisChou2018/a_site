@@ -243,9 +243,13 @@ def editor_page_content(request):
     else:
         article_conten = request.POST.get('article_content')
         if not article_obj:
+            column_obj = column_models.get_model_by_pk(
+                column_models.Columns,
+                data_id
+            )
             column_models.create_model_data(
                 column_models.Article,
-                {'columns_id': data_id, 'article_content': article_conten}
+                {'columns_id': data_id, 'article_content': article_conten, 'article_title': column_obj.column_name}
             )
         else:
             article_obj.article_content = article_conten

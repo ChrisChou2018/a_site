@@ -23,6 +23,7 @@ from django.conf import settings
 urlpatterns = [
     path('', include('ubskin_site.member_manage.urls')),
     path('', include('ubskin_site.column_manage.urls')),
+    path('', include('ubskin_site.web.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
