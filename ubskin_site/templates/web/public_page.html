@@ -1,0 +1,128 @@
+{% extends './web_layout.html' %}
+{% load ui_method %}
+
+{% block css %}
+{% endblock %}
+{% block js %}
+
+{% endblock %}
+
+<!-- <li><a href="http://www.ubskin.net/list.asp?classid=3" class="nav_a">关于优贝施</a>
+  <div class="nav_tt">
+    
+    <p><a href="http://www.ubskin.net/list.asp?classid=2">什么是药妆？</a></p>
+    
+    <p><a href="http://www.ubskin.net/list.asp?classid=3">企业简介</a></p>
+    
+    <p><a href="http://www.ubskin.net/list.asp?classid=4">发展历程</a></p>
+    
+    <p><a href="http://www.ubskin.net/list.asp?classid=6">企业动态</a></p>
+    
+  </div>
+</li> -->
+{% block photo_id %}
+<div class="y_banner center">
+  <div class="t_banner">
+    <img src="{% build_photo_url photo_dict.photo_id 'page_title' %}" alt="企业简介banner" border="0">
+  </div>
+</div>
+{% endblock %}
+
+{% block column_list %}
+  {% for i in column_data %}
+    <li><a href="#" class="nav_a">{{ i.column_name }}</a>
+      <div class="nav_tt">
+        {% if i.child %}
+          {% for j in i.child %}
+            <p><a href="#">{{ j.column_name }}</a></p>
+          {% endfor %}
+        {% endif %}
+        
+      </div>
+    </li>
+  {% endfor %}
+{% endblock %}
+
+
+{% block content %}
+<section>
+    <div class="y_content_bg2">
+        <div class="content_div center">
+        <div class="y_left">
+            <div class="left_tit left_t4">关于优贝施</div>
+            <ul class="left_ul">
+              
+              {% build_page_tree_column column_data_list select_columns_ids as str_data %}
+              {{ str_data|safe }}
+              
+              <!-- <li id="leftnav2"><a href="http://www.ubskin.net/list.asp?classid=2" title="什么是药妆？">什么是药妆？</a></li>
+              
+              
+              <li class="left_p" id="leftnav3"><a href="http://www.ubskin.net/list.asp?classid=3" title="企业简介">企业简介</a></li>
+              
+              
+              <li  id="leftnav4"><a href="http://www.ubskin.net/list.asp?classid=4" title="发展历程">发展历程</a></li>
+              
+              
+              <li id="leftnav6"><a href="http://www.ubskin.net/list.asp?classid=6" title="企业动态">企业动态</a></li> -->
+                
+            </ul>
+            <div class="clean"></div>
+        </div>
+        <div class="y_right">
+            
+    <!-- <ul class="right_nav">
+            
+            
+        <li><a href="http://www.ubskin.net/list.asp?classid=2" title="什么是药妆？">什么是药妆？</a></li>
+        
+        
+        <li class="right_p"><a href="http://www.ubskin.net/list.asp?classid=3" title="企业简介">企业简介</a></li>
+        
+        
+        <li><a href="http://www.ubskin.net/list.asp?classid=4" title="发展历程">发展历程</a></li>
+        
+        
+        <li><a href="http://www.ubskin.net/list.asp?classid=6" title="企业动态">企业动态</a></li>
+            
+        </ul> -->
+        <div class="clean"></div>
+        <div class="right_tit">{{ page_content.article_title }}</div>
+          {% if page_type == 1 %}
+          <div class="cont_page">
+            {{ page_content.article_content|safe }}
+          </div>
+          
+          {% else %}
+            {% for i in page_content %}
+                <div class="hd_ed">
+                    <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
+                    <b><a href="" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
+                    <p>时间：{% parse_timestamps i.create_time %}</p>
+                    <p>{% get_article_content i.article_content %}</p>
+                <div class="clean"></div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        
+    </div>
+    <div class="clean"></div>
+    </div>
+</div>
+</section>
+{% endblock %}
+
+
+{% block bottom_column_list %}
+    {% for i in column_data %}
+    <ul class="bottom_ul">
+        <b><a href="#" target="">{{ i.column_name }}</a></b>
+        {% if i.child %}
+          {% for j in i.child %}
+            <li><a href="#" target="">{{ j.column_name }}</a></li>
+          {% endfor %}
+        {% endif %}
+      
+    </ul>
+    {% endfor %}
+{% endblock %}

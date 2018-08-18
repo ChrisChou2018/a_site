@@ -63,8 +63,6 @@ def index(request):
             'a_index.html'
         )
 
-
-
 @login_required(login_url='/myadmin/signin/')
 def change_pass(request):
     if request.method == 'GET':

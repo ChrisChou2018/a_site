@@ -25,7 +25,7 @@ class Columns(models.Model):
     page_type_choices = (
         (1, '文本图片'),
         (2, '留言页面'),
-        (3, '物流查询'),
+        (3, '店铺查询'),
         (4, '文章列表类型'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
@@ -38,22 +38,10 @@ class Columns(models.Model):
     
     @classmethod
     def get_all_select_columns(cls, self_id=None):
-        def find_all_child(data_list, parent=None):
-            for i in data_list:
-                child = cls.objects.filter(status='normal', parent_id=i['columns_id'], columns_type=3).values('columns_id', 'column_name')
-                if parent is not None:
-                    i['column_name'] = parent + '__' + i['column_name']
-                if child:
-                    i['child'] = find_all_child(child, parent=i['column_name'])
-            return data_list
-        column_index_list = None
-        if self_id is not None:
-            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), ~Q(columns_id=self_id),status='normal').values('columns_id', 'column_name')
-        else:
-            column_index_list = cls.objects.filter((Q(columns_type=1) | Q(columns_type=3)), status='normal').values('columns_id', 'column_name')
+        column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
         if column_index_list:
-            data_list = find_all_child(column_index_list)
-            return data_list
+            
+            return column_index_list
         else:
             return list()
     
@@ -81,7 +69,43 @@ class Columns(models.Model):
                     id_list.append(i['columns_id'])
                     find_all_child(i['columns_id'], id_list)
         find_all_child(data_id, id_list)
-        cls.objects.filter(pk__in=(id_list)).update(status='deleted')
+        cls.objects.filter(pk__in=id_list).update(status='deleted')
+        Article.objects.filter(status='normal', columns_id__in=id_list).update(status='deleted')
+    
+    @classmethod
+    def build_column_links(cls):
+        data_list = cls.objects.filter(columns_type=1, status='normal').values()
+        for i in data_list:
+            child = cls.objects.filter(parent_id=i['columns_id'], status='normal').values()
+            if child:
+                i['child'] = child
+        return data_list
+    
+    @classmethod
+    def get_page_columns_list(cls, data_id):
+        def find_all_child(data_list):
+            for i in data_list:
+                child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
+                if child:
+                    i['child'] = find_all_child(child)
+            else:
+                return data_list
+        obj = cls.objects.filter(columns_id = data_id, status = 'normal').first()
+        if obj:
+            parent_obj = cls.objects.filter(status='normal', columns_id=obj.parent_id).first()
+            child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id).values()
+            data_list = find_all_child(child_list)
+            return data_list
+        else:
+            return list()
+    
+    @classmethod
+    def get_prent_photo(cls, data_id):
+        photo_dict = dict()
+        parent_obj = cls.objects.filter(columns_id=data_id)
+        photo_dict['photo_id'] = parent_obj.photo_id
+        photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
+        return photo_dict
 
 
 class Article(models.Model):
@@ -103,16 +127,24 @@ class Article(models.Model):
     @classmethod
     def get_style_table_head(cls):
         return dict(
+            article_id = '文章ID',
             article_title = '文章标题',
             read_colunt = '人气',
             columns_id = '所属栏目',
             more = '更多'
         )
+    
+    @classmethod
+    def get_article_obj_by_columns_id(cls, columns_id):
+        return cls.objects.filter(columns_id=columns_id, status='normal').first()
+    
+    @classmethod
+    def get_article_list_by_columns_id(cls, columns_id):
+        return cls.objects.filter(columns_id=columns_id, status='normal')
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
         return cls.objects.filter(columns_id=data_id, status='normal').first()
-    
 
 
 class ColumnScrollingImage(models.Model):
@@ -123,6 +155,10 @@ class ColumnScrollingImage(models.Model):
     resolution = models.CharField(db_column="resolution", verbose_name="分辨率", max_length=255)
     file_type  = models.CharField(db_column="file_type", verbose_name="文件类型", max_length=255)
     status = models.CharField(db_column="status", verbose_name="状态", max_length=255)
+
+
+class ShopManage(models.Model):
+    pass
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
@@ -159,3 +195,6 @@ def get_model_by_pk(model, pk):
         return model.objects.get(pk=pk, status='normal')
     except model.DoesNotExist:
         return None
+
+def update_model_data_by_pk(model, pk, data):
+    model.objects.filter(pk=pk).update(**data)

@@ -132,7 +132,7 @@ def add_a_page(request):
                     'column_manage/a_add_a_page.html',
                     form_data = request.POST,
                     form_errors = from_errors,
-                    page_type = page_type,
+                    page_type = column_models.Columns.page_type_choices,
                     columns_select = columns_select,
                 )
             model_obj = column_models.create_model_data(
@@ -243,9 +243,13 @@ def editor_page_content(request):
     else:
         article_conten = request.POST.get('article_content')
         if not article_obj:
+            column_obj = column_models.get_model_by_pk(
+                column_models.Columns,
+                data_id
+            )
             column_models.create_model_data(
                 column_models.Article,
-                {'columns_id': data_id, 'article_content': article_conten}
+                {'columns_id': data_id, 'article_content': article_conten, 'article_title': column_obj.column_name}
             )
         else:
             article_obj.article_content = article_conten

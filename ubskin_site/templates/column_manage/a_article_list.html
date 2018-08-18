@@ -54,6 +54,8 @@
                                 {% if key == 'columns_id' %}
                                     {% get_value_by_key i key as data_id %}
                                     <td>{% get_column_name_by_id data_id %}</td>
+                                {% elif key == 'article_id' %}
+                                <td><input type="checkbox" name="" id="" style="display: none;">{% get_value_by_key i key %}</td>
                                 {% else %}
                                     <td>
                                         {% get_value_by_key i key %}
@@ -97,6 +99,45 @@ $(function(){
             }
         }
         return cookieValue;
+    }
+    $('.choose_member').click(function(){
+        var tr =  $('.member_table tbody tr')
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().first().find('input')
+            if($ltd.css('display')=='none'){
+                $ltd.css('display','inline-block')
+            }else{
+                $ltd.css('display','none')
+            }
+            
+        })
+        
+    })
+    $('.delete_member').click(delete_member)
+    function delete_member(){
+        var tr =  $('.member_table tbody tr')
+        var member_id_list = []
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().first().find('input')
+            var $ftd = $(item).children().first()
+            if($ltd.css('display')=='inline-block' && $ltd.prop('checked')){
+                member_id_list.push($ftd.text().trim())
+            }
+        })
+        if(member_id_list.length>0){
+            $.post(
+                '{% url "delete_articles" %}',
+                {'data_id_list':member_id_list, 'csrfmiddlewaretoken':getCookie('csrftoken')},
+                function(value){
+                    if(value.status == 'success'){
+                        location.reload()
+                    }else{
+                        alert(value.message)
+                    }
+                },
+                'json'
+            )
+        }
     }
     
 })

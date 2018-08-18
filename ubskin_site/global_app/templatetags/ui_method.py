@@ -1,7 +1,9 @@
 import time
+import re
 
 from django import template
 from django.conf import settings
+from django.urls import reverse
 
 
 from ubskin_site.common import common
@@ -184,3 +186,46 @@ def build_child_select(data_list):
 @register.simple_tag
 def get_column_name_by_id(data_id):
     return column_models.Columns.get_column_name_by_pk(data_id)
+
+
+@register.simple_tag
+def build_page_tree_column(data_list, select_columns_ids):
+    '''
+    <li class="subNav currentDd "><a href="javascript:void(null);" title="实体店品牌" >实体店品牌</a></li>
+    <li><a href="http://www.ubskin.net/list.asp?classid=2" title="什么是药妆？">什么是药妆？</a></li>
+    '''
+    li_str = ''
+    for i in data_list:
+        if i.get('child'):
+            li_str += '<li class="subNav {} "><a href="javascript:void(null);" title="{}" >{}</a></li>'.format(
+                'currentDd' if i['columns_id'] not in select_columns_ids else 'currentDt',
+                i['column_name'],
+                i['column_name']
+            )
+            li_str += '<ul class="left_ul left_ul1" style="{}">'.format(
+                '' if i['columns_id'] not in select_columns_ids else 'display:block;'
+            )
+            for j in i['child']:
+                li_str += '<li class="{}"><a href="{}" title="{}">{}</a></li>'.format(
+                    '' if j['columns_id'] not in select_columns_ids else 'left_p',
+                    reverse('public_page', kwargs={'data_id': j['columns_id']}),
+                    j['column_name'],
+                    j['column_name']
+                )
+            else:
+                li_str += '</ui>'
+        else:
+            li_str += '<li class="{}"><a href="{}" title="{}">{}</a></li>'.format(
+                '' if i['columns_id'] not in select_columns_ids else 'left_p',
+                reverse('public_page', kwargs={'data_id': i['columns_id']}),
+                i['column_name'],
+                i['column_name']
+            )
+    return li_str
+
+
+@register.simple_tag
+def get_article_content(content):
+    dr = re.compile(r'<[^>]+>',re.S)
+    dd = dr.sub('',content)
+    return dd[0:50] + '...'
