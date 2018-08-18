@@ -157,6 +157,10 @@ class ColumnScrollingImage(models.Model):
     status = models.CharField(db_column="status", verbose_name="状态", max_length=255)
 
 
+class ShopManage(models.Model):
+    pass
+
+
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:
         if search_value_type == 'dict':

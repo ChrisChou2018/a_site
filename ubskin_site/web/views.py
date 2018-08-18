@@ -72,3 +72,9 @@ def public_page(request, data_id):
         select_columns_ids = select_columns_ids,
     )
     
+
+def shop_search(request):
+    return my_render(
+        request,
+        'web/shop_search.html',
+    )
