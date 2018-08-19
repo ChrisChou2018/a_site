@@ -3,6 +3,7 @@ import time
 from django.db import models
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.db.models import Count
 
 
 
@@ -25,8 +26,9 @@ class Columns(models.Model):
     page_type_choices = (
         (1, '文本图片'),
         (2, '留言页面'),
-        (3, '店铺查询'),
-        (4, '文章列表类型'),
+        (3, '店铺查询页面'),
+        (4, '文章列表类型页面'),
+        (5, '重点店铺页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -40,7 +42,6 @@ class Columns(models.Model):
     def get_all_select_columns(cls, self_id=None):
         column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
         if column_index_list:
-            
             return column_index_list
         else:
             return list()
@@ -208,6 +209,20 @@ class ShopManage(models.Model):
     
 
     @classmethod
+    def get_all_shop_for_search(cls):
+        data_dict = dict()
+        data_list = cls.objects.filter(status='normal').values('area').annotate(c=Count('area'))
+        if data_list:
+            for i in data_list:
+                obj_list = cls.objects.filter(area=i['area']).values()
+                if obj_list:
+                    data_dict[i['area']] = obj_list
+            else:
+                return data_dict
+        else:
+            return {}
+    
+    @classmethod
     def get_style_table_head(cls):
         return dict(
             shop_id = '店铺ID',
@@ -223,11 +238,20 @@ class FocusShop(models.Model):
     shop_id = models.IntegerField(db_column="shop_id", verbose_name="店铺ID", null=True, blank=True)
     shop_photo_id = models.CharField(db_column="shop_photo_id", null=True, blank=True, verbose_name='店铺图ID', max_length=255)
     shop_brand_photo_id = models.CharField(db_column="shop_brand_photo_id", null=True, blank=True, verbose_name='店铺商标图ID', max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
 
     class Meta:
         db_table = 'focus_shop'
 
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            focus_shop_id = '重点店铺ID',
+            shop_id = '店铺名称',
+            more = '更多',
+        )
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:

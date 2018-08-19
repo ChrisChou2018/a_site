@@ -134,7 +134,33 @@
                   <li class="all_li2"><b>地址</b></li>
                 </ul>
                 <div class="clean"></div>
-                <div class="map_show" id="shaanxi">
+                {% for i in shop_data_dict %}
+                  {% if i == 'shaanxi' %}
+                    <div class="map_show" id="{{ i }}" ">
+                        {% get_value_by_key shop_data_dict i as address_list %}
+                        <ul class="all_list">
+                          {% for j in address_list %}
+                            <li class="all_li1">{{ j.shopname }}</li>
+                            <li class="all_li2">{{ j.address }}</li>
+                            <div class="clean"></div>
+                          {% endfor %}
+                        </ul>
+                    </div>
+                  {% else %}
+                    <div class="map_show" id="{{ i }}" style="display: none;"">
+                        {% get_value_by_key shop_data_dict i as address_list %}
+                        <ul class="all_list">
+                          {% for j in address_list %}
+                            <li class="all_li1">{{ j.shopname }}</li>
+                            <li class="all_li2">{{ j.address }}</li>
+                            <div class="clean"></div>
+                          {% endfor %}
+                        </ul>
+                    </div>
+                  {% endif %}
+                  
+                {% endfor %}
+                <!-- <div class="map_show" id="shaanxi">
                   <ul class="all_list">
                     
                     <li class="all_li1">西安李家村万达店</li>
@@ -675,8 +701,8 @@
                     
                   </ul>
                   <div class="clean"></div>
-                </div>
-                <div class="map_show" id="hubei" style="display:none">
+                </div> -->
+                <!-- <div class="map_show" id="hubei" style="display:none">
                   <ul class="all_list">
                     
                   </ul>
@@ -905,7 +931,7 @@
                     
                   </ul>
                   <div class="clean"></div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="clean"></div>

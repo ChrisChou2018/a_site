@@ -56,9 +56,9 @@ def public_page(request, data_id):
         elif model_obj.page_type == 3:
             return redirect(reverse('shop_search', kwargs = {'data_id': model_obj.columns_id}))
         photo_dict = {
-                'photo_id': model_obj.photo_id,
-                'thumb_photo_id': model_obj.thumb_photo_id
-            }
+            'photo_id': model_obj.photo_id,
+            'thumb_photo_id': model_obj.thumb_photo_id
+        }
     else:
         photo_dict = column_models.Columns.get_prent_photo(model_obj.parent_id)
         page_content = []
@@ -82,6 +82,7 @@ def shop_search(request, data_id):
         column_models.Columns,
         data_id
     )
+    shop_data_dict = column_models.ShopManage.get_all_shop_for_search()
     photo_dict = {
         'photo_id': model_obj.photo_id,
         'thumb_photo_id': model_obj.thumb_photo_id
@@ -91,4 +92,5 @@ def shop_search(request, data_id):
         'web/shop_search.html',
         column_data = column_data,
         photo_dict = photo_dict,
+        shop_data_dict = shop_data_dict,
     )

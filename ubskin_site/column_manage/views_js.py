@@ -45,6 +45,7 @@ def select_tree_item(request):
         2: '留言页面',
         3: reverse('shop_manage'),
         4: reverse('article_list'),
+        5: reverse('foucs_shop_manage'),
     }
     data_id = request.GET.get('data_id')
     model_obj = column_models.get_model_by_pk(
