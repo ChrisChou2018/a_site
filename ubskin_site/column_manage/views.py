@@ -189,13 +189,13 @@ def add_child_column(request):
             return my_render(
                 request,
                 'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(),
+                columns_select = column_models.Columns.get_all_select_columns(is_chld_column = True),
             )
         else:
             return my_render(
                 request,
                 'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(data_id),
+                columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
                 form_data = column_obj
             )
     else:
@@ -213,7 +213,7 @@ def add_child_column(request):
                     'column_manage/a_add_child_column.html',
                     form_data = request.POST,
                     form_errors = form_errors,
-                    columns_select = column_models.Columns.get_all_select_columns(data_id),
+                    columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
                 )
             column_models.create_model_data(
                 column_models.Columns,

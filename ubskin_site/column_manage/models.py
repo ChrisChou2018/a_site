@@ -39,11 +39,14 @@ class Columns(models.Model):
         db_table = 'columns'
     
     @classmethod
-    def get_all_select_columns(cls, self_id=None):
+    def get_all_select_columns(cls, self_id=None, is_chld_column=False):
         column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
         for i in column_index_list:
-            child = cls.objects.filter(parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
-            if child:
+            if self_id:
+                child = cls.objects.filter(~Q(columns_id=self_id), parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
+            else:
+                child = cls.objects.filter(parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
+            if child and not is_chld_column:
                 for j in child:
                     j['column_name'] = i['column_name'] + '__' + j['column_name']
                 i['child'] = child
