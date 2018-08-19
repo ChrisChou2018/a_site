@@ -41,6 +41,12 @@ class Columns(models.Model):
     @classmethod
     def get_all_select_columns(cls, self_id=None):
         column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
+        for i in column_index_list:
+            child = cls.objects.filter(parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
+            if child:
+                for j in child:
+                    j['column_name'] = i['column_name'] + '__' + j['column_name']
+                i['child'] = child
         if column_index_list:
             return column_index_list
         else:
@@ -84,6 +90,8 @@ class Columns(models.Model):
     
     @classmethod
     def get_page_columns_list(cls, data_id):
+        select_columns_ids = set()
+        select_columns_ids.add(data_id)
         def find_all_child(data_list):
             for i in data_list:
                 child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
@@ -94,16 +102,20 @@ class Columns(models.Model):
         obj = cls.objects.filter(columns_id = data_id, status = 'normal').first()
         if obj:
             parent_obj = cls.objects.filter(status='normal', columns_id=obj.parent_id).first()
+            select_columns_ids.add(parent_obj.columns_id)
+            if parent_obj.columns_type == 3:
+                parent_obj = cls.objects.filter(status='normal', columns_id=parent_obj.parent_id).first()
+                select_columns_ids.add(parent_obj.columns_id)
             child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id).values()
             data_list = find_all_child(child_list)
-            return data_list
+            return data_list, select_columns_ids
         else:
-            return list()
+            return list(), select_columns_ids
     
     @classmethod
     def get_prent_photo(cls, data_id):
         photo_dict = dict()
-        parent_obj = cls.objects.filter(columns_id=data_id)
+        parent_obj = cls.objects.filter(columns_id=data_id, status='normal').first()
         photo_dict['photo_id'] = parent_obj.photo_id
         photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
         return photo_dict
