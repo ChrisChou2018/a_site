@@ -43,7 +43,7 @@ def select_tree_item(request):
     url_dict = {
         1: reverse('editor_page_content'),
         2: '留言页面',
-        3: '物流查询',
+        3: reverse('shop_manage'),
         4: reverse('article_list'),
     }
     data_id = request.GET.get('data_id')

@@ -1,5 +1,10 @@
 {% extends './web_layout.html' %}
 {% block css %}
+<style>
+#slides{
+  display: none;
+}
+</style>
 {% endblock %}
 {% block js %}
 <script type="text/javascript">
@@ -9,8 +14,8 @@
       width: 1200,
       start: 1,//控制从第几张图开始播放 
       navigation:{  //控制前后按钮
-      active: true,//是否开启左右按钮
-      effect: "slide"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
+        active: false,//是否开启左右按钮
+        effect: "slide"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
       }
     });
   })
@@ -28,7 +33,18 @@
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
     </div>
-      
+    <div class="slidesjs-navigation">
+      <a href="javascript:;" class="slidesjs-previous slidesjs-navigation" title=""></a>
+      <a href="javascript:;" class="slidesjs-next slidesjs-navigation" title=""></a>
+    </div>
+      <!-- <a class="slidesjs-play slidesjs-navigation slidesjs-playing" href="#" title="Play" style="display: none;">Play</a>
+      <a class="slidesjs-stop slidesjs-navigation" href="#" title="Stop" style="">Stop</a>
+      <ul class="slidesjs-pagination">
+        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="0" class="">1</a></li>
+        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="1" class="">2</a></li>
+        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="2" class="">3</a></li>
+        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="3" class="active">4</a></li>
+      </ul> -->
     <!-- <div id="slides" style="overflow: hidden;">
       <div class="slidesjs-container" style="overflow: hidden; position: relative; width: 1200px; height: 310px;">
         <div class="slidesjs-control" style="position: relative; left: 0px; width: 1200px; height: 310px;">

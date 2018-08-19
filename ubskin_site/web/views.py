@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from ubskin_site.column_manage import models as column_models
 
@@ -52,6 +53,8 @@ def public_page(request, data_id):
             select_columns_ids.append(model_obj.columns_id)
             page_type = 4
             page_content = column_models.Article.get_article_list_by_columns_id(data_id)
+        elif model_obj.page_type == 3:
+            return redirect(reverse('shop_search', kwargs = {'data_id': model_obj.columns_id}))
         photo_dict = {
                 'photo_id': model_obj.photo_id,
                 'thumb_photo_id': model_obj.thumb_photo_id
@@ -73,8 +76,19 @@ def public_page(request, data_id):
     )
     
 
-def shop_search(request):
+def shop_search(request, data_id):
+    column_data = column_models.Columns.build_column_links()
+    model_obj = column_models.get_model_by_pk(
+        column_models.Columns,
+        data_id
+    )
+    photo_dict = {
+        'photo_id': model_obj.photo_id,
+        'thumb_photo_id': model_obj.thumb_photo_id
+    }
     return my_render(
         request,
         'web/shop_search.html',
+        column_data = column_data,
+        photo_dict = photo_dict,
     )

@@ -373,3 +373,105 @@ def add_article(request):
             'data': reverse('article_list') + '?data_id={}'.format(columns_id)
         })
 
+
+def shop_manage(request):
+    if request.method == "GET":
+        search_dict = {
+            'search_value': 'shopname__icontains',
+        }
+        search_value = dict()
+        current_page = request.GET.get('page', 1)
+        filter_args = ""
+        for i in search_dict:
+            value = request.GET.get(i)
+            if value is not None:
+                search_value[search_dict[i]] = value
+                filter_args  += "&{}={}".format(i, value)
+        else:
+            if not filter_args:
+                filter_args = None
+        if search_value:
+            data_list = column_models.get_data_list(
+                column_models.ShopManage,
+                current_page,
+                search_value=search_value
+            )
+            data_count = column_models.get_data_count(
+                column_models.ShopManage,
+                search_value,
+            )
+        else:
+            data_list = column_models.get_data_list(
+                column_models.ShopManage,
+                current_page,
+            )
+            data_count = column_models.get_data_count(
+                column_models.ShopManage,
+            )
+        return my_render(
+            request,
+            'column_manage/a_shop_manage.html',
+            current_page = current_page,
+            form_data = request.GET,
+            filter_args = filter_args,
+            data_list = data_list,
+            data_count = data_count,
+            table_head = column_models.ShopManage.get_style_table_head,
+        )
+
+
+def add_area(request):
+    data_id = request.GET.get('data_id')
+    area_choices = column_models.ShopManage.area_choices
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.ShopManage,
+            data_id,
+        )
+    if request.method == "GET":
+        if not model_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_area.html',
+                area_choices = area_choices,
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_area.html',
+                form_data = model_obj,
+                area_choices = area_choices,
+            )
+    else:
+        p_get = request.POST.get
+        shopname = p_get('shopname')
+        area = p_get('area')
+        address = p_get('address')
+        if not model_obj:
+            form_errors = dict()
+            if not shopname:
+                form_errors['shopname'] = '请输入店铺名'
+            if not area:
+                form_errors['area'] = '请选择地区'
+            if form_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_area.html',
+                    form_data = request.POST,
+                    area_choices = area_choices,
+                    form_errors = form_errors,
+                )
+            column_models.create_model_data(
+                column_models.ShopManage,
+                {'shopname': shopname, 'area': area, 'address': address},
+            )
+        else:
+            if shopname:
+                model_obj.shopname = shopname
+            if area:
+                model_obj.arep = area
+            if address:
+                model_obj.address
+            model_obj.save()
+        return redirect(reverse('shop_manage'))

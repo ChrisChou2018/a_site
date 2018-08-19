@@ -22,7 +22,7 @@
         <div class="col-md-3">
             <form action="" method="GET" class="search_input" ">
                 <div class="input-group" style="max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="搜索文章标题"" name="search_value" value="{{ form_data.search_value }}">
+                    <input type="text" class="form-control" placeholder="搜索店铺名称" name="search_value" value="{{ form_data.search_value }}">
                     <input type="text" style="display: none;" name="data_id" value="{{ form_data.data_id }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">搜索</button>
@@ -33,7 +33,7 @@
     </div>
     <div class="row">
         <div class="" style="float: right;padding-right: 25px;">
-            <a href="{% url 'add_article' %}?columns_id={{ form_data.data_id }}" type="button" class="btn btn-info" type="button" >添加文章<span class="glyphicon glyphicon-plus"></span></a>
+            <a href="{% url 'add_area' %}" type="button" class="btn btn-info" type="button" >添加店铺<span class="glyphicon glyphicon-plus"></span></a>
             <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
             <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
         </div>
@@ -63,7 +63,7 @@
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
-                        <td><a href="{% url 'add_article' %}?data_id={{ i.article_id }}&columns_id={{ i.columns_id }}">编辑文章</a></td>
+                        <td><a href="{% url 'add_area' %}?data_id={{ i.shop_id }}">编辑店铺</a></td>
                     </tr>
                 {% endfor %}
             <tbody>

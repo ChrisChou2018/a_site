@@ -154,11 +154,79 @@ class ColumnScrollingImage(models.Model):
     file_size = models.CharField(db_column="file_size", verbose_name="文件大小", max_length=255)
     resolution = models.CharField(db_column="resolution", verbose_name="分辨率", max_length=255)
     file_type  = models.CharField(db_column="file_type", verbose_name="文件类型", max_length=255)
-    status = models.CharField(db_column="status", verbose_name="状态", max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+
+    class Meta:
+        db_table = 'column_scrolling_image'
 
 
 class ShopManage(models.Model):
-    pass
+    shop_id = models.AutoField(db_column="shop_id", primary_key=True, verbose_name="店铺ID")
+    shopname = models.CharField(db_column="shopname", verbose_name='店铺名称', max_length=255)
+    area_choices = [
+        ['shaanxi', '陕西'],
+        ['hebei', '河北'],
+        ['shanxi', '山西'],
+        ['liaoning', '辽宁'],
+        ['jilin', '吉林'],
+        ['heilongjiang', '黑龙江'],
+        ['jiangsu', '江苏'],
+        ['zhejiang', '浙江'],
+        ['anhui', '安徽'],
+        ['fujian', '福建'],
+        ['jiangxi', '江西'],
+        ['shandong', '山东'],
+        ['henan', '河南'],
+        ['hubei', '湖北'],
+        ['hunan', '湖南'],
+        ['guangdong', '广东'],
+        ['hainan', '海南'],
+        ['sichuan', '四川'],
+        ['guizhou', '贵州'],
+        ['yunnan', '云南'],
+        ['gansu', '甘肃'],
+        ['qinghai', '青海'],
+        ['aiwan', '台湾'],
+        ['eimongol', '内蒙古'],
+        ['guangxi', '广西'],
+        ['xizang', '西藏'],
+        ['gxia', '宁夏'],
+        ['xinjiang', '新疆'],
+        ['beijing', '北京'],
+        ['anjin', '天津'],
+        ['shanghai', '上海'],
+        ['chongqing', '重庆']
+    ]
+    area = models.CharField(db_column="area", verbose_name='所在地区', max_length=255, choices=area_choices)
+    address = models.CharField(db_column="address", verbose_name='所在地区', max_length=2000, null=True, blank=True)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+
+    class Meta:
+        db_table = 'shop_manage'
+    
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            shop_id = '店铺ID',
+            shopname = '店铺名称',
+            area = '所在地区',
+            more = '更多'
+        )
+
+
+class FocusShop(models.Model):
+    focus_shop_id = models.AutoField(db_column="focus_shop_id", primary_key=True, verbose_name="重点店铺ID")
+    columns_id = models.IntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
+    shop_id = models.IntegerField(db_column="shop_id", verbose_name="店铺ID", null=True, blank=True)
+    shop_photo_id = models.CharField(db_column="shop_photo_id", null=True, blank=True, verbose_name='店铺图ID', max_length=255)
+    shop_brand_photo_id = models.CharField(db_column="shop_brand_photo_id", null=True, blank=True, verbose_name='店铺商标图ID', max_length=255)
+
+
+    class Meta:
+        db_table = 'focus_shop'
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

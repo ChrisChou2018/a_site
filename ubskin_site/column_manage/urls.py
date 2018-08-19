@@ -10,6 +10,8 @@ urlpatterns = [
     path('myadmin/editor_page_content/', views.editor_page_content, name='editor_page_content'),
     path('myadmin/article_list/', views.article_list, name='article_list'),
     path('myadmin/add_article/', views.add_article, name='add_article'),
+    path('myadmin/shop_manage/', views.shop_manage, name='shop_manage'),
+    path('myadmin/add_area/', views.add_area, name='add_area'),
 ]
 
 urlpatterns += [
