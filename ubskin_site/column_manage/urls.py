@@ -21,4 +21,5 @@ urlpatterns += [
     path('js/editor_tree_item/', views_js.editor_tree_item, name='editor_tree_item'),
     path('js/delete_item_tree/', views_js.delete_item_tree, name='delete_item_tree'),
     path('js/delete_articles/', views_js.delete_articles, name='delete_articles'),
+    path('js/delete_area/', views_js.delete_area, name='delete_area')
 ]

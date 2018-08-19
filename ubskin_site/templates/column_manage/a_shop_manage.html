@@ -54,7 +54,7 @@
                                 {% if key == 'columns_id' %}
                                     {% get_value_by_key i key as data_id %}
                                     <td>{% get_column_name_by_id data_id %}</td>
-                                {% elif key == 'article_id' %}
+                                {% elif key == 'shop_id' %}
                                 <td><input type="checkbox" name="" id="" style="display: none;">{% get_value_by_key i key %}</td>
                                 {% else %}
                                     <td>
@@ -134,7 +134,7 @@ $(function(){
         })
         if(member_id_list.length>0){
             $.post(
-                '{% url "delete_articles" %}',
+                '{% url "delete_area" %}',
                 {'data_id_list':member_id_list, 'csrfmiddlewaretoken':getCookie('csrftoken')},
                 function(value){
                     if(value.status == 'success'){
