@@ -155,8 +155,14 @@ class Article(models.Model):
         return cls.objects.filter(columns_id=columns_id, status='normal').first()
     
     @classmethod
-    def get_article_list_by_columns_id(cls, columns_id):
-        return cls.objects.filter(columns_id=columns_id, status='normal')
+    def get_article_list_by_columns_id(cls, columns_id, current_page):
+        data_list = cls.objects.filter(columns_id=columns_id, status='normal')
+        p = Paginator(data_list, 15)
+        return p.page(current_page).object_list.values()
+    
+    @classmethod
+    def get_article_count_by_columns_id(cls, data_id):
+        return cls.objects.filter(status='normal', columns_id=data_id).count()
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
@@ -238,6 +244,16 @@ class ShopManage(models.Model):
             return {}
     
     @classmethod
+    def get_shopname_by_shop_id(cls, shop_id):
+        model_obj = cls.objects.filter(pk=shop_id).first()
+        return model_obj.shopname if model_obj else '店铺已尽删除'
+    
+    @classmethod
+    def get_all_shop_by_select(cls):
+        data_list = cls.objects.filter(status='normal').values_list('shop_id', 'shopname')
+        return data_list if data_list else None
+    
+    @classmethod
     def get_style_table_head(cls):
         return dict(
             shop_id = '店铺ID',
@@ -251,8 +267,7 @@ class FocusShop(models.Model):
     focus_shop_id = models.AutoField(db_column="focus_shop_id", primary_key=True, verbose_name="重点店铺ID")
     columns_id = models.IntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
     shop_id = models.IntegerField(db_column="shop_id", verbose_name="店铺ID", null=True, blank=True)
-    shop_photo_id = models.CharField(db_column="shop_photo_id", null=True, blank=True, verbose_name='店铺图ID', max_length=255)
-    shop_brand_photo_id = models.CharField(db_column="shop_brand_photo_id", null=True, blank=True, verbose_name='店铺商标图ID', max_length=255)
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='店铺图ID', max_length=255)
     status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
 
@@ -267,6 +282,16 @@ class FocusShop(models.Model):
             shop_id = '店铺名称',
             more = '更多',
         )
+
+    @classmethod
+    def get_focus_shops_by_columns_id(cls, columns_id, current_page):
+        data_list = cls.objects.filter(status='normal', columns_id=columns_id)
+        p = Paginator(data_list, 15)
+        return p.page(current_page).object_list.values()
+    
+    @classmethod
+    def get_focus_shops_count_by_columns_id(cls, columns_id):
+        return cls.objects.filter(status='normal', columns_id=columns_id).count()
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:

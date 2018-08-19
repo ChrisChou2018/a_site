@@ -513,7 +513,7 @@ def foucs_shop_manage(request):
             )
         return my_render(
             request,
-            'column_manage/a_shop_manage.html',
+            'column_manage/a_foucs_shop_manage.html',
             current_page = current_page,
             form_data = request.GET,
             filter_args = filter_args,
@@ -523,7 +523,77 @@ def foucs_shop_manage(request):
         )
 
 def add_foucs_shop(request):
+    columns_id = request.GET.get('columns_id')
+    data_id = request.GET.get('data_id')
+    shop_selct = column_models.ShopManage.get_all_shop_by_select()
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.FocusShop,
+            data_id
+        )
     if request.method == 'GET':
-        pass
+        if not model_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_foucs_shop.html',
+                shop_selct = shop_selct,
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_foucs_shop.html',
+                shop_selct = shop_selct,
+                form_data = model_obj,
+            )
     else:
-        pass
+        shop_id = request.POST.get('shop_id')
+        files = request.FILES
+        if not model_obj:
+            form_errors = dict()
+            if not shop_id:
+                form_errors['shop_id'] = '请选择一个店铺'
+            if not files:
+                form_errors['photo_id'] = '请设置商店图片'
+            if form_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_foucs_shop.html',
+                    shop_selct = shop_selct,
+                    form_data = request.POST,
+                    form_errors = form_errors,
+                )
+            model_obj = column_models.create_model_data(
+                column_models.FocusShop,
+                {'shop_id': shop_id, 'columns_id': columns_id,}
+            )
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        else:
+            if shop_id:
+                model_obj.shop_id = shop_id
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        
+        return redirect(reverse('foucs_shop_manage'))
+        

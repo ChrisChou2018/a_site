@@ -13,6 +13,7 @@ urlpatterns = [
     path('myadmin/shop_manage/', views.shop_manage, name='shop_manage'),
     path('myadmin/add_area/', views.add_area, name='add_area'),
     path('myadmin/foucs_shop_manage/', views.foucs_shop_manage, name='foucs_shop_manage'),
+    path('myadmin/add_foucs_shop/', views.add_foucs_shop, name='add_foucs_shop'),
 ]
 
 urlpatterns += [

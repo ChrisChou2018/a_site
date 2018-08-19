@@ -34,26 +34,26 @@ def public_page(request, data_id):
         column_models.Columns,
         data_id
     )
+    page = request.GET.get('page', 1)
     column_data_list, select_columns_ids = column_models.Columns.get_page_columns_list(data_id)
     page_type = None
     page_content = None
+    data_count = 1
     photo_dict = None
     if model_obj.columns_type == 2:
         if model_obj.page_type == 1:
-            parent_obj = column_models.get_model_by_pk(
-                column_models.Columns,
-                model_obj.parent_id
-            )
             page_type = 1
             page_content = column_models.Article.get_article_obj_by_columns_id(data_id)
         elif model_obj.page_type == 4:
             page_type = 4
-            page_content = column_models.Article.get_article_list_by_columns_id(data_id)
+            page_content = column_models.Article.get_article_list_by_columns_id(data_id, page)
+            data_count = column_models.Article.get_article_count_by_columns_id(data_id)
         elif model_obj.page_type == 3:
             return redirect(reverse('shop_search', kwargs = {'data_id': model_obj.columns_id}))
         elif model_obj.page_type == 5:
             page_type = 5
-            page_content = []
+            page_content = column_models.FocusShop.get_focus_shops_by_columns_id(data_id, page)
+            data_count = column_models.FocusShop.get_focus_shops_count_by_columns_id(data_id)
         photo_dict = {
             'photo_id': model_obj.photo_id,
             'thumb_photo_id': model_obj.thumb_photo_id
@@ -63,7 +63,6 @@ def public_page(request, data_id):
         page_content = []
     
     column_data = column_models.Columns.build_column_links()
-    print(select_columns_ids)
     return my_render(
         request,
         'web/public_page.html',
@@ -72,6 +71,8 @@ def public_page(request, data_id):
         page_content = page_content,
         photo_dict = photo_dict,
         column_data = column_data,
+        current_page = page,
+        data_count = data_count,
         select_columns_ids = select_columns_ids,
     )
     

@@ -93,7 +93,7 @@
             {{ page_content.article_content|safe }}
           </div>
           
-          {% else %}
+          {% elif page_type == 4 %}
             {% for i in page_content %}
                 <div class="hd_ed">
                     <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
@@ -102,7 +102,21 @@
                     <p>{% get_article_content i.article_content %}</p>
                 <div class="clean"></div>
               </div>
+              <div class="tow_page">
+                  {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
+                  {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
+               
+              </div>
             {% endfor %}
+          {% elif page_type == 5 %}
+            {% for i in page_content %}
+              <div class="right_listdiv dp_img"><img src="{% build_photo_url i.photo_id 'shop_image' %}" title="{% get_shopname_by_id i.shop_id %}" alt="{% get_shopname_by_id i.shop_id %}"></div>
+            {% endfor %}
+            <div class="tow_page">
+                {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
+                {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
+             
+            </div>
           {% endif %}
         
     </div>

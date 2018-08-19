@@ -1,0 +1,153 @@
+{% load ui_method %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>编辑内容</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/ionicons/4.0.0-19/css/ionicons.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
+    
+    <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
+    
+</head>
+<body style="">
+    <div class="row" style="padding: 15px;" >
+        <div class="col-md-3">
+            <form action="" method="GET" class="search_input" ">
+                <div class="input-group" style="max-width: 300px;">
+                    <input type="text" class="form-control" placeholder="搜索店铺名称" name="search_value" value="{{ form_data.search_value }}">
+                    <input type="text" style="display: none;" name="data_id" value="{{ form_data.data_id }}">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default search_input_btn" type="submit">搜索</button>
+                    </span>
+                </div><!-- /input-group -->
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="" style="float: right;padding-right: 25px;">
+            <a href="{% url 'add_foucs_shop' %}?columns_id={{form_data.data_id}}" type="button" class="btn btn-info" type="button" >添加店铺<span class="glyphicon glyphicon-plus"></span></a>
+            <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
+            <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
+        </div>
+    </div>
+    <div style="overflow: auto;padding: 15px;"> 
+        <table class="table table-striped member_table" >
+            <thead>
+                <tr>
+                    {% for key, value in table_head.items %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+                {% for i in data_list %}
+                    <tr>
+                        {% for key, value in table_head.items %}
+                            {% if key != 'more' %}
+                                {% if key == 'shop_id' %}
+                                    {% get_value_by_key i key as shop_id %}
+                                    <td>{% get_shopname_by_id shop_id %}</td>
+                                {% elif key == 'focus_shop_id' %}
+                                    <td><input type="checkbox" name="" id="" style="display: none;">{% get_value_by_key i key %}</td>
+                                {% else %}
+                                    <td>
+                                        {% get_value_by_key i key %}
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <td><a href="{% url 'add_foucs_shop' %}?data_id={{ i.focus_shop_id }}">编辑店铺</a></td>
+                    </tr>
+                {% endfor %}
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination page_box">
+                {% Pagingfunc current_page data_count filter_args uri as page %}
+                {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
+            </ul>
+        </nav>
+    </div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Slimscroll -->
+<script src="https://cdn.bootcss.com/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+<!-- <script src="/static/js/myadmin/js-xss-master/dist/xss.min.js"></script> -->
+
+<script>
+$(function(){
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    $('.choose_member').click(function(){
+        var tr =  $('.member_table tbody tr')
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().first().find('input')
+            if($ltd.css('display')=='none'){
+                $ltd.css('display','inline-block')
+            }else{
+                $ltd.css('display','none')
+            }
+            
+        })
+        
+    })
+    $('.delete_member').click(delete_member)
+    function delete_member(){
+        var tr =  $('.member_table tbody tr')
+        var member_id_list = []
+        $.each(tr,function(index,item){
+            var $ltd = $(item).children().first().find('input')
+            var $ftd = $(item).children().first()
+            if($ltd.css('display')=='inline-block' && $ltd.prop('checked')){
+                member_id_list.push($ftd.text().trim())
+            }
+        })
+        if(member_id_list.length>0){
+            $.post(
+                '{% url "delete_area" %}',
+                {'data_id_list':member_id_list, 'csrfmiddlewaretoken':getCookie('csrftoken')},
+                function(value){
+                    if(value.status == 'success'){
+                        location.reload()
+                    }else{
+                        alert(value.message)
+                    }
+                },
+                'json'
+            )
+        }
+    }
+    
+})
+</script>
+</html>
