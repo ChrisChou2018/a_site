@@ -115,7 +115,6 @@
             <div class="tow_page">
                 {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
                 {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
-             
             </div>
           {% endif %}
         

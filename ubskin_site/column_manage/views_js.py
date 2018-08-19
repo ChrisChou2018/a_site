@@ -113,3 +113,14 @@ def delete_area(request):
                 {'status': 'deleted'}
             )
         return JsonResponse({'status': 'success'})
+
+def delete_focus_shop(request):
+    if request.method == "POST":
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            column_models.update_model_data_by_pk(
+                column_models.FocusShop,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})
