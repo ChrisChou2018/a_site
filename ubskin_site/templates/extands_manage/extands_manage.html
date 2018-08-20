@@ -12,6 +12,7 @@
 {% block page_header %}
 <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> 栏目管理</a></li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> 拓展管理</a></li>
 </ol>
 {% endblock %}
 
@@ -55,6 +56,12 @@
 <script>
 $('.extands_list a').click(function(){
     $(this).addClass('active').siblings().removeClass('active')
+    if($(this).text() == '合作管理'){
+        $('.iframe_box').attr('src', '{% url "team_manage" %}')
+    }else{
+        $('.iframe_box').attr('src', '')
+    }
+
 })
 </script>
     

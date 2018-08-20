@@ -10,6 +10,8 @@ photo_specs = [
     {"type": "page_thumb", "width": 260, 'height': 91, "is_square": False},
     {"type": "article_thumb_image", "width": 301},
     {"type": "shop_image", "width": 760},
+    {"type": "team", "width": 173, 'height': 76, "is_square": False},
+    {"type": "top_team", "width": 400, "height": 365, 'is_crop': True},
 ]
 
 

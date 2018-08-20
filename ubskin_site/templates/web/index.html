@@ -1,5 +1,6 @@
 {% extends './web_layout.html' %}
 {% block css %}
+{% load ui_method %}
 <style>
 #slides{
   display: none;
@@ -31,7 +32,7 @@
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
-      <img src="/static/web/2018081751005313.jpg">
+      <!-- <img src="/static/web/2018081751005313.jpg"> -->
     </div>
     <!-- <div class="slidesjs-navigation">
       <a href="javascript:;" class="slidesjs-previous slidesjs-navigation" title=""></a>
@@ -226,13 +227,16 @@
       </ul>
       <div class="clean"></div>
       <div id="tabdiv">
+        
         <span class="cooper_info">
           <div class="cooper_img">
-            <a href="#a"><img src="/static/web/2018020837823177.jpg" border="0" alt="优贝施品牌"></a>
+            <a href="#a"><img src="{% if team_work_data.brand_top %}{% build_photo_url team_work_data.brand_top.photo_id 'top_team' %}{% else %}/static/web/2018020837823177.jpg{% endif %}" border="0" alt="{% if team_work_data.brand_top %}{{team_work_data.brand_top.team_name}}{% else %}优贝施品牌{% endif %}"></a>
           </div>
           <ul class="cooper_ul">
-            
-            <li><a href="#A"><img src="/static/web/2016080708345449.jpg" border="0" alt="HABA"></a></li>
+            {% for i in team_work_data.brand_list %}
+              <li><a href="{{ i.team_link }}"><img src="{% build_photo_url i.photo_id 'team' %}" border="0" alt="{{i.team_name}}"></a></li>
+            {% endfor %}
+            <!-- <li><a href="#A"><img src="/static/web/2016080708345449.jpg" border="0" alt="HABA"></a></li>
             
             <li><a href="#A"><img src="/static/web/2017111537256933.jpg" border="0" alt="AMZ"></a></li>
             
@@ -270,18 +274,20 @@
             
             <li><a href="#a"><img src="/static/web/2017111537529981.jpg" border="0" alt="欧兰"></a></li>
             
-            <li><a href="#a"><img src="/static/web/2016082637434849.jpg" border="0" alt="海丝蓓康"></a></li>
+            <li><a href="#a"><img src="/static/web/2016082637434849.jpg" border="0" alt="海丝蓓康"></a></li> -->
             
           </ul>
           <div class="clean"></div>
         </span>
         <span class="cooper_info" style="display:none;">
           <div class="cooper_img">
-            <a href="#a"><img src="/static/web/2018021240044005.jpg" border="0" alt="优贝施商场"></a>
+            <a href="#a"><img src="{% if team_work_data.shop_top %}{% build_photo_url team_work_data.shop_top.photo_id 'top_team' %}{% else %}/static/web/2018021240044005.jpg{% endif %}" border="0" alt="{% if team_work_data.shop_top %}{{team_work_data.shop_top.team_name}}{% else %}优贝施商场{% endif %}"></a>
           </div>
           <ul class="cooper_ul">
-            
-            <li><a href="#a"><img src="/static/web/2016080708855264.jpg" border="0" alt="大悦城"></a></li>
+              {% for i in team_work_data.shop_list %}
+                <li><a href="{{ i.team_link }}"><img src="{% build_photo_url i.photo_id 'team' %}" border="0" alt="{{i.team_name}}"></a></li>
+              {% endfor %}
+            <!-- <li><a href="#a"><img src="/static/web/2016080708855264.jpg" border="0" alt="大悦城"></a></li>
             
             <li><a href="#a"><img src="/static/web/2016080708892992.jpg" border="0" alt="凯德"></a></li>
             
@@ -319,7 +325,7 @@
             
             <li><a href="#a"><img src="/static/web/2016090359727365.jpg" border="0" alt="星摩尔"></a></li>
             
-            <li><a href="#a"><img src="/static/web/2016090359687033.jpg" border="0" alt="麦凯乐"></a></li>
+            <li><a href="#a"><img src="/static/web/2016090359687033.jpg" border="0" alt="麦凯乐"></a></li> -->
             
           </ul>
           <div class="clean"></div>
