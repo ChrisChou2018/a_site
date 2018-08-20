@@ -14,8 +14,8 @@
       width: 1200,
       start: 1,//控制从第几张图开始播放 
       navigation:{  //控制前后按钮
-        active: false,//是否开启左右按钮
-        effect: "slide"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
+        active: true,//是否开启左右按钮
+        effect: "fade"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
       }
     });
   })
@@ -33,10 +33,10 @@
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
     </div>
-    <div class="slidesjs-navigation">
+    <!-- <div class="slidesjs-navigation">
       <a href="javascript:;" class="slidesjs-previous slidesjs-navigation" title=""></a>
       <a href="javascript:;" class="slidesjs-next slidesjs-navigation" title=""></a>
-    </div>
+    </div> -->
       <!-- <a class="slidesjs-play slidesjs-navigation slidesjs-playing" href="#" title="Play" style="display: none;">Play</a>
       <a class="slidesjs-stop slidesjs-navigation" href="#" title="Stop" style="">Stop</a>
       <ul class="slidesjs-pagination">
@@ -78,6 +78,22 @@
     </div> -->
 
   </div>
+  <div class="y_banner_m1">  
+      <div class="slide_container">
+       <ul class="rslides slide slide1" id="slider">
+        
+        <li id="slide1_s0" class="slide1_on" style="display: block; float: left; position: relative; opacity: 1; z-index: 2; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=180"><img src="/static/web/2018081751212421.jpg" alt="移动端首页banner1" border="0"></a></li>   
+        
+        <li id="slide1_s1" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=154"><img src="/static/web/2018051761433325.jpg" alt="移动端首页banner2" border="0"></a></li>   
+        
+        <li id="slide1_s2" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=42"><img src="/static/web/2018072735674265.jpg" alt="移动端首页banner3" border="0"></a></li>   
+        
+        <li id="slide1_s3" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=27"><img src="/static/web/2018021242520941.jpg" alt="移动端首页banner4" border="0"></a></li>   
+         
+       </ul><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav prev">Previous</a><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav next">Next</a>
+     </div> 
+    </div>
+  </header>
 {% endblock %}
 
 <!-- <li><a href="list.asp?classid=3" class="nav_a">关于优贝施</a>
