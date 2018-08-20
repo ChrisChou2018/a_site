@@ -54,6 +54,7 @@
 {% endblock %}
 {% block js%}
 <script>
+$('.column_manage').addClass('active');
 $('.extands_list a').click(function(){
     $(this).addClass('active').siblings().removeClass('active')
     if($(this).text() == '合作管理'){
