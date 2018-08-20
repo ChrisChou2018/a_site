@@ -3,6 +3,7 @@ import time
 from django.db import models
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.db.models import Count
 
 
 
@@ -25,8 +26,9 @@ class Columns(models.Model):
     page_type_choices = (
         (1, '文本图片'),
         (2, '留言页面'),
-        (3, '店铺查询'),
-        (4, '文章列表类型'),
+        (3, '店铺查询页面'),
+        (4, '文章列表类型页面'),
+        (5, '重点店铺页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -37,10 +39,18 @@ class Columns(models.Model):
         db_table = 'columns'
     
     @classmethod
-    def get_all_select_columns(cls, self_id=None):
+    def get_all_select_columns(cls, self_id=None, is_chld_column=False):
         column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
+        for i in column_index_list:
+            if self_id:
+                child = cls.objects.filter(~Q(columns_id=self_id), parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
+            else:
+                child = cls.objects.filter(parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
+            if child and not is_chld_column:
+                for j in child:
+                    j['column_name'] = i['column_name'] + '__' + j['column_name']
+                i['child'] = child
         if column_index_list:
-            
             return column_index_list
         else:
             return list()
@@ -83,6 +93,8 @@ class Columns(models.Model):
     
     @classmethod
     def get_page_columns_list(cls, data_id):
+        select_columns_ids = set()
+        select_columns_ids.add(data_id)
         def find_all_child(data_list):
             for i in data_list:
                 child = cls.objects.filter(status='normal', parent_id=i['columns_id']).values()
@@ -93,16 +105,20 @@ class Columns(models.Model):
         obj = cls.objects.filter(columns_id = data_id, status = 'normal').first()
         if obj:
             parent_obj = cls.objects.filter(status='normal', columns_id=obj.parent_id).first()
+            select_columns_ids.add(parent_obj.columns_id)
+            if parent_obj.columns_type == 3:
+                parent_obj = cls.objects.filter(status='normal', columns_id=parent_obj.parent_id).first()
+                select_columns_ids.add(parent_obj.columns_id)
             child_list = cls.objects.filter(status='normal', parent_id=parent_obj.columns_id).values()
             data_list = find_all_child(child_list)
-            return data_list
+            return data_list, select_columns_ids
         else:
-            return list()
+            return list(), select_columns_ids
     
     @classmethod
     def get_prent_photo(cls, data_id):
         photo_dict = dict()
-        parent_obj = cls.objects.filter(columns_id=data_id)
+        parent_obj = cls.objects.filter(columns_id=data_id, status='normal').first()
         photo_dict['photo_id'] = parent_obj.photo_id
         photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
         return photo_dict
@@ -139,8 +155,14 @@ class Article(models.Model):
         return cls.objects.filter(columns_id=columns_id, status='normal').first()
     
     @classmethod
-    def get_article_list_by_columns_id(cls, columns_id):
-        return cls.objects.filter(columns_id=columns_id, status='normal')
+    def get_article_list_by_columns_id(cls, columns_id, current_page):
+        data_list = cls.objects.filter(columns_id=columns_id, status='normal')
+        p = Paginator(data_list, 15)
+        return p.page(current_page).object_list.values()
+    
+    @classmethod
+    def get_article_count_by_columns_id(cls, data_id):
+        return cls.objects.filter(status='normal', columns_id=data_id).count()
 
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
@@ -154,11 +176,123 @@ class ColumnScrollingImage(models.Model):
     file_size = models.CharField(db_column="file_size", verbose_name="文件大小", max_length=255)
     resolution = models.CharField(db_column="resolution", verbose_name="分辨率", max_length=255)
     file_type  = models.CharField(db_column="file_type", verbose_name="文件类型", max_length=255)
-    status = models.CharField(db_column="status", verbose_name="状态", max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+
+    class Meta:
+        db_table = 'column_scrolling_image'
 
 
 class ShopManage(models.Model):
-    pass
+    shop_id = models.AutoField(db_column="shop_id", primary_key=True, verbose_name="店铺ID")
+    shopname = models.CharField(db_column="shopname", verbose_name='店铺名称', max_length=255)
+    area_choices = [
+        ['shaanxi', '陕西'],
+        ['hebei', '河北'],
+        ['shanxi', '山西'],
+        ['liaoning', '辽宁'],
+        ['jilin', '吉林'],
+        ['heilongjiang', '黑龙江'],
+        ['jiangsu', '江苏'],
+        ['zhejiang', '浙江'],
+        ['anhui', '安徽'],
+        ['fujian', '福建'],
+        ['jiangxi', '江西'],
+        ['shandong', '山东'],
+        ['henan', '河南'],
+        ['hubei', '湖北'],
+        ['hunan', '湖南'],
+        ['guangdong', '广东'],
+        ['hainan', '海南'],
+        ['sichuan', '四川'],
+        ['guizhou', '贵州'],
+        ['yunnan', '云南'],
+        ['gansu', '甘肃'],
+        ['qinghai', '青海'],
+        ['aiwan', '台湾'],
+        ['eimongol', '内蒙古'],
+        ['guangxi', '广西'],
+        ['xizang', '西藏'],
+        ['gxia', '宁夏'],
+        ['xinjiang', '新疆'],
+        ['beijing', '北京'],
+        ['anjin', '天津'],
+        ['shanghai', '上海'],
+        ['chongqing', '重庆']
+    ]
+    area = models.CharField(db_column="area", verbose_name='所在地区', max_length=255, choices=area_choices)
+    address = models.CharField(db_column="address", verbose_name='所在地区', max_length=2000, null=True, blank=True)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+
+    class Meta:
+        db_table = 'shop_manage'
+    
+
+    @classmethod
+    def get_all_shop_for_search(cls):
+        data_dict = dict()
+        data_list = cls.objects.filter(status='normal').values('area').annotate(c=Count('area'))
+        if data_list:
+            for i in data_list:
+                obj_list = cls.objects.filter(area=i['area']).values()
+                if obj_list:
+                    data_dict[i['area']] = obj_list
+            else:
+                return data_dict
+        else:
+            return {}
+    
+    @classmethod
+    def get_shopname_by_shop_id(cls, shop_id):
+        model_obj = cls.objects.filter(pk=shop_id).first()
+        return model_obj.shopname if model_obj else '店铺已尽删除'
+    
+    @classmethod
+    def get_all_shop_by_select(cls):
+        data_list = cls.objects.filter(status='normal').values_list('shop_id', 'shopname')
+        return data_list if data_list else None
+    
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            shop_id = '店铺ID',
+            shopname = '店铺名称',
+            area = '所在地区',
+            more = '更多'
+        )
+
+
+class FocusShop(models.Model):
+    focus_shop_id = models.AutoField(db_column="focus_shop_id", primary_key=True, verbose_name="重点店铺ID")
+    columns_id = models.IntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
+    shop_id = models.IntegerField(db_column="shop_id", verbose_name="店铺ID", null=True, blank=True)
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='店铺图ID', max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+
+    class Meta:
+        db_table = 'focus_shop'
+
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            focus_shop_id = '重点店铺ID',
+            shop_id = '店铺名称',
+            more = '更多',
+        )
+
+    @classmethod
+    def get_focus_shops_by_columns_id(cls, columns_id, current_page):
+        data_list = cls.objects.filter(status='normal', columns_id=columns_id)
+        p = Paginator(data_list, 15)
+        return p.page(current_page).object_list.values()
+    
+    @classmethod
+    def get_focus_shops_count_by_columns_id(cls, columns_id):
+        return cls.objects.filter(status='normal', columns_id=columns_id).count()
+
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

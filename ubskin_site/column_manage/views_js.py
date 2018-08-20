@@ -43,8 +43,9 @@ def select_tree_item(request):
     url_dict = {
         1: reverse('editor_page_content'),
         2: '留言页面',
-        3: '物流查询',
+        3: reverse('shop_manage'),
         4: reverse('article_list'),
+        5: reverse('foucs_shop_manage'),
     }
     data_id = request.GET.get('data_id')
     model_obj = column_models.get_model_by_pk(
@@ -100,3 +101,27 @@ def delete_articles(request):
                 {'status': 'deleted'}
             )
         return JsonResponse({'status': 'success'})
+
+
+def delete_area(request):
+    if request.method == "POST":
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            column_models.update_model_data_by_pk(
+                column_models.ShopManage,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})
+
+def delete_focus_shop(request):
+    if request.method == "POST":
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            column_models.update_model_data_by_pk(
+                column_models.FocusShop,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})
+

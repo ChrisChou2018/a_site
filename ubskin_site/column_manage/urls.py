@@ -10,6 +10,10 @@ urlpatterns = [
     path('myadmin/editor_page_content/', views.editor_page_content, name='editor_page_content'),
     path('myadmin/article_list/', views.article_list, name='article_list'),
     path('myadmin/add_article/', views.add_article, name='add_article'),
+    path('myadmin/shop_manage/', views.shop_manage, name='shop_manage'),
+    path('myadmin/add_area/', views.add_area, name='add_area'),
+    path('myadmin/foucs_shop_manage/', views.foucs_shop_manage, name='foucs_shop_manage'),
+    path('myadmin/add_foucs_shop/', views.add_foucs_shop, name='add_foucs_shop'),
 ]
 
 urlpatterns += [
@@ -19,4 +23,6 @@ urlpatterns += [
     path('js/editor_tree_item/', views_js.editor_tree_item, name='editor_tree_item'),
     path('js/delete_item_tree/', views_js.delete_item_tree, name='delete_item_tree'),
     path('js/delete_articles/', views_js.delete_articles, name='delete_articles'),
+    path('js/delete_area/', views_js.delete_area, name='delete_area'),
+    path('js/delete_focus_shop/', views_js.delete_focus_shop, name='delete_focus_shop')
 ]

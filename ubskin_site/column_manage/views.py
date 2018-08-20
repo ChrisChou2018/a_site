@@ -189,13 +189,13 @@ def add_child_column(request):
             return my_render(
                 request,
                 'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(),
+                columns_select = column_models.Columns.get_all_select_columns(is_chld_column = True),
             )
         else:
             return my_render(
                 request,
                 'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(data_id),
+                columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
                 form_data = column_obj
             )
     else:
@@ -213,7 +213,7 @@ def add_child_column(request):
                     'column_manage/a_add_child_column.html',
                     form_data = request.POST,
                     form_errors = form_errors,
-                    columns_select = column_models.Columns.get_all_select_columns(data_id),
+                    columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
                 )
             column_models.create_model_data(
                 column_models.Columns,
@@ -372,4 +372,229 @@ def add_article(request):
             'status': 'success',
             'data': reverse('article_list') + '?data_id={}'.format(columns_id)
         })
+
+
+def shop_manage(request):
+    if request.method == "GET":
+        search_dict = {
+            'search_value': 'shopname__icontains',
+        }
+        search_value = dict()
+        current_page = request.GET.get('page', 1)
+        filter_args = ""
+        for i in search_dict:
+            value = request.GET.get(i)
+            if value is not None:
+                search_value[search_dict[i]] = value
+                filter_args  += "&{}={}".format(i, value)
+        else:
+            if not filter_args:
+                filter_args = None
+        if search_value:
+            data_list = column_models.get_data_list(
+                column_models.ShopManage,
+                current_page,
+                search_value=search_value
+            )
+            data_count = column_models.get_data_count(
+                column_models.ShopManage,
+                search_value,
+            )
+        else:
+            data_list = column_models.get_data_list(
+                column_models.ShopManage,
+                current_page,
+            )
+            data_count = column_models.get_data_count(
+                column_models.ShopManage,
+            )
+        return my_render(
+            request,
+            'column_manage/a_shop_manage.html',
+            current_page = current_page,
+            form_data = request.GET,
+            filter_args = filter_args,
+            data_list = data_list,
+            data_count = data_count,
+            table_head = column_models.ShopManage.get_style_table_head,
+        )
+
+def add_area(request):
+    data_id = request.GET.get('data_id')
+    area_choices = column_models.ShopManage.area_choices
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.ShopManage,
+            data_id,
+        )
+    if request.method == "GET":
+        if not model_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_area.html',
+                area_choices = area_choices,
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_area.html',
+                form_data = model_obj,
+                area_choices = area_choices,
+            )
+    else:
+        p_get = request.POST.get
+        shopname = p_get('shopname')
+        area = p_get('area')
+        address = p_get('address')
+        if not model_obj:
+            form_errors = dict()
+            if not shopname:
+                form_errors['shopname'] = '请输入店铺名'
+            if not area:
+                form_errors['area'] = '请选择地区'
+            if form_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_area.html',
+                    form_data = request.POST,
+                    area_choices = area_choices,
+                    form_errors = form_errors,
+                )
+            column_models.create_model_data(
+                column_models.ShopManage,
+                {'shopname': shopname, 'area': area, 'address': address},
+            )
+        else:
+            if shopname:
+                model_obj.shopname = shopname
+            if area:
+                model_obj.arep = area
+            if address:
+                model_obj.address
+            model_obj.save()
+        return redirect(reverse('shop_manage'))
+
+def foucs_shop_manage(request):
+    data_id = request.GET.get('data_id')
+    if request.method == "GET":
+        search_dict = {
+            'columns_id': data_id,
+            # 'search_value': 'shopname__icontains',
+        }
+        search_value = dict()
+        current_page = request.GET.get('page', 1)
+        filter_args = ""
+        for i in search_dict:
+            value = request.GET.get(i)
+            if value is not None:
+                search_value[search_dict[i]] = value
+                filter_args  += "&{}={}".format(i, value)
+        else:
+            if not filter_args:
+                filter_args = None
+        if search_value:
+            data_list = column_models.get_data_list(
+                column_models.FocusShop,
+                current_page,
+                search_value=search_value
+            )
+            data_count = column_models.get_data_count(
+                column_models.FocusShop,
+                search_value,
+            )
+        else:
+            data_list = column_models.get_data_list(
+                column_models.FocusShop,
+                current_page,
+            )
+            data_count = column_models.get_data_count(
+                column_models.FocusShop,
+            )
+        return my_render(
+            request,
+            'column_manage/a_foucs_shop_manage.html',
+            current_page = current_page,
+            form_data = request.GET,
+            filter_args = filter_args,
+            data_list = data_list,
+            data_count = data_count,
+            table_head = column_models.FocusShop.get_style_table_head,
+        )
+
+def add_foucs_shop(request):
+    columns_id = request.GET.get('columns_id')
+    data_id = request.GET.get('data_id')
+    shop_selct = column_models.ShopManage.get_all_shop_by_select()
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.FocusShop,
+            data_id
+        )
+    if request.method == 'GET':
+        if not model_obj:
+            return my_render(
+                request,
+                'column_manage/a_add_foucs_shop.html',
+                shop_selct = shop_selct,
+            )
+        else:
+            return my_render(
+                request,
+                'column_manage/a_add_foucs_shop.html',
+                shop_selct = shop_selct,
+                form_data = model_obj,
+            )
+    else:
+        shop_id = request.POST.get('shop_id')
+        files = request.FILES
+        if not model_obj:
+            form_errors = dict()
+            if not shop_id:
+                form_errors['shop_id'] = '请选择一个店铺'
+            if not files:
+                form_errors['photo_id'] = '请设置商店图片'
+            if form_errors:
+                return my_render(
+                    request,
+                    'column_manage/a_add_foucs_shop.html',
+                    shop_selct = shop_selct,
+                    form_data = request.POST,
+                    form_errors = form_errors,
+                )
+            model_obj = column_models.create_model_data(
+                column_models.FocusShop,
+                {'shop_id': shop_id, 'columns_id': columns_id,}
+            )
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        else:
+            if shop_id:
+                model_obj.shop_id = shop_id
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        
+        return redirect(reverse('foucs_shop_manage'))
+
 
