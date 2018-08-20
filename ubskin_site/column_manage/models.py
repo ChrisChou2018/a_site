@@ -293,6 +293,8 @@ class FocusShop(models.Model):
     def get_focus_shops_count_by_columns_id(cls, columns_id):
         return cls.objects.filter(status='normal', columns_id=columns_id).count()
 
+
+
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:
         if search_value_type == 'dict':

@@ -124,3 +124,4 @@ def delete_focus_shop(request):
                 {'status': 'deleted'}
             )
         return JsonResponse({'status': 'success'})
+

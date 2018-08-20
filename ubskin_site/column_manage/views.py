@@ -596,4 +596,5 @@ def add_foucs_shop(request):
                         model_obj.save()
         
         return redirect(reverse('foucs_shop_manage'))
-        
+
+
