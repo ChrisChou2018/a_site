@@ -18,7 +18,6 @@ def build_cookie_jar(cookie_str):
     for token in cookie_str.split(";"):
         t_pair = token.strip().split("=")
         jar.set(t_pair[0], t_pair[1])
-
     return jar
 
 

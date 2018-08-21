@@ -95,19 +95,27 @@
           
           {% elif page_type == 4 %}
             {% for i in page_content %}
-                <div class="hd_ed">
-                    <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
-                    <b><a href="" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
-                    <p>时间：{% parse_timestamps i.create_time %}</p>
-                    <p>{% get_article_content i.article_content %}</p>
-                <div class="clean"></div>
+              {% if i.article_type == 1 %}
+              <div class="hd_ed">
+                  <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
+                  <b><a href="" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
+                  <p>时间：{% parse_timestamps i.create_time %}</p>
+                  <p>{% get_article_content i.article_content %}</p>
+              <div class="clean"></div>
               </div>
-              <div class="tow_page">
-                  {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
-                  {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
-               
+              {% else %}
+              <div class="right_listdiv">
+                <span>
+                  <img src="{% build_photo_url i.photo_id 'raw' %}" title="{{i.article_title}}" alt="{{i.article_title}}">
+                </span>
+                <p>{{i.article_title}}</p>
               </div>
+              {% endif %}
             {% endfor %}
+            <div class="tow_page">
+              {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
+              {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
+            </div>
           {% elif page_type == 5 %}
             {% for i in page_content %}
               <div class="right_listdiv dp_img"><img src="{% build_photo_url i.photo_id 'shop_image' %}" title="{% get_shopname_by_id i.shop_id %}" alt="{% get_shopname_by_id i.shop_id %}"></div>

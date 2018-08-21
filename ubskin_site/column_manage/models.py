@@ -128,6 +128,11 @@ class Article(models.Model):
 
     article_id  = models.AutoField(db_column="article_id", primary_key=True, verbose_name="文章ID")
     columns_id = models.BigIntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
+    article_type_choices = (
+        (1, '普通文章类型'),
+        (2, '突出图片标题'),
+    )
+    article_type = models.SmallIntegerField(db_column='article_type', verbose_name='文章列表类型', default=1)
     article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255, null=True, blank=True)
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
