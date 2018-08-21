@@ -31,17 +31,12 @@ def add_column_link(request):
             data_id,
         )
     if request.method == 'GET':
-        if not column_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_column_link.html'
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_add_column_link.html',
-                form_data = column_obj,
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_column_link.html',
+            form_data = column_obj,
+        )
+
     else:
         column_name = request.POST.get('column_name')
         files = request.FILES
@@ -98,21 +93,14 @@ def add_a_page(request):
     page_type = column_models.Columns.page_type_choices
     columns_select = column_models.Columns.get_all_select_columns()
     if request.method == 'GET':
-        if not column_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_a_page.html',
-                page_type = page_type,
-                columns_select = columns_select,
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_add_a_page.html',
-                page_type = page_type,
-                columns_select = columns_select,
-                form_data = column_obj,
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_a_page.html',
+            page_type = page_type,
+            columns_select = columns_select,
+            form_data = column_obj,
+        )
+        
     else:
         column_name = request.POST.get('column_name')
         page_type = request.POST.get('page_type')
@@ -185,19 +173,13 @@ def add_child_column(request):
             data_id,
         )
     if request.method == 'GET':
-        if not column_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(is_chld_column = True),
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_add_child_column.html',
-                columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
-                form_data = column_obj
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_child_column.html',
+            columns_select = column_models.Columns.get_all_select_columns(is_chld_column = True),
+            form_data = column_obj,
+        )
+        
     else:
         column_name = request.POST.get('column_name')
         parent_id = request.POST.get('parent_id')
@@ -229,17 +211,11 @@ def editor_page_content(request):
     data_id = request.GET.get('data_id')
     article_obj = column_models.Article.has_articlr_by_columns_id(data_id)
     if request.method == 'GET':
-        if not article_obj :
-            return my_render(
-                request,
-                'column_manage/a_editor_page_conten.html'
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_editor_page_conten.html',
-                form_data = article_obj,
-            )
+        return my_render(
+            request,
+            'column_manage/a_editor_page_conten.html',
+            form_data = article_obj,
+        )
     else:
         article_conten = request.POST.get('article_content')
         if not article_obj:
@@ -311,18 +287,11 @@ def add_article(request):
             data_id
         )
     if request.method == 'GET':
-        if not model_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_article.html'
-            )
-        else:
-            print(model_obj.photo_id)
-            return my_render(
-                request,
-                'column_manage/a_add_article.html',
-                form_data = model_obj
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_article.html',
+            form_data = model_obj
+        )
     else:
         article_content = request.POST.get('article_content')
         article_title = request.POST.get('article_title')
@@ -429,19 +398,12 @@ def add_area(request):
             data_id,
         )
     if request.method == "GET":
-        if not model_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_area.html',
-                area_choices = area_choices,
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_add_area.html',
-                form_data = model_obj,
-                area_choices = area_choices,
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_area.html',
+            area_choices = area_choices,
+            form_data = model_obj,
+        )
     else:
         p_get = request.POST.get
         shopname = p_get('shopname')
@@ -533,19 +495,12 @@ def add_foucs_shop(request):
             data_id
         )
     if request.method == 'GET':
-        if not model_obj:
-            return my_render(
-                request,
-                'column_manage/a_add_foucs_shop.html',
-                shop_selct = shop_selct,
-            )
-        else:
-            return my_render(
-                request,
-                'column_manage/a_add_foucs_shop.html',
-                shop_selct = shop_selct,
-                form_data = model_obj,
-            )
+        return my_render(
+            request,
+            'column_manage/a_add_foucs_shop.html',
+            shop_selct = shop_selct,
+            form_data = model_obj,
+        )
     else:
         shop_id = request.POST.get('shop_id')
         files = request.FILES

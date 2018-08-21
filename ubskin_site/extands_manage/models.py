@@ -12,7 +12,7 @@ class TeamWork(models.Model):
     team_work_id = models.AutoField(db_column="team_work_id", primary_key=True, verbose_name="合作商ID")
     team_name = models.CharField(db_column="team_name", null=True, blank=True, verbose_name='合作商名称', max_length=255)
     team_link = models.CharField(db_column="team_link", verbose_name='合作商链接', max_length=255, default='#a')
-    phtot_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='合作商logo', max_length=255)
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='合作商logo', max_length=255)
     team_choices = (
         (1, '推荐品牌'),
         (2, '推荐商场'),
@@ -26,7 +26,29 @@ class TeamWork(models.Model):
 
     class Meta:
         db_table = 'team_work'
+    
 
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            team_work_id = '合作商ID',
+            team_name = '合作商名称',
+            team_type = '合作商类型',
+            more = '更多'
+        )
+
+    @classmethod
+    def get_team_work_for_index(cls):
+        data_dict = dict()
+        brand_top = cls.objects.filter(status='normal', team_type=1).first()
+        data_dict['brand_top'] = brand_top
+        brand_list = cls.objects.filter(status='normal', team_type=3)[0:20]
+        data_dict['brand_list'] = brand_list
+        shop_top = cls.objects.filter(status='normal', team_type=2).first()
+        data_dict['shop_top'] = shop_top
+        shop_list = cls.objects.filter(status='normal', team_type=4)[0:20]
+        data_dict['shop_list'] = shop_list
+        return data_dict
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:
