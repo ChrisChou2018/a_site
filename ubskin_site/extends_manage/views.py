@@ -1,21 +1,24 @@
+from django.shortcuts import render
+
+# Create your views here.
 import os
 
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.urls import reverse
 
-from ubskin_site.extands_manage import models as extands_models
+from ubskin_site.extends_manage import models as extends_models
 from ubskin_site.common import page_image
 # Create your views here.
 
 def my_render(request, templater_path, **kwargs):
     return render(request, templater_path, dict(**kwargs))
 
-def extands_manage(request):
+def extends_manage(request):
     if request.method == "GET":
         return my_render(
             request,
-            'extands_manage/extands_manage.html'
+            'extends_manage/extends_manage.html'
         )
 
 def team_manage(request):
@@ -35,48 +38,48 @@ def team_manage(request):
             if not filter_args:
                 filter_args = None
         if search_value:
-            data_list = extands_models.get_data_list(
-                extands_models.TeamWork,
+            data_list = extends_models.get_data_list(
+                extends_models.TeamWork,
                 current_page,
                 search_value=search_value
             )
-            data_count = extands_models.get_data_count(
-                extands_models.TeamWork,
+            data_count = extends_models.get_data_count(
+                extends_models.TeamWork,
                 search_value,
             )
         else:
-            data_list = extands_models.get_data_list(
-                extands_models.TeamWork,
+            data_list = extends_models.get_data_list(
+                extends_models.TeamWork,
                 current_page,
             )
-            data_count = extands_models.get_data_count(
-                extands_models.TeamWork,
+            data_count = extends_models.get_data_count(
+                extends_models.TeamWork,
             )
         return my_render(
             request,
-            'extands_manage/team_manage.html',
+            'extends_manage/team_manage.html',
             current_page = current_page,
             form_data = request.GET,
             filter_args = filter_args,
             data_list = data_list,
             data_count = data_count,
-            table_head = extands_models.TeamWork.get_style_table_head,
-            team_dict = dict(extands_models.TeamWork.team_choices),
+            table_head = extends_models.TeamWork.get_style_table_head,
+            team_dict = dict(extends_models.TeamWork.team_choices),
         )
 
 def add_team_work(request):
     data_id = request.GET.get('data_id')
     model_obj = None
     if data_id:
-        model_obj = extands_models.get_model_by_pk(
-            extands_models.TeamWork,
+        model_obj = extends_models.get_model_by_pk(
+            extends_models.TeamWork,
             data_id,
         )
-    team_choices = extands_models.TeamWork.team_choices
+    team_choices = extends_models.TeamWork.team_choices
     if request.method == "GET":
         return my_render(
             request,
-            'extands_manage/add_team_work.html',
+            'extends_manage/add_team_work.html',
             team_choices = team_choices,
             form_data = model_obj,
         )
@@ -95,13 +98,13 @@ def add_team_work(request):
             if form_errors:
                 return my_render(
                     request,
-                    'extands_manage/add_team_work.html',
+                    'extends_manage/add_team_work.html',
                     team_choices = team_choices,
                     form_data = request.POST,
                     form_errors = form_errors
                 )
-            model_obj = extands_models.create_model_data(
-                extands_models.TeamWork,
+            model_obj = extends_models.create_model_data(
+                extends_models.TeamWork,
                 {'team_name': team_name, 'team_type': team_type, 'team_link': team_link,}
             )
             if files:

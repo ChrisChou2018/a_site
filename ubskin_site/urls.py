@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('ubskin_site.member_manage.urls')),
     path('', include('ubskin_site.column_manage.urls')),
     path('', include('ubskin_site.web.urls')),
-    path('', include('ubskin_site.extands_manage.urls'))
+    path('', include('ubskin_site.extends_manage.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

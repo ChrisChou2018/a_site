@@ -286,22 +286,25 @@ def add_article(request):
             column_models.Article,
             data_id
         )
+    article_type_choices = column_models.Article.article_type_choices
     if request.method == 'GET':
         return my_render(
             request,
             'column_manage/a_add_article.html',
+            article_type_choices = article_type_choices,
             form_data = model_obj
         )
     else:
         article_content = request.POST.get('article_content')
         article_title = request.POST.get('article_title')
+        article_type = request.POST.get('article_type', 1)
         files = request.FILES 
-        print(files)
         if not model_obj:
             new_obj = column_models.create_model_data(
                 column_models.Article,
                 {
                     'article_content': article_content,
+                    'article_type': article_type,
                     'article_title': article_title,
                     'create_time': int(time.time()),
                     'columns_id': columns_id,
@@ -320,10 +323,13 @@ def add_article(request):
                         setattr(new_obj, i, data['photo_id'])
                         new_obj.save()
         else:
+            print(article_type)
             if article_title:
                 model_obj.article_title = article_title
             if article_content:
                 model_obj.article_content = article_content
+            if article_type:
+                model_obj.article_type = article_type
             model_obj.save()
             if files:
                 for i in files:

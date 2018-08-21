@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'ubskin_site.member_manage',
     'ubskin_site.column_manage',
     'ubskin_site.web',
-    'ubskin_site.extands_manage',
+    'ubskin_site.extends_manage',
     'ubskin_site.global_app',
 ]
 

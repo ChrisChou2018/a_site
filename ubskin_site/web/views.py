@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from ubskin_site.column_manage import models as column_models
-from ubskin_site.extands_manage import models as extands_models
+from ubskin_site.extends_manage import models as extends_models
 
 # Create your views here.
 
@@ -12,7 +12,7 @@ def my_render(request, templater_path, **kwargs):
 def index(request):
     if request.method == "GET":
         column_data = column_models.Columns.build_column_links()
-        team_work_data = extands_models.TeamWork.get_team_work_for_index()
+        team_work_data = extends_models.TeamWork.get_team_work_for_index()
         return my_render(
             request,
             'web/index.html',
@@ -66,6 +66,7 @@ def public_page(request, data_id):
         page_content = []
     
     column_data = column_models.Columns.build_column_links()
+    # print(request.path, '...')
     return my_render(
         request,
         'web/public_page.html',

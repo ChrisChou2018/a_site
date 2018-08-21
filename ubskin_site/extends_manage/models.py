@@ -26,6 +26,7 @@ class TeamWork(models.Model):
 
     class Meta:
         db_table = 'team_work'
+
     
 
     @classmethod
