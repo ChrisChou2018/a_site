@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<!-- <script src="/static/lib/validator/jquery.validator.js"></script> -->
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：设置 > <a href="?">管理员管理</a> > <a href="?act=editpass">修改密码</a></div>
+    <div class="right_body">
+               
+        <div class="table_form">
+            <form class="formname" method="post">
+				{% csrf_token %}
+                <div class="form_group">
+                    <div class="form_txt">原密码：</div>
+                    <div class="form_input"><input type="password"" name="password" size="30" maxlength="20" class="ip" data-rule="原密码:required;" /><span>请输入原密码</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">新密码：</div>
+                    <div class="form_input"><input type="password" name="password2" size="30" maxlength="20" class="ip" data-rule="新密码:required;" /><span>请输入新密码</span></div>
+                </div>
+                <!-- <div class="form_group">
+                    <div class="form_txt">确认密码：</div>
+                    <div class="form_input"><input type="text" name="t2" size="30" maxlength="20" class="ip" data-rule="确认密码:required;match(t1);" /><span>必须和上面的新密码保持一致</span></div>
+                </div> -->
+                <div class="form_group">
+                    <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
+				</div>
+				<span style="color: red">{{ form_error }}</span>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// $(".formname").validator(
+// 	{
+// 		stopOnError:true,
+//         theme:'yellow_top',
+// 		ignore:':hidden',
+// 		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+// 		valid:function(form)
+// 		{
+// 			$.fn.tips({type:'loading',content:'数据提交中'});
+// 			$.ajax(
+// 			{
+// 				url:"?act=passdb",
+// 				type:"post",
+// 				data:$(form).serialize(),
+// 				success:function(data){
+// 					data=jQuery.parseJSON(data);
+// 					var type="warn";
+// 					if(data.status=="y"){type="ok";}
+// 					$.fn.tips({type:type,content:data.info});
+// 					if(data.status=="y"){setTimeout("location.href='?act=editpass'",1500);}
+// 					else
+// 					{$("input[type='submit']").attr("disabled",false);}
+					
+// 				}
+// 			});
+// 		},
+// 		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+// 	}
+// );
+</script>
+</body>
+</html>

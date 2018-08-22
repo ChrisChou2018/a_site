@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="{webroot}theme/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<script src="{webroot}lib/js/jquery.js"></script>
+<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="{webroot}lib/tips/jquery.tips.js"></script>
+<script src="{webroot}lib/validator/jquery.validator.js"></script>
+<script src="{webroot}lib/validator/zh_CN.js"></script>
+<script src="{webroot}lib/js/base.js"></script>
+<script src="{webroot}theme/admin/js/admin.js"></script>
+<script src="{webroot}lib/dialog/artdialog.js"></script>
+<!--[if lt IE 9]>
+<script src="{webroot}lib/js/html5.js"></script>
+<![endif]-->
+<script>
+function gettemp(t0)
+{
+	var config=$(t0).find("option:selected").attr("config");
+	$("#list").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t7" />');
+	$("#show").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t8" />'); 
+}
+
+$(function(){
+	var config=$("#t2").find("option:selected").attr("config");
+	$("#list").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t7" />');
+	$("#show").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t8" />'); 
+});
+</script>
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=edit&id={data(0,0)}">修改栏目</a></div>
+    <div class="right_body">
+
+        <div class="table_form">
+            <form class="formname" method="post">
+                <div class="form_group">
+                    <div class="form_txt">栏目名称：</div>
+                    <div class="form_input"><input type="text" name="t0" id="t0" size="40" maxlength="50" value="{data(1,0)}" class="ip" data-rule="栏目名称:required;" /></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">英文目录：</div>
+                    <div class="form_input"><input type="text" name="t1" id="t1" size="40" maxlength="50" value="{data(2,0)}" class="ip" /><span>可以为空，示例："news"或"about/honor"</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">属性设置：</div>
+                    <div class="form_input"><input type="hidden" name="t2_1" value="{catenum}"><select name="t2" id="t2" class="ip" onChange="gettemp(this)" {if catenum>0}disabled="disabled"{/if}><option value="">请选择模型</option>{sdcms:rs top="0" table="sd_model" order="modelid desc"}<option value="{$rs[modelid]}" config="{replace($rs[tablename],"sd_model_","")}" {if data(3,0)=$rs[modelid]}selected{/if}>{$rs[modelname]}</option>{/sdcms:rs}</select>
+           <input type="checkbox" name="t3" id="t3" {if data(4,0)=1}checked{/if} value="1" /><label for="t3">导航显示</label>　<span>当前栏目下有内容时，不能更改模型</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">栏目图片：</div>
+                    <div class="form_input"><input type="text" name="t4" size="50" maxlength="255" value="{data(5,0)}" class="ip" /><input type="button" value="上传" config="t4:1:{id}:3" class="bnt bnt_save" /><span>可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">分页/排序：</div>
+                    <div class="form_input"><input type="text" name="t5" size="5" maxlength="10" title="分页" class="ip" value="{data(6,0)}" />/ <input type="text" name="t6" size="5" maxlength="10" title="排序" class="ip" value="{data(7,0)}" /><span>排序可以为空，数字越小越靠前</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">列表模板：</div>
+                    <div class="form_input"><input type="text" name="t7" id="t7" size="40" maxlength="255" class="ip" value="{data(8,0)}"  readonly /><span id="list"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t7" />　可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">内容模板：</div>
+                    <div class="form_input"><input type="text" name="t8" id="t8" size="40" maxlength="255" class="ip" value="{data(9,0)}" readonly /><span id="show"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t8" />　可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">优化标题：</div>
+                    <div class="form_input"><input type="text" name="t9" size="60" maxlength="255" class="ip" value="{data(10,0)}" /><span>可以为空，为空时显示栏目名称</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">内容页规则：</div>
+                    <div class="form_input"><select name="t12" class="ip"><option value="id" {if data(15,0)="id"}selected{/if}>自动编号</option><option value="dateid" {if data(15,0)="dateid"}selected{/if}>日期+编号</option></select><span>静态模式下使用</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">关键字：</div>
+                    <div class="form_input"><input type="text" name="t10" size="60" maxlength="255" class="ip" value="{data(11,0)}" onKeyUp="strlen_verify(this,'key_len',255)" />　还可输入<span id="key_len">{asp (255-sdcms.strlen(data(11,0)))}</span> 个字符　<br><span>META标签的keywords内容. 关键字之间使用 "," 分隔</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">描述信息：</div>
+                    <div class="form_input"><input type="text" name="t11" size="60" maxlength="255" class="ip" value="{data(12,0)}" onKeyUp="strlen_verify(this,'key_desc',255)" />　还可输入<span id="key_desc">{asp (255-sdcms.strlen(data(12,0)))}</span> 个字符　<br><span>META标签的description内容</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(".formname").validator(
+	{
+		stopOnError:true,
+        theme:'yellow_top',
+		ignore:':hidden',
+		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+		valid:function(form)
+		{
+			$.fn.tips({type:'loading',content:'数据提交中'});
+			$.ajax(
+			{
+				url:"?act=editdb&id={data(0,0)}",
+				type:"post",
+				data:$(form).serialize(),
+				success:function(data){
+					data=jQuery.parseJSON(data);
+					var type="warn";
+					if(data.status=="y"){type="ok";}
+					$.fn.tips({type:type,content:data.info});
+					if(data.status=="y"){setTimeout("location.href='?'",1500);}
+					else
+					{$("input[type='submit']").attr("disabled",false);}
+					
+				}
+			});
+		},
+		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+	}
+);
+</script>
+</body>
+</html>

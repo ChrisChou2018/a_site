@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登录页面</title>
+<link href="/static/admin/css/login.css" rel="stylesheet" type="text/css" />
+<link href="/static/admin/css/iconfont.css" rel="stylesheet" type="text/css" />
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<script src="/static/lib/validator/jquery.validator.js"></script>
+<script src="/static/lib/validator/zh_CN.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+<style>.msg-wrap{margin-left:50px;}{if not(verify_code)}#login .main form{margin-top:70px;}#login .main form ul li{margin-bottom:27px;}{/if}</style>
+</head>
+
+<body>
+<div id="login">
+        <div class="logo"></div>
+        <div class="main">
+            <form class="formname" method="post">
+			{% csrf_token %}
+            <ul>
+                <li>用户名： <input name="username" type="text" class="wa" id="t0" maxlength="20" data-rule="用户名:required;" /><i class="iconfont">&#xe60d;</i></li>
+                <li>密　码： <input name="password" type="password" class="wa" id="t1" maxlength="20" data-rule="密码:required;" /><i class="iconfont">&#xe605;</i></li>
+                
+                <li><input type="submit" value="登 录" class="bnt" /></li>
+			</ul>
+			<span style="color: red">{{ form_error }}</span>
+            </form>
+           
+    </div>
+    <div class="copyright"><a href="http://www.Icptop.com" target="_blank">Powered By Icptop.com</a><br>建议在1280*1024分辨率下使用</div>
+</div>
+<script>
+// $(".formname").validator(
+// 	{
+// 		stopOnError:true,
+//         theme:'yellow_top',
+// 		ignore:':hidden',
+// 		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+// 		valid:function(form)
+// 		{
+// 			$('.bnt').attr('value','登录中…');
+// 			$.fn.tips({type:'loading',content:'数据提交中'});
+// 			$.ajax(
+// 			{
+// 				url:"{{ signin }}",
+// 				type:"post",
+// 				data:$(form).serialize(),
+// 				success:function(data){
+// 					data=jQuery.parseJSON(data);
+// 					var type="warn";
+// 					if(data.status=="y"){type="ok";}
+// 					$.fn.tips({type:type,content:data.info});
+// 					if(data.status=="y"){setTimeout("location.href='./'",1500);}
+// 					else
+// 					{$('.bnt').attr('value','登 录');$("input[type='submit']").attr("disabled",false);}
+					
+// 				}
+// 			});
+// 		},
+// 		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+// 	}
+// );
+// {if t=1}$.fn.tips({content:"\u8d44\u6599\u9519\u8bef\uff0c\u65e0\u6cd5\u767b\u5f55\u540e\u53f0\uff01"});{/if}
+if(self!=top){top.location=self.location;}
+</script>
+
+</body>
+</html>

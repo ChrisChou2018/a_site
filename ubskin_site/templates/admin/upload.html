@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>文件上传</title>
+<link href="{webroot}theme/admin/css/base.css" rel="stylesheet" type="text/css" />
+<link href="{webroot}theme/admin/css/jquery.uploader.css" rel="stylesheet" type="text/css" />
+<script src="{webroot}lib/js/jquery.js"></script>
+<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="{webroot}lib/tips/jquery.tips.js"></script>
+<script src="{webroot}lib/js/jquery.uploader.js"></script>
+<script>
+$(function(){
+    $('#selectFile').uploader({
+        action:'sd_upload.asp?act=swf&filetype={filetype}&admin_id={adminid}&cid={cid}&classid={classid}&loginbase={admin_loginbase}&loginkey={admin_loginkey}',
+        name: "file",
+        formData:{},
+        multiple:true,
+        auto:false,
+		showQueue:'#queue',
+        fileSizeLimit:'{sdcms[upmaxsize]}KB',
+        fileTypeDesc:'选择文件',     
+        fileTypeExts:'{uptype}',
+		onProgress:function(e){$.fn.tips({type:'loading',content:'文件上传中，请稍后'});},
+		onSelected:function(filelist){filelist.length="{limit}";},
+		onError:function(e){$.fn.tips({content:e.name});},
+        onSuccess:function(e){att_show(e.data);},
+        onAllComplete:function(){$.fn.tips.close()}
+    }); 
+})
+</script>
+</head>
+
+<body>
+<ul class="upload">
+    <li id="selectFile"></li>
+</ul>
+<div id="start"><img src="{webroot}theme/admin/images/start.gif" width="74" height="28" onClick="$('#selectFile').uploader('start');" /></div>
+<div id="count">本次共允许上传<span>{limit}</span>个文件，每个文件不超过<span>{asp sdcms.getnum(sdcms[upmaxsize]/1024)}</span>Mb</div>
+<div id="types">允许的格式：{uptype}</div>
+<fieldset class="blue" ><legend>待上传文件列表</legend><ul id="queue"></ul></fieldset>
+<ul id="filelist" class="attachment-list"></ul>
+<div id="att-status" class="hidden"></div>
+<div id="att-status-del" class="hidden"></div>
+<div id="att-name" class="hidden"></div>
+<script>
+function att_show(serverData)
+{
+	var serverData = serverData.replace(/<div.*?<\/div>/g,'');
+	var data = serverData.split(',');
+	var id = data[0];
+	var src = data[1];
+	var ext = data[2];
+	var filename = data[3];
+	if(id==0) {alert(src);return false;}
+	if(ext=='pic') {
+		var img = '<a href="javascript:;" onclick="javascript:att_cancel(this,'+id+',\'upload\')" class="on"><div class="icon"></div><img src="'+src+'" width="80" imgid="'+id+'" path="'+src+'" title="'+filename+'"/></a>';
+	} else {
+		var img = '<a href="javascript:;" onclick="javascript:att_cancel(this,'+id+',\'upload\')" class="on"><div class="icon"></div><img src="../lib/images/ext/'+ext+'.gif" width="32" imgid="'+id+'" path="'+src+'" title="'+filename+'"/></a>';
+	}
+	$('#filelist').append('<li><div id="attachment_'+id+'" class="img-wrap"></div></li>');
+	$('#attachment_'+id).html(img);
+	$('#att-status').append('|'+src);
+	$('#att-name').append('|'+filename);
+}
+function att_cancel(obj,id,source){
+	var src = $(obj).children("img").attr("path");
+	var filename = $(obj).children("img").attr("title");
+	if($(obj).hasClass('on')){
+		$(obj).removeClass("on");
+		var imgstr = $("#att-status").html();
+		var length = $("a[class='on']").children("img").length;
+		var strs = filenames = '';
+		for(var i=0;i<length;i++){
+			strs += '|'+$("a[class='on']").children("img").eq(i).attr('path');
+			filenames += '|'+$("a[class='on']").children("img").eq(i).attr('title');
+		}
+		$('#att-status').html(strs);
+		$('#att-name').html(filenames);
+		if(source=='upload') $('#att-status-del').append('|'+id);
+	} else {
+		$(obj).addClass("on");
+		$('#att-status').append('|'+src);
+		$('#att-name').append('|'+filename);
+		var imgstr_del = $("#att-status-del").html();
+		var imgstr_del_obj = $("a[class!='on']").children("img")
+		var length_del = imgstr_del_obj.length;
+		var strs_del='';
+		for(var i=0;i<length_del;i++){strs_del += '|'+imgstr_del_obj.eq(i).attr('imgid');}
+		if(source=='upload') $('#att-status-del').html(strs_del);
+	}
+}
+</script>
+</body>
+</html>

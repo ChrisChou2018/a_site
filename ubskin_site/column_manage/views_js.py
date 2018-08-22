@@ -125,3 +125,20 @@ def delete_focus_shop(request):
             )
         return JsonResponse({'status': 'success'})
 
+
+def request_menu_type(request):
+    '''
+    var zNodes=[
+        {id:-1,pId:0,name:"首页",open:true}
+        ,{id:1,pId:-1,name:"管理首页",url:"{% url 'admin_info' %}",target:"iframe_body"}
+        ,{id:2,pId:-1,name:"修改密码",url:"{% url 'change_password' %}",target:"iframe_body"}
+        ,{id:3,pId:-1,name:"退出登录",url:"{% url 'signout' %}",target:"_parent"}
+    ]
+    '''
+    if request.method == 'GET':
+        menu_type = request.GET.get('menu_type')
+        if menu_type == 'column_manage':
+            return JsonResponse([
+                {'id':-1, 'pId':0, 'name':"栏目", 'open':True},
+                {'id':1, 'pId':-1, 'name':"栏目管理", 'url': reverse('column_manage'), 'target':"iframe_body"},
+            ], safe=False)
