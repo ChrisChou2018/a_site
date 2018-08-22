@@ -16,10 +16,20 @@ def my_render(request, templater_path, **kwargs):
     return render(request, templater_path, dict(**kwargs))
 
 def column_manage(request):
+    table_head = column_models.Columns.get_style_table_head()
+    column_type_choices = dict(column_models.Columns.type_choises)
+    page_type = dict(column_models.Columns.page_type_choices)
+    filter_args = None
+    data_list = column_models.Columns.get_columns_by_admin()
     if request.method == "GET":
         return my_render(
             request,
-            'column_manage/a_column_manage.html',
+            'category/list.html',
+            table_head = table_head,
+            column_type_choices = column_type_choices,
+            page_type = page_type,
+            filter_args = filter_args,
+            data_list = data_list,
         )
 
 def add_column_link(request):

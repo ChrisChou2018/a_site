@@ -13,11 +13,13 @@ def index(request):
     if request.method == "GET":
         column_data = column_models.Columns.build_column_links()
         team_work_data = extends_models.TeamWork.get_team_work_for_index()
+        campany_news = column_models.Article.get_campany_news()
         return my_render(
             request,
             'web/index.html',
             column_data = column_data,
             team_work_data = team_work_data,
+            campany_news = campany_news,
         )
 
 
@@ -43,11 +45,18 @@ def public_page(request, data_id):
     page_content = None
     data_count = 1
     photo_dict = None
+    article_obj = None
     if model_obj.columns_type == 2:
         if model_obj.page_type == 1:
             page_type = 1
             page_content = column_models.Article.get_article_obj_by_columns_id(data_id)
         elif model_obj.page_type == 4:
+            article_id = request.GET.get('article_id')
+            if article_id:
+                article_obj = column_models.get_model_by_pk(
+                    column_models.Article,
+                    article_id
+                )
             page_type = 4
             page_content = column_models.Article.get_article_list_by_columns_id(data_id, page)
             data_count = column_models.Article.get_article_count_by_columns_id(data_id)
@@ -78,6 +87,7 @@ def public_page(request, data_id):
         current_page = page,
         data_count = data_count,
         select_columns_ids = select_columns_ids,
+        article_obj = article_obj,
     )
     
 

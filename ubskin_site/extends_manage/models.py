@@ -26,7 +26,6 @@ class TeamWork(models.Model):
 
     class Meta:
         db_table = 'team_work'
-
     
 
     @classmethod
@@ -50,6 +49,17 @@ class TeamWork(models.Model):
         shop_list = cls.objects.filter(status='normal', team_type=4)[0:20]
         data_dict['shop_list'] = shop_list
         return data_dict
+
+class Ad(models.Model):
+    ad_id = models.AutoField(db_column="team_work_id", primary_key=True, verbose_name="合作商ID")
+    location_choices = (
+        (1, '首页轮播图')
+    )
+    location = models.SmallIntegerField(db_column='location', verbose_name='location')
+
+    class Meta:
+        db_table = 'ad'
+
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:

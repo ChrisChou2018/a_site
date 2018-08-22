@@ -1,0 +1,267 @@
+{% load ui_method %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="/static/admin/css/iconfont.css" rel="stylesheet" type="text/css" />
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<!-- <script src="/static/lib/validator/jquery.validator.js"></script> -->
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script src="/static/lib/js/jquery.livequery.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<script src="/static/lib/dialog/artdialog.js"></script>
+<script src="/static/lib/treetable/jquery.treeTable.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+<script>
+$(function(){
+	$(".del").live("click",function(){
+		var id;
+		id=$(this).attr("rel");
+		var that=this;
+			top.dialog({
+				content:'\u786e\u5b9a\u8981\u5220\u9664\u8be5\u680f\u76ee\u53ca\u8be5\u680f\u76ee\u4e0b\u7684\u6240\u6709\u5185\u5bb9\uff1f\u003c\u0062\u0072\u0020\u002f\u003e\u6b64\u64cd\u4f5c\u4e0d\u53ef\u6062\u590d\uff0c\u8bf7\u8c28\u614e\u64cd\u4f5c\uff01',
+				ok:function(){
+					var url,data;
+					url='?act=del&id='+id;
+					$.ajax({
+					type:"get",
+					cache:false,
+					url:url,
+					success:function(_)
+					{
+						var act=_.substring(0,1);
+						var info=_.substring(1);
+						switch(act)
+						{
+							case "0":
+								$.fn.tips({type:'error',content:info})
+								break;
+							case "1":
+								$.fn.tips({type:'ok',content:info})
+								$(that).parent().parent().fadeOut('slow');
+								setTimeout("location.href='?'",1000);
+								break;
+							default:
+								alert(_);
+								break;
+						}
+					}
+					});
+									
+					},
+				cancel:true 
+			}).showModal();
+		
+		})
+	
+	$(".reset").click(function(){
+			top.dialog({
+				content:'\u786e\u5b9a\u8981\u590d\u4f4d\u4e48\uff1f\u0028\u4e0d\u53ef\u6062\u590d\uff01\u0029\u003c\u0062\u0072\u003e\u590d\u4f4d\u540e\u6240\u6709\u680f\u76ee\u90fd\u53d8\u6210\u4e00\u7ea7\u680f\u76ee\uff01',
+				ok:function(){
+					var url,data;
+					url='?act=reset';
+					$.ajax({
+					type:"get",
+					cache:false,
+					url:url,
+					success:function(_)
+					{
+						var act=_.substring(0,1);
+						var info=_.substring(1);
+						switch(act)
+						{
+							case "0":
+								$.fn.tips({type:'error',content:info})
+								break;
+							case "1":
+								$.fn.tips({type:'ok',content:info})
+								setTimeout("location.href='?'",1000)
+								break;
+							default:
+								alert(_);
+								break;
+						}
+					}
+					});
+									
+					},
+				cancel:true 
+			}).showModal();
+		
+		})
+		//更新缓存
+		$(".recache").click(function(){
+			top.dialog({
+				content:"\u786e\u5b9a\u8981\u66f4\u65b0\u680f\u76ee\u7f13\u5b58\uff1f",
+				ok:function(){
+						var url;
+						url='?act=cache&go=1';
+						$.ajax({
+						type:"get",
+						cache:false,
+						url:url,
+						success:function(_)
+						{
+							var act=_.substring(0,1);
+							var info=_.substring(1);
+							switch(act)
+							{
+								case "0":
+									$.fn.tips({type:'error',content:info})
+									break;
+								case "1":
+									$.fn.tips({type:'ok',content:info})
+									setTimeout("location.href='?'",1500)
+									break;
+								default:
+									alert(_);
+									break;
+							}
+						}
+						});
+											
+					},
+				cancel:true 
+			}).showModal();
+
+		
+		})		
+
+	$("#tablelist tr").live("mouseover",function(){$(this).css("background","#EBF4FC")})
+	$("#tablelist tr").live("mouseout",function(){$(this).css("background","#FFF")})		   
+	var option={
+		theme:'vsStyle',
+		expandLevel:1,//默认展开层次
+		beforeExpand:function($treeTable,id) {
+			//判断id是否已经有了孩子节点，如果有了就不再加载，这样就可以起到缓存的作用
+			if($('.'+id,$treeTable).length){return;}
+			$.ajax({
+				type:"post",
+				cache:false,
+				url:"?act=loadson&classid="+id,
+				success:function(data){$treeTable.addChilds(data);}
+			})
+		}
+	};
+	$("#tablelist").treeTable(option);
+});
+</script>
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a></div>
+    <div class="right_body">
+        <div class="nav_menu">
+            <ul>
+                <li class="dropdown"><a href="?act=add"><span class="iconfont">&#xe618;</span>添加栏目</a><dl>
+                <dt><a href="?act=add">添加导航栏目</a></dt>
+                <dt><a href="?act=addpage">添加单网页</a></dt>
+                <dt><a href="?act=addlink">添加子栏目</a></dt>
+            </dl></li>
+                <!-- <li><a href="javascript:;" class="reset"><span class="iconfont">&#xe61c;</span>栏目复位</a></li> -->
+                <li><a href="javascript:;" class="recache"><span class="iconfont">&#xe61d;</span>更新栏目缓存</a></li>
+            </ul>
+        </div>
+        
+        <div class="table_title">
+        栏目列表
+        </div>
+        <form class="formname" method="post">
+        <table id="tablelist">
+            <thead>
+                <tr>
+                    <!-- <th>栏目名称</th>
+                    <th width="80">栏目ID</th>
+                    <th width="70">排序</th>
+                    <th width="80">栏目类型</th>
+                    <th width="80">所属模型</th>
+                    <th width="80">导航</th>
+					<th width="240">管理</th> -->
+					{% for i in table_head %}
+						<th>{% get_value_by_key table_head i %}</th>
+					{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+				{% for i in data_list %}
+					<tr id="{{ i.columns_id }}" pId="{% if i.parent_id is not None %}{{ i.parent_id }}{% else %}0{% endif %}" {% if i.has_child %}haschild="true"{% endif %}>
+						<!-- <td class="txt_left"><a href="../list.asp?classid={$rs[cateid]}" target="_blank">{{ column_name }}</a></td>
+						<td></td>
+						<td><input type="text" name="ordnum" id="{$rs[cateid]}" value="{$rs[ordnum]}" size="4" maxlength="4" class="ordnum" data-rule="排序:required;digit"></td>
+						<td>{sdcms.iiif($rs[modeid]=-1,$rs[modeid]=-2,"<em>单网页</em>","<u>外部链接</u>","内部栏目")}</td>
+						<td>{$rs[modelname]}</td>
+						<td>{sdcms.iif($rs[ismenu]=1,"是","<span>否</span>")}</td> -->
+						{% for j in table_head %}
+							{% if j != 'more' %}
+								{% if j == 'columns_type' %}
+									{% get_value_by_key i j as columns_type%}
+									<td>{% get_value_by_key column_type_choices columns_type %}</td>
+								{% elif j == 'column_name' %}
+									<td class="txt_left"><a href="#a" target="_blank">{{ column_name }}</a>{% get_value_by_key i j %}</td>
+								{% else %}
+									<td>{% get_value_by_key i j %}</td>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						<td><a href="#a">编辑</a>|<a href="#a">删除</a></td>
+					</tr>
+				{% endfor %}
+            <!-- {sdcms:rs top="0" field="cateid,followid,ordnum,catename,modeid,modelname,ismenu,sonid" table="view_category" where="followid=0" order="ordnum,cateid"} -->
+            <!-- <tr id="{$rs[cateid]}" pId="{$rs[followid]}"{if instr($rs[sonid],",")>0} hasChild="true"{/if}>
+                  <td class="txt_left"><a href="../list.asp?classid={$rs[cateid]}" target="_blank">{$rs[catename]}</a></td>
+                  <td>{$rs[cateid]}<input type="hidden" name="cid" value="{$rs[cateid]}" ></td>
+                  <td><input type="text" name="ordnum" id="{$rs[cateid]}" value="{$rs[ordnum]}" size="4" maxlength="4" class="ordnum" data-rule="排序:required;digit"></td>
+                  <td>{sdcms.iiif($rs[modeid]=-1,$rs[modeid]=-2,"<em>单网页</em>","<u>外部链接</u>","内部栏目")}</td>
+                  <td>{$rs[modelname]}</td>
+                  <td>{sdcms.iif($rs[ismenu]=1,"是","<span>否</span>")}</td>
+                  <td><a href="?act=add{sdcms.iiif($rs[modeid]=-1,$rs[modeid]=-2,"page","link","")}&id={$rs[cateid]}&moid={$rs[modeid]}">添加子栏目</a>　{if $rs[modeid]=-1}<a href="sd_model_page.asp?classid={$rs[cateid]}">内容管理</a>{elseif $rs[modeid]=-2}　　　　{else}<a href="sd_content.asp?classid={$rs[cateid]}">内容管理</a>{/if}　<a href="?act=move&id={$rs[cateid]}">移动</a>　<a href="?act=edit{sdcms.iiif($rs[modeid]=-1,$rs[modeid]=-2,"page","link","")}&id={$rs[cateid]}">编辑</a>　<a href="javascript:;" class="del" rel="{$rs[cateid]}">删除</a></td>
+            </tr> -->
+            <!-- {/sdcms:rs} -->
+            </tbody>
+        </table>
+        <div class="table_bottom">
+        <!-- <input type="submit" value="保存排序" class="ordbnt"> -->
+        </div>
+        </form>
+    </div>
+</div>
+<script>
+// $(".formname").validator(
+// 	{
+// 		stopOnError:true,
+//         theme:'yellow_top',
+// 		ignore:':hidden',
+// 		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+// 		valid:function(form)
+// 		{
+// 			$.fn.tips({type:'loading',content:'数据提交中'});
+// 			$.ajax(
+// 			{
+// 				url:"?act=order",
+// 				type:"post",
+// 				data:$(form).serialize(),
+// 				success:function(data){
+// 					data=jQuery.parseJSON(data);
+// 					var type="warn";
+// 					if(data.status=="y"){type="ok";}
+// 					$.fn.tips({type:type,content:data.info});
+// 					if(data.status=="y"){setTimeout("location.href='?'",1000);}
+// 					else
+// 					{$("input[type='submit']").attr("disabled",false);}
+					
+// 				}
+// 			});
+// 		},
+// 		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+// 	}
+// );
+</script>
+</body>
+</html>

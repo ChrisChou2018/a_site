@@ -119,8 +119,11 @@
       <span>NEWS:</span> 
       <div id="wenchuan">
       
+      {% for i in campany_news %}
+        <p><a href="{% url 'public_page' i.columns_id %}?article_id={{ i.article_id }}" title="{{ i.article_title }}">{{ i.article_title }}</a></p>
+      {% endfor %}
       
-      <p><a href="show.asp?id=174" title="【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你">【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你</a></p>
+      <!-- <p><a href="show.asp?id=174" title="【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你">【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你</a></p>
       
       
       <p><a href="show.asp?id=169" title="【报道】优贝施荣获2018中国化妆品年度杰出零售商">【报道】优贝施荣获2018中国化妆品年度杰出零售商</a></p>
@@ -136,7 +139,7 @@
       
       <p><a href="show.asp?id=177" title="全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！">全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！</a></p>
       
-      <p><a href="show.asp?id=176" title="七夕礼物攻略，一份最走心的礼物清单">七夕礼物攻略，一份最走心的礼物清单</a></p>
+      <p><a href="show.asp?id=176" title="七夕礼物攻略，一份最走心的礼物清单">七夕礼物攻略，一份最走心的礼物清单</a></p> -->
     
     </div> 
 

@@ -140,3 +140,5 @@ def add_team_work(request):
                         setattr(model_obj, i, data['photo_id'])
                         model_obj.save()
         return redirect(reverse('team_manage'))
+
+

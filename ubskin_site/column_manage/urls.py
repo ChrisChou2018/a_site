@@ -24,5 +24,6 @@ urlpatterns += [
     path('js/delete_item_tree/', views_js.delete_item_tree, name='delete_item_tree'),
     path('js/delete_articles/', views_js.delete_articles, name='delete_articles'),
     path('js/delete_area/', views_js.delete_area, name='delete_area'),
-    path('js/delete_focus_shop/', views_js.delete_focus_shop, name='delete_focus_shop')
+    path('js/delete_focus_shop/', views_js.delete_focus_shop, name='delete_focus_shop'),
+    path('js/request_menu_type/', views_js.request_menu_type, name='request_menu_type'),
 ]

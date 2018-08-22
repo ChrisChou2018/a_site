@@ -24,11 +24,11 @@ class Columns(models.Model):
     thumb_photo_id = models.CharField(db_column="thumb_photo_id", null=True, blank=True, verbose_name='小图片ID', max_length=255)
     parent_id = models.BigIntegerField(db_column='parent_id', verbose_name='父级菜单ID', null=True, blank=True,)
     page_type_choices = (
-        (1, '文本图片'),
+        (1, '文本图片页面'),
         (2, '留言页面'),
         (3, '店铺查询页面'),
-        (4, '文章列表类型页面'),
-        (5, '重点店铺页面'),
+        (4, '文章列表页面'),
+        (5, '图片标题列表页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -122,6 +122,26 @@ class Columns(models.Model):
         photo_dict['photo_id'] = parent_obj.photo_id
         photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
         return photo_dict
+    
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            column_name = '栏目名称',
+            columns_id = '菜单栏ID',
+            columns_type = '栏目类型',
+            page_type = '页面类型',
+            more = '更多'
+        )
+
+    @classmethod
+    def get_columns_by_admin(cls):
+        data_list = cls.objects.filter(columns_type=1, status='normal').values()
+        for i in data_list:
+            child  = cls.objects.filter(parent_id=i['columns_id'], status='normal')
+            if child:
+                i['has_child'] = True
+        return data_list
+    
 
 
 class Article(models.Model):
@@ -172,6 +192,14 @@ class Article(models.Model):
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
         return cls.objects.filter(columns_id=data_id, status='normal').first()
+    
+    @classmethod
+    def get_campany_news(cls):
+        company_active = Columns.objects.filter(column_name='企业动态', status='normal').first()
+        data_list = None
+        if company_active:
+            data_list = cls.objects.filter(columns_id=company_active.columns_id, status='normal').order_by('-pk')[0:8]
+        return data_list if data_list else list()
 
 
 class ColumnScrollingImage(models.Model):

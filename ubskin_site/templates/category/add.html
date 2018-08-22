@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="/static/lib/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<script src="/static/lib/validator/jquery.validator.js"></script>
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script src="/static/lib/js/base.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<script src="/static/lib/dialog/artdialog.js"></script>
+<script src="/static/lib/js/jquery.ztree.core-3.5.min.js"></script>
+<script src="/static/lib/js/jquery.ztree.excheck-3.5.min.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+<script>
+function gettemp(t0)
+{
+	var config=$(t0).find("option:selected").attr("config");
+	$("#list").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t8" />');
+	$("#show").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t9" />'); 
+}
+
+var setting={view:{dblClickExpand:false,selectedMulti:false},data:{simpleData:{enable:true}},callback:{beforeExpand:beforeExpand,onClick:onClick}};
+
+var curExpandNode=null;
+function beforeExpand(treeId,treeNode) {
+	var pNode=curExpandNode?curExpandNode.getParentNode():null;
+	var treeNodeP=treeNode.parentTId?treeNode.getParentNode():null;
+	var zTree=$.fn.zTree.getZTreeObj("ztree");
+	for(var i=0,l=!treeNodeP?0:treeNodeP.children.length;i<l; i++){
+		if(treeNode!==treeNodeP.children[i]){zTree.expandNode(treeNodeP.children[i],false);}
+	};
+	while (pNode){
+		if(pNode===treeNode){break;}
+		pNode=pNode.getParentNode();
+	};
+	if(!pNode){singlePath(treeNode);}
+};
+function singlePath(newNode) {
+	if (newNode === curExpandNode) return;
+	if (curExpandNode && curExpandNode.open==true) {
+		var zTree = $.fn.zTree.getZTreeObj("ztree");
+		if (newNode.parentTId === curExpandNode.parentTId) {
+			zTree.expandNode(curExpandNode, false);
+		} else {
+			var newParents = [];
+			while (newNode) {
+				newNode = newNode.getParentNode();
+				if (newNode === curExpandNode) {
+					newParents = null;
+					break;
+				} else if (newNode) {
+					newParents.push(newNode);
+				}
+			}
+			if (newParents!=null) {
+				var oldNode = curExpandNode;
+				var oldParents = [];
+				while (oldNode) {
+					oldNode = oldNode.getParentNode();
+					if (oldNode) {
+						oldParents.push(oldNode);
+					}
+				}
+				if (newParents.length>0) {
+					zTree.expandNode(oldParents[Math.abs(oldParents.length-newParents.length)-1], false);
+				} else {
+					zTree.expandNode(oldParents[oldParents.length-1], false);
+				}
+			}
+		}
+	}
+	curExpandNode = newNode;
+};
+	
+var zNodes =[{get_tree}];
+
+function onClick(e,treeId,treeNode) {
+	var zTree=$.fn.zTree.getZTreeObj("ztree"),
+	nodes=zTree.getSelectedNodes(),
+	v="";
+	nodes.sort(function compare(a,b){return a.id-b.id;});
+	for(var i=0,l=nodes.length;i<l;i++){v=nodes[i].id+":"+nodes[i].name;}
+	var classid=0,classname="";
+	if(v.length>0){
+		var arr=v.split(":");classid=arr[0];classname=arr[1];
+	}
+	$("#t2").attr("value",classid);$("#t2_1").attr("value",classname);
+	hideMenu();
+}
+
+// function showMenu(the) {
+// 	var cityObj=$(the);
+// 	var cityOffset=cityObj.offset();
+// 	$("#menuContent").css({left:cityOffset.left+"px",top:cityOffset.top+cityObj.outerHeight()+"px"}).slideDown("fast");
+// 	$("body").bind("mousedown",onBodyDown);
+// }
+// function hideMenu(){
+// 	$("#menuContent").fadeOut("fast");
+// 	$("body").unbind("mousedown",onBodyDown);
+// }
+function onBodyDown(event){if(!(event.target.id=="menuBtn"||event.target.id=="menuContent"||$(event.target).parents("#menuContent").length>0)){hideMenu();}}
+// $(function(){
+// 	{if moid>0}
+// 	var config=$("#t3").find("option:selected").attr("config");
+// 	$("#list").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t8" />');
+// 	$("#show").html('<input type="button" value="选择" class="bnt_temp bnt_save" config="'+config+':t9" />'); 
+// 	{/if}
+// 	$(".bnt_cate").click(function(){$("#t2").attr("value",0);$("#t2_1").attr("value","作为一级栏目");})
+// 	$.fn.zTree.init($("#ztree"),setting,zNodes);
+// });
+</script>
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=add&modid={moid}">添加栏目</a></div>
+    <div class="right_body">
+
+        <div class="table_form">
+            <form class="formname" method="post">
+                <div class="form_group">
+                    <div class="form_txt">栏目名称：</div>
+                    <div class="form_input"><input type="text" name="t0" id="t0" size="40" maxlength="50" class="ip" data-rule="栏目名称:required;" /></div>
+                </div>
+                <!-- <div class="form_group">
+                    <div class="form_txt">英文目录：</div>
+                    <div class="form_input"><input type="text" name="t1" id="t1" size="40" maxlength="50" class="ip" /><span>可以为空，示例："news"或"about/honor"</span></div>
+                </div> -->
+                <div class="form_group">
+					<label for="form_txt">栏目图片</label>
+					<!-- <input type="file" class="form-control" name="photo_id"> -->
+                    <!-- <div class="form_txt">栏目选择：</div> -->
+                    <div class="form_input"><input type="file" class="form-control" name="photo_id"></div>
+				</div>
+				<div class="image-box">
+					<img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
+				</div>
+                <!-- <div class="form_group">
+                    <div class="form_txt">属性设置：</div>
+                    <div class="form_input">
+           <select name="t3" id="t3" onChange="gettemp(this)" class="ip" data-rule="模型:required;"><option value="">请选择模型</option>{sdcms:rs top="0" table="sd_model" order="modelid desc"}<option value="{$rs[modelid]}" {if clng(moid)=$rs[modelid]}selected{/if} config="{replace($rs[tablename],"sd_model_","")}" {if $rs[modelid]=moid}selected{/if}>{$rs[modelname]}</option>{/sdcms:rs}</select>
+           <input type="checkbox" name="t4" id="t4" checked="checked" value="1" /><label for="t4">导航显示</label></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">栏目图片：</div>
+                    <div class="form_input"><input type="text" name="t5" size="40" maxlength="255" class="ip" /><input type="button" value="上传" config="t5:1:0:3" class="bnt bnt_save" /><span>可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">分页/排序：</div>
+                    <div class="form_input"><input type="text" name="t6" size="5" maxlength="10" value="20" title="分页" class="ip" />/ <input type="text" name="t7" size="5" maxlength="10" title="排序" class="ip" /><span>排序可以为空，数字越小越靠前</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">列表模板：</div>
+                    <div class="form_input"><input type="text" name="t8" id="t8" size="40" maxlength="255" class="ip" readonly /><span id="list"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t8" />　可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">内容模板：</div>
+                    <div class="form_input"><input type="text" name="t9" id="t9" size="40" maxlength="255" class="ip" readonly /><span id="show"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t9" />　可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">优化标题：</div>
+                    <div class="form_input"><input type="text" name="t10" size="60" maxlength="255" class="ip" /><span>可以为空，为空时显示栏目名称</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">内容页规则：</div>
+                    <div class="form_input"><select name="t13" class="ip"><option value="id">自动编号</option><option value="dateid">日期+编号</option></select><span>静态模式下使用</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">关键字：</div>
+                    <div class="form_input"><input type="text" name="t11" size="60" maxlength="255" class="ip" onKeyUp="strlen_verify(this,'key_len',255)" />　还可输入<span id="key_len">255</span> 个字符　<br><span>META标签的keywords内容. 关键字之间使用 "," 分隔</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">描述信息：</div>
+                    <div class="form_input"><input type="text" name="t12" size="60" maxlength="255" class="ip" onKeyUp="strlen_verify(this,'key_desc',255)" />　还可输入<span id="key_desc">255</span> 个字符　<br><span>META标签的description内容</span></div>
+				</div> -->
+				<div class="form_group">
+					<label for="form_txt">菜单栏小图</label>
+					<div class="form_input"><input type="file" class="form-control" name="thumb_photo_id"></div>
+				</div>
+				<div class="image-box">
+					<img class="thumb_photo_id" src="{%if form_data and form_data.thumb_photo_id %}{% build_photo_url form_data.thumb_photo_id 'page_thumb' %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
+				</div>
+				</div>
+                <div class="form_group">
+                    <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="menuContent" class="menuContent" style="display:none;position:absolute;">
+	<ul id="ztree" class="ztree" style="margin-top:0;width:160px;"></ul>
+</div>
+<script>
+	$(function(){
+        $('.column_manage').addClass('active');
+        $('input[name="photo_id"]').change(function(){
+            file = this.files[0]
+            var $image_item = $('.photo_id')
+            var url = null ;
+            if (window.createObjectURL!=undefined) { // basic
+                url = window.createObjectURL(file) ;
+            } else if (window.URL!=undefined) { // mozilla(firefox)
+                url = window.URL.createObjectURL(file) ;
+            } else if (window.webkitURL!=undefined) { // webkit or chrome
+                url = window.webkitURL.createObjectURL(file) ;
+            }
+            $image_item.attr('src', url)
+        })
+        $('input[name="thumb_photo_id"]').change(function(){
+            file = this.files[0]
+            var $image_item = $('.thumb_photo_id')
+            var url = null ;
+            if (window.createObjectURL!=undefined) { // basic
+                url = window.createObjectURL(file) ;
+            } else if (window.URL!=undefined) { // mozilla(firefox)
+                url = window.URL.createObjectURL(file) ;
+            } else if (window.webkitURL!=undefined) { // webkit or chrome
+                url = window.webkitURL.createObjectURL(file) ;
+            }
+            $image_item.attr('src', url)
+        })
+    })
+    
+// $(".formname").validator(
+// 	{
+// 		stopOnError:true,
+//         theme:'yellow_top',
+// 		ignore:':hidden',
+// 		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+// 		valid:function(form)
+// 		{
+// 			$.fn.tips({type:'loading',content:'数据提交中'});
+// 			$.ajax(
+// 			{
+// 				url:"?act=adddb",
+// 				type:"post",
+// 				data:$(form).serialize(),
+// 				success:function(data){
+// 					data=jQuery.parseJSON(data);
+// 					var type="warn";
+// 					if(data.status=="y"){type="ok";}
+// 					$.fn.tips({type:type,content:data.info});
+// 					if(data.status=="y"){setTimeout("location.href='?'",1500);}
+// 					else
+// 					{$("input[type='submit']").attr("disabled",false);}
+					
+// 				}
+// 			});
+// 		},
+// 		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+// 	}
+// );
+</script>
+</body>
+</html>

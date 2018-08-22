@@ -4,10 +4,11 @@ from ubskin_site.member_manage import views_js
 
 urlpatterns = [
     path('myadmin/signin/', views.member_signin, name='signin'),
-    path('myadmin/index/', views.index, name='index'),
+    path('myadmin/admin_index/', views.index, name='admin_index'),
     path('myadmin/signout/', views.member_signout, name='signout'),
     path('myadmin/change_password/', views.change_pass, name='change_password'),
     path('myadmin/member_manage/', views.member_manage, name='member_manage'),
+    path('myadmin/admin_info/', views.admin_info, name='admin_info'),
     path('myadmin/', views.index),
 ]
 

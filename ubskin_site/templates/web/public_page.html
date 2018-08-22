@@ -94,28 +94,41 @@
           </div>
           
           {% elif page_type == 4 %}
-            {% for i in page_content %}
-              {% if i.article_type == 1 %}
-                <div class="hd_ed">
-                    <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
-                    <b><a href="?article_id={{i.article_id}}" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
-                    <p>时间：{% parse_timestamps i.create_time %}</p>
-                    <p>{% get_article_content i.article_content %}</p>
-                <div class="clean"></div>
-                </div>
-              {% else %}
-                <div class="right_listdiv">
-                  <span>
-                    <img src="{% build_photo_url i.photo_id 'raw' %}" title="{{i.article_title}}" alt="{{i.article_title}}">
-                  </span>
-                  <p>{{i.article_title}}</p>
-                </div>
-              {% endif %}
-            {% endfor %}
-            <div class="tow_page" {% if data_count <= 15 %} style="display: none;" {% endif %}>
-              {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
-              {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
-            </div>
+            {% if article_obj %}
+              <div class="cont_div">
+                  <div class="cont_title">{{ article_obj.article_title }}</div>
+                  <div class="cont_other">发布时间：{% parse_timestamps article_obj.create_time %}</div>
+                  <div class="cont_cont">{{ article_obj.article_content | safe }}</div>
+                  <div class="tow_page"></div>
+                  <!-- <div class="cont_next">
+                    <p>上一篇：<a href="/show.asp?id=180" title="用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕">用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕</a></p>
+                    <p>下一篇：没有啦</p>
+                  </div> -->
+              </div>
+            {% else %}
+              {% for i in page_content %}
+                {% if i.article_type == 1 %}
+                  <div class="hd_ed">
+                      <a href="" title="{{ i.article_title }}"><img src="{% build_photo_url i.photo_id 'article_thumb_image' %}" title="{{ i.article_title }}" alt="{{ i.article_title }}"></a>
+                      <b><a href="?article_id={{i.article_id}}" title="{{ i.article_title }}">{{ i.article_title }}</a></b>
+                      <p>时间：{% parse_timestamps i.create_time %}</p>
+                      <p>{% get_article_content i.article_content %}</p>
+                  <div class="clean"></div>
+                  </div>
+                {% else %}
+                  <div class="right_listdiv">
+                    <span>
+                      <img src="{% build_photo_url i.photo_id 'raw' %}" title="{{i.article_title}}" alt="{{i.article_title}}">
+                    </span>
+                    <p>{{i.article_title}}</p>
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <div class="tow_page" {% if data_count <= 15 %} style="display: none;" {% endif %}>
+                {% Pagingfunc2 current_page data_count filter_args request.uri as page %}
+                {{ page | safe }}<p>当前页{{ data_list|length }}/共{{ data_count }}条数据</p>
+              </div>
+            {% endif %}
           {% elif page_type == 5 %}
             {% for i in page_content %}
               <div class="right_listdiv dp_img"><img src="{% build_photo_url i.photo_id 'shop_image' %}" title="{% get_shopname_by_id i.shop_id %}" alt="{% get_shopname_by_id i.shop_id %}"></div>

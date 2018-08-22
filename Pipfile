@@ -11,4 +11,4 @@ mysqlclient = "==1.3.12"
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

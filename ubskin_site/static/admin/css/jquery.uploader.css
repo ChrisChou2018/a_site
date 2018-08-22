@@ -1,0 +1,56 @@
+﻿/*队列*/
+.upload-queue {zoom:1}
+.upload-queue:after {display:block;content:'\20';height:0;clear:both}
+.upload-queue .queue {position:relative;}
+.upload-queue ul {position:relative; z-index:2; height:24px; margin:0; padding:0; border-bottom:1px solid #F0F2F6; color:#555; overflow:hidden;}
+.upload-queue ul:nth-child(2n) { background:#F8F8F8;}
+.upload-queue .last-queue ul {border-bottom:none;}
+.upload-queue li {float:left; height:24px; line-height:24px; padding-left:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.upload-queue .f-name {width:220px;}
+.upload-queue .f-progress {width:100px;}
+.upload-queue .f-size {width:60px;}
+.upload-queue .f-operate {float:right;padding-right:0;}
+.upload-queue .f-operate a {padding:0 5px; color:#333; text-decoration:none;font-size:16px; font-family:'Microsoft Yahei',Tahoma}
+.upload-queue .f-operate a:hover {color:#d00;}
+
+/*进度条*/
+.upload-progress {
+	position:absolute; top:0; left:0; z-index:1;
+	height:24px;
+	overflow:hidden;
+	background:#B4D9FC;
+	background:-webkit-linear-gradient(top, #C1E4FD, #B4D9FC 100%);
+	background:-moz-linear-gradient(top, #C1E4FD, #B4D9FC 100%);
+	background:-o-linear-gradient(top, #C1E4FD, #B4D9FC 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#C1E4FD', endColorstr='#B4D9FC');
+}
+
+.upload-error .upload-progress {background:#FEE8D6; filter:0; width:100%;}
+.upload-error .f-progress {color:#c00;}
+
+
+#selectFile{background:url(../images/upload.gif) no-repeat top;width:74px;height:28px;display:inline-block;margin-right:5px;cursor:pointer;}
+#selectFile:hover{background-position:0 -28px;}
+.upload{margin:10px;padding:0;list-style:none;width:160px;}
+.upload li{float:left;width:80px;margin:0;padding:0;}
+#start{cursor:pointer;}
+
+#count{font-size:12px;font-family:arial;margin:0 10px;}
+#count span{color:#f30;margin:0 5px;}
+#types{font-size:12px;font-family:verdana;margin:0 10px;}
+.blue{color:#377abe;padding:10px;margin:10px;font-size:12px;border:solid 1px #CEE2F2;}
+.hidden{display:none;}
+
+
+/*附件列表样式*/
+.img-wrap{border:1px solid #eee;text-align:center;overflow:hidden;background:#fff}
+.img-wrap a{display:table-cell;vertical-align:middle;text-align:center;*display:block;}
+
+.attachment-list{overflow:hidden}
+.attachment-list li{width:25%;*width:24.99%; overflow:hidden; padding:10px 0; float:left}
+.attachment-list .img-wrap{width:104px;height:94px;overflow:hidden; margin:auto;}
+.attachment-list .img-wrap {text-align:center;overflow:hidden; background:#fff; border:none; position:relative}
+.attachment-list .img-wrap a{display:table-cell;vertical-align:middle;text-align:center;*display:block;border:1px solid #eee;width:101px; height:91px;*font-size:67px;}
+.attachment-list .img-wrap a:hover,.attachment-list .img-wrap a.on{border-color:#d0def1; background:#f3f6fa}
+.attachment-list .img-wrap a.off .icon{background: url(../images/off.png) no-repeat; height:17px;bottom:5px;*bottom:3px; right:3px; z-index:100; position: absolute; overflow:hidden; width:98px;}
+.attachment-list .img-wrap a.on .icon{background: url(../images/msg_bg.png) no-repeat;width:16px; height:18px;bottom:4px;*bottom:2px; right:3px; z-index:100; position: absolute; overflow:hidden}

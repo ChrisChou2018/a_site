@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django import forms
+from django.urls import reverse
 
 from ubskin_site.member_manage import models as member_models
 from ubskin_site.common import photo
@@ -22,7 +23,7 @@ def member_signin(request):
     if request.method == "GET":
         return my_render(
             request,
-            'member_manage/a_signin.html',
+            'admin/login.html',
         )
     else:
         user_name = request.POST.get('username')
@@ -31,11 +32,11 @@ def member_signin(request):
         user = authenticate(user_name=user_name, password=password)
         if user and user.is_admin:
             login(request, user)
-            return redirect('/myadmin/index/')
+            return redirect(reverse('admin_index'))
         elif member:
             if member.check_password(password):
                 login(request, member)
-                return redirect('/myadmin/index/')
+                return redirect(reverse('admin_index'))
             else:
                 return my_render(
                     request,
@@ -53,14 +54,14 @@ def member_signin(request):
 
 def member_signout(request):
     logout(request)
-    return redirect('/myadmin/signin/')
+    return redirect(reverse('signin'))
 
 @login_required(login_url='/myadmin/signin/')
 def index(request):
     if request.method == "GET":
         return render(
             request,
-            'a_index.html'
+            'admin/index.html'
         )
 
 @login_required(login_url='/myadmin/signin/')
@@ -68,7 +69,7 @@ def change_pass(request):
     if request.method == 'GET':
         return my_render(
             request,
-            'member_manage/a_change_password.html',
+            'admin/pass.html',
         )
     else:
         password = request.POST.get('password')
@@ -76,13 +77,13 @@ def change_pass(request):
         if not pas:
             return my_render(
                 request,
-                'member_manage/a_change_password.html',
+                'admin/pass.html',
                 form_error = '原密码错误',
                 form_data = request.POST
             )
         request.user.set_password(request.POST.get('password2'))
         request.user.save()
-        return redirect('/myadmin/signin/')
+        return redirect(reverse('signin'))
 
 @login_required(login_url='/myadmin/signin/')
 def member_manage(request):
@@ -128,4 +129,11 @@ def member_manage(request):
             filter_args = filter_args,
             table_head = table_head,
             search_value = value
+        )
+
+def admin_info(request):
+    if request.method == 'GET':
+        return my_render(
+            request,
+            'admin/right.html',
         )
