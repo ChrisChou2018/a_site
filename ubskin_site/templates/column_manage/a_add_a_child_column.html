@@ -14,8 +14,8 @@
     </div><!-- /.box-header -->
     <!-- form start -->
     <form role="form" method="POST" action="" enctype="multipart/form-data">
-        {% csrf_token %}
       <div class="box-body">
+        {% csrf_token %}
         <div class="form-group">
           <label for="exampleInputEmail1">栏目名称</label>
           <input type="text" class="form-control" id="exampleInputEmail1" name="column_name" value="{% if form_data.column_name %}{{ form_data.column_name }}{% endif %}">

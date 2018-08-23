@@ -161,9 +161,9 @@ $(function(){
         <div class="nav_menu">
             <ul>
                 <li class="dropdown"><a href="?act=add"><span class="iconfont">&#xe618;</span>添加栏目</a><dl>
-                <dt><a href="?act=add">添加导航栏目</a></dt>
-                <dt><a href="?act=addpage">添加单网页</a></dt>
-                <dt><a href="?act=addlink">添加子栏目</a></dt>
+                <dt><a href="{% url 'add_column_link' %}">添加导航栏目</a></dt>
+                <dt><a href="{% url 'add_a_page' %}">添加单网页</a></dt>
+                <dt><a href="{% url 'add_child_column' %}">添加子栏目</a></dt>
             </dl></li>
                 <!-- <li><a href="javascript:;" class="reset"><span class="iconfont">&#xe61c;</span>栏目复位</a></li> -->
                 <li><a href="javascript:;" class="recache"><span class="iconfont">&#xe61d;</span>更新栏目缓存</a></li>
@@ -210,7 +210,7 @@ $(function(){
 								{% endif %}
 							{% endif %}
 						{% endfor %}
-						<td><a href="#a">编辑</a>|<a href="#a">删除</a></td>
+						<td><a href="{% url 'add_column_link' %}?data_id={{ i.columns_id }}">编辑</a>|<a href="#a">删除</a></td>
 					</tr>
 				{% endfor %}
             <!-- {sdcms:rs top="0" field="cateid,followid,ordnum,catename,modeid,modelname,ismenu,sonid" table="view_category" where="followid=0" order="ordnum,cateid"} -->

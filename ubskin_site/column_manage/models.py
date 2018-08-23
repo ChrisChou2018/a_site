@@ -16,7 +16,7 @@ class Columns(models.Model):
     type_choises = (
         (1, '导航栏目'),
         (2, '单网页'),
-        (3, '菜单'),
+        (3, '子栏目'),
     )
     columns_type = models.SmallIntegerField(choices=type_choises, db_column='columns_type', verbose_name='菜单类型')
     link = models.CharField(db_column="link", verbose_name="链接地址", max_length=1000, null=True, blank=True)
@@ -142,6 +142,14 @@ class Columns(models.Model):
                 i['has_child'] = True
         return data_list
     
+    @classmethod
+    def find_child(cls, data_id):
+        data_list = cls.objects.filter(parent_id=data_id).values()
+        for i in data_list:
+            child = cls.objects.filter(parent_id=i['columns_id']).values()
+            if child:
+                i['has_child'] = True
+        return data_list
 
 
 class Article(models.Model):

@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect as redirect
 from django.http import JsonResponse
 from django.conf import settings
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from ubskin_site.column_manage import models as column_models
 from ubskin_site.common import page_image
@@ -15,6 +16,7 @@ from ubskin_site.common import page_image
 def my_render(request, templater_path, **kwargs):
     return render(request, templater_path, dict(**kwargs))
 
+@csrf_exempt
 def column_manage(request):
     table_head = column_models.Columns.get_style_table_head()
     column_type_choices = dict(column_models.Columns.type_choises)
@@ -31,6 +33,40 @@ def column_manage(request):
             filter_args = filter_args,
             data_list = data_list,
         )
+    else:
+        classid  = request.GET.get('classid')
+        if classid:
+            child_data = column_models.Columns.find_child(classid)
+            if child_data:
+                for i in child_data:
+                    tr_str = '<tr id="{}" pId="{}" {} >'.format(
+                        i['columns_id'],
+                        classid,
+                        '' if not i.get('has_child') else 'haschild="true"'
+                    )
+                    for j in table_head:
+                        if j != 'more':
+                            if j == 'columns_type':
+                                columns_type = column_type_choices[i[j]]
+                                tr_str += '<td>{}</td>'.format(columns_type)
+                            elif j == 'column_name':
+                                tr_str += '<td class="txt_left"><a href="#a" target="_blank">{}</td>'.format(i[j])
+                            elif j == 'page_type':
+                                tr_str += '<td>{}</td>'.format('' if not i[j] else page_type[i[j]])
+                            else:
+                                tr_str += '<td>{}</td>'.format(i[j])
+                    else:
+                        column_type_page_view = {
+                            1: 'add_column_link',
+                            2: 'add_a_page',
+                            3: 'add_child_column',
+                        }
+                        view_name = column_type_page_view[i['columns_type']]
+                        tr_str += '<td><a href="{}">编辑</a>|<a href="#a">删除</a></td>'.format(reverse(view_name) + '?data_id=' + str(i['columns_id']))
+                else:
+                    tr_str += '</tr>'
+            return JsonResponse(tr_str, safe=False)
+
 
 def add_column_link(request):
     data_id = request.GET.get('data_id')
@@ -43,7 +79,7 @@ def add_column_link(request):
     if request.method == 'GET':
         return my_render(
             request,
-            'column_manage/a_add_column_link.html',
+            'category/add.html',
             form_data = column_obj,
         )
 
@@ -54,7 +90,7 @@ def add_column_link(request):
             if not column_name:
                 return my_render(
                     request,
-                    'column_manage/a_add_column_link.html',
+                    'category/add.html',
                     form_data = request.POST,
                     form_errors = {'column_name': '不可为空'}
                 )
@@ -90,7 +126,7 @@ def add_column_link(request):
                     if data:
                         setattr(column_obj, i, data['photo_id'])
                         column_obj.save()
-        return redirect('/myadmin/column_manage/')
+        return redirect(reverse('column_manage'))
 
 def add_a_page(request):
     data_id = request.GET.get('data_id')
@@ -105,7 +141,7 @@ def add_a_page(request):
     if request.method == 'GET':
         return my_render(
             request,
-            'column_manage/a_add_a_page.html',
+            'category/addpage.html',
             page_type = page_type,
             columns_select = columns_select,
             form_data = column_obj,
@@ -127,7 +163,7 @@ def add_a_page(request):
             if from_errors:
                 return my_render(
                     request,
-                    'column_manage/a_add_a_page.html',
+                    'category/addpage.html',
                     form_data = request.POST,
                     form_errors = from_errors,
                     page_type = column_models.Columns.page_type_choices,
@@ -185,7 +221,7 @@ def add_child_column(request):
     if request.method == 'GET':
         return my_render(
             request,
-            'column_manage/a_add_child_column.html',
+            'category/addlink.html',
             columns_select = column_models.Columns.get_all_select_columns(is_chld_column = True),
             form_data = column_obj,
         )
@@ -202,7 +238,7 @@ def add_child_column(request):
             if form_errors:
                 return my_render(
                     request,
-                    'column_manage/a_add_child_column.html',
+                    'category/addlink.html',
                     form_data = request.POST,
                     form_errors = form_errors,
                     columns_select = column_models.Columns.get_all_select_columns(self_id=data_id, is_chld_column = True),
