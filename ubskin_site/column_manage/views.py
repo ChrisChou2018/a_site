@@ -37,6 +37,7 @@ def column_manage(request):
         classid  = request.GET.get('classid')
         if classid:
             child_data = column_models.Columns.find_child(classid)
+            tr_data = ''
             if child_data:
                 for i in child_data:
                     tr_str = '<tr id="{}" pId="{}" {} >'.format(
@@ -50,7 +51,7 @@ def column_manage(request):
                                 columns_type = column_type_choices[i[j]]
                                 tr_str += '<td>{}</td>'.format(columns_type)
                             elif j == 'column_name':
-                                tr_str += '<td class="txt_left"><a href="#a" target="_blank">{}</td>'.format(i[j])
+                                tr_str += '<td class="txt_left"><a href="{}" target="_blank">{}</td>'.format(reverse('public_page', kwargs={'data_id': i['columns_id']}), i[j])
                             elif j == 'page_type':
                                 tr_str += '<td>{}</td>'.format('' if not i[j] else page_type[i[j]])
                             else:
@@ -63,9 +64,10 @@ def column_manage(request):
                         }
                         view_name = column_type_page_view[i['columns_type']]
                         tr_str += '<td><a href="{}">编辑</a>|<a href="#a">删除</a></td>'.format(reverse(view_name) + '?data_id=' + str(i['columns_id']))
-                else:
-                    tr_str += '</tr>'
-            return JsonResponse(tr_str, safe=False)
+                        tr_str += '</tr>'
+                    tr_data += tr_str
+                    
+            return JsonResponse(tr_data, safe=False)
 
 
 def add_column_link(request):
@@ -196,6 +198,7 @@ def add_a_page(request):
             if parent_id:
                 column_obj.parent_id = parent_id
             column_obj.save()
+            print(files)
             if files:
                 for i in files:
                     file_obj = files[i]
@@ -261,6 +264,7 @@ def editor_page_content(request):
             request,
             'column_manage/a_editor_page_conten.html',
             form_data = article_obj,
+            data_id = data_id,
         )
     else:
         article_conten = request.POST.get('article_content')
@@ -338,7 +342,8 @@ def add_article(request):
             request,
             'column_manage/a_add_article.html',
             article_type_choices = article_type_choices,
-            form_data = model_obj
+            form_data = model_obj,
+            columns_id = columns_id,
         )
     else:
         article_content = request.POST.get('article_content')
@@ -552,6 +557,7 @@ def add_foucs_shop(request):
             'column_manage/a_add_foucs_shop.html',
             shop_selct = shop_selct,
             form_data = model_obj,
+            columns_id = columns_id,
         )
     else:
         shop_id = request.POST.get('shop_id')
@@ -569,6 +575,7 @@ def add_foucs_shop(request):
                     shop_selct = shop_selct,
                     form_data = request.POST,
                     form_errors = form_errors,
+                    columns_id = columns_id,
                 )
             model_obj = column_models.create_model_data(
                 column_models.FocusShop,
@@ -602,6 +609,6 @@ def add_foucs_shop(request):
                         setattr(model_obj, i, data['photo_id'])
                         model_obj.save()
         
-        return redirect(reverse('foucs_shop_manage'))
+        return redirect(reverse('foucs_shop_manage') + '?data_id=' + columns_id)
 
 

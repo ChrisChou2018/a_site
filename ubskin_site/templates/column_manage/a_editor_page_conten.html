@@ -1,3 +1,4 @@
+{% load ui_method %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,11 +13,14 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
-    
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
     
 </head>
 <body>
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="#">{% get_column_name_by_id data_id %}</a></div>
+    </div>
     <div class="row" style="padding: 20px;" >
         <span>内容区:</span>
         <input type="text" data-id="" style="display: none;">
@@ -78,11 +82,12 @@ $(function(){
         'image',  // 插入图片
         'table',  // 表格
         'video',  // 插入视频
-        'code',  // 插入代码
         'undo',  // 撤销
         
     ]
-    editor.customConfig.uploadImgShowBase64 = true 
+    editor.customConfig.uploadImgShowBase64 = true
+    editor.customConfig.uploadImgServer = '{% url "upload_file" %}'
+    editor.customConfig.uploadImgMaxSize = 5 * 1024 * 1024
     editor.create()
 
     $('.submit_btn').click(function(){

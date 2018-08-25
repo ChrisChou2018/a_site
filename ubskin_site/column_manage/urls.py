@@ -26,4 +26,5 @@ urlpatterns += [
     path('js/delete_area/', views_js.delete_area, name='delete_area'),
     path('js/delete_focus_shop/', views_js.delete_focus_shop, name='delete_focus_shop'),
     path('js/request_menu_type/', views_js.request_menu_type, name='request_menu_type'),
+    path('js/upload_file/', views_js.upload_file, name='upload_file')
 ]

@@ -13,11 +13,14 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
-    
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
     
 </head>
 <body style="">
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="#">店铺查询</a></div>
+    </div>
     <div class="row" style="padding: 15px;" >
         <div class="col-md-3">
             <form action="" method="GET" class="search_input" ">
@@ -32,10 +35,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="" style="float: right;padding-right: 25px;">
-            <a href="{% url 'add_area' %}" type="button" class="btn btn-info" type="button" >添加店铺<span class="glyphicon glyphicon-plus"></span></a>
+        <div class="" style="float: left;padding-left: 25px;">
+            <!-- <a href="{% url 'add_area' %}" type="button" class="btn btn-info" type="button" >添加店铺<span class="glyphicon glyphicon-plus"></span></a>
             <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
-            <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button>
+            <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button> -->
+            <a href="{% url 'add_area' %}" type="button" class="btn btn-info" type="button" >添加店铺<span class="glyphicon glyphicon-plus"></span></a>
+            <div class="dropdown" style="display: inline-block">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    批量操作
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#" class="choose_member">选择全部</a></li>
+                    <li><a href="#" class="delete_member">删除选中</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div style="overflow: auto;padding: 15px;"> 
@@ -55,7 +69,7 @@
                                     {% get_value_by_key i key as data_id %}
                                     <td>{% get_column_name_by_id data_id %}</td>
                                 {% elif key == 'shop_id' %}
-                                <td><input type="checkbox" name="" id="" style="display: none;">{% get_value_by_key i key %}</td>
+                                <td><input type="checkbox" name="" id="" > {% get_value_by_key i key %}</td>
                                 {% else %}
                                     <td>
                                         {% get_value_by_key i key %}
@@ -109,16 +123,23 @@ $(function(){
         return cookieValue;
     }
     $('.choose_member').click(function(){
-        var tr =  $('.member_table tbody tr')
-        $.each(tr,function(index,item){
-            var $ltd = $(item).children().first().find('input')
-            if($ltd.css('display')=='none'){
-                $ltd.css('display','inline-block')
-            }else{
-                $ltd.css('display','none')
-            }
+        if($(this).text() == '选择全部'){
+            var tr =  $('.member_table tbody tr').find('input').prop('checked', true)
+            $(this).text('取消全部')
+        }else{
+            var tr =  $('.member_table tbody tr').find('input').prop('checked', false)
+            $(this).text('选择全部')
+        }
+        // var tr =  $('.member_table tbody tr')
+        // $.each(tr,function(index,item){
+        //     var $ltd = $(item).children().first().find('input')
+        //     if($ltd.css('display')=='none'){
+        //         $ltd.css('display','inline-block')
+        //     }else{
+        //         $ltd.css('display','none')
+        //     }
             
-        })
+        // })
         
     })
     $('.delete_member').click(delete_member)

@@ -29,8 +29,8 @@
                       <ul class="userinfo">
                           <li>您好：<span>{{ request.user.member_name }}</span></li>
                           <li>您已登录：0 次</li>
-                          <li>最后登录IP：0.0.0.0</li>
-                          <li>最后登录日期：</li>
+                          <li>最后登录IP: {{request.META.REMOTE_ADDR}}</li>
+                          <li>最后登录日期: {{ request.user.last_login }}</li>
                       </ul>   
                       <!-- {/sdcms:rs} -->
                       <span id="tips" class="dis"></span>          

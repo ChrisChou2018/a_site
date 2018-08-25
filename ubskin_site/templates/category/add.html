@@ -125,7 +125,7 @@ function onBodyDown(event){if(!(event.target.id=="menuBtn"||event.target.id=="me
     <div class="right_body">
 
         <div class="table_form">
-            <form class="formname" method="post">
+            <form class="formname" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                 <div class="form_group">
                     <div class="form_txt">栏目名称：</div>

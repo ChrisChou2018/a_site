@@ -4,7 +4,7 @@ from django.db import models
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Count
-
+from django.urls import reverse
 
 
 class Columns(models.Model):
@@ -28,7 +28,7 @@ class Columns(models.Model):
         (2, '留言页面'),
         (3, '店铺查询页面'),
         (4, '文章列表页面'),
-        (5, '图片标题列表页面'),
+        (5, '大图标题列表页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -144,12 +144,55 @@ class Columns(models.Model):
     
     @classmethod
     def find_child(cls, data_id):
-        data_list = cls.objects.filter(parent_id=data_id).values()
+        data_list = cls.objects.filter(parent_id=data_id, status='normal').values()
         for i in data_list:
-            child = cls.objects.filter(parent_id=i['columns_id']).values()
+            child = cls.objects.filter(parent_id=i['columns_id'],  status='normal').values()
             if child:
                 i['has_child'] = True
         return data_list
+    
+    @classmethod
+    def build_column_tree(cls):
+        '''
+        {'id':-1, 'pId':0, 'name':"栏目", 'open':True},
+        {'id':1, 'pId':-1, 'name':"栏目管理", 'url': reverse('column_manage'), 'target':"iframe_body"},
+        '''
+        data = cls.objects.filter(status='normal').values().order_by('pk')
+        data_list = list()
+        x = 1
+        for i in data:
+            if i['columns_type'] == 1:
+                if x == 1:
+                    data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'], 'open': True
+                    })
+                else: 
+                    data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'],
+                    })
+                x += 1
+            elif i['columns_type'] == 2:
+                url_dict = {
+                    1: reverse('editor_page_content'),
+                    2: '',
+                    3: reverse('shop_manage'),
+                    4: reverse('article_list'),
+                    5: reverse('foucs_shop_manage'),
+                }
+                data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'], 'url': url_dict[i['page_type']] + '?data_id=' + str(i['columns_id']),
+                        'target':"iframe_body",
+                    })
+            else:
+                data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'],
+                    })
+        return data_list
+        
 
 
 class Article(models.Model):
@@ -158,7 +201,7 @@ class Article(models.Model):
     columns_id = models.BigIntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
     article_type_choices = (
         (1, '普通文章类型'),
-        (2, '突出图片标题'),
+        (2, '大图片标题类型'),
     )
     article_type = models.SmallIntegerField(db_column='article_type', verbose_name='文章列表类型', default=1)
     article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255, null=True, blank=True)
