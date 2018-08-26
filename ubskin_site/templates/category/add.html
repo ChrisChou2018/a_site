@@ -1,3 +1,4 @@
+{% load ui_method %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -120,71 +121,31 @@ function onBodyDown(event){if(!(event.target.id=="menuBtn"||event.target.id=="me
 <body>
 
 <div class="layout-center">
-	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=add&modid={moid}">添加栏目</a></div>
+	<div class="right_subject">当前位置：栏目 > <a href="{% url 'column_manage' %}">栏目管理</a> > <a href="?act=add&modid={moid}">添加栏目</a></div>
     <div class="right_body">
 
         <div class="table_form">
-            <form class="formname" method="post">
+            <form class="formname" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
                 <div class="form_group">
                     <div class="form_txt">栏目名称：</div>
-                    <div class="form_input"><input type="text" name="t0" id="t0" size="40" maxlength="50" class="ip" data-rule="栏目名称:required;" /></div>
+                    <div class="form_input"><input value="{% if form_data.column_name %}{{ form_data.column_name }}{% endif %}" type="text" name="column_name" id="t0" size="40" maxlength="50" class="ip" data-rule="栏目名称:required;" />{% if form_errors and form_errors.column_name %}<span style="color: red">{{ form_errors.column_name }}</span>{% endif %}</div>
                 </div>
-                <!-- <div class="form_group">
-                    <div class="form_txt">英文目录：</div>
-                    <div class="form_input"><input type="text" name="t1" id="t1" size="40" maxlength="50" class="ip" /><span>可以为空，示例："news"或"about/honor"</span></div>
-                </div> -->
+                
                 <div class="form_group">
-					<label for="form_txt">栏目图片</label>
-					<!-- <input type="file" class="form-control" name="photo_id"> -->
-                    <!-- <div class="form_txt">栏目选择：</div> -->
+					<div class="form_txt">栏目图片</div>
+					
                     <div class="form_input"><input type="file" class="form-control" name="photo_id"></div>
 				</div>
-				<div class="image-box">
+				<div class="image-box" style="padding-left: 30px">
 					<img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}" alt="图片预览" style="width: 900px;height: 300px;">
-				</div>
-                <!-- <div class="form_group">
-                    <div class="form_txt">属性设置：</div>
-                    <div class="form_input">
-           <select name="t3" id="t3" onChange="gettemp(this)" class="ip" data-rule="模型:required;"><option value="">请选择模型</option>{sdcms:rs top="0" table="sd_model" order="modelid desc"}<option value="{$rs[modelid]}" {if clng(moid)=$rs[modelid]}selected{/if} config="{replace($rs[tablename],"sd_model_","")}" {if $rs[modelid]=moid}selected{/if}>{$rs[modelname]}</option>{/sdcms:rs}</select>
-           <input type="checkbox" name="t4" id="t4" checked="checked" value="1" /><label for="t4">导航显示</label></div>
                 </div>
-                <div class="form_group">
-                    <div class="form_txt">栏目图片：</div>
-                    <div class="form_input"><input type="text" name="t5" size="40" maxlength="255" class="ip" /><input type="button" value="上传" config="t5:1:0:3" class="bnt bnt_save" /><span>可以为空</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">分页/排序：</div>
-                    <div class="form_input"><input type="text" name="t6" size="5" maxlength="10" value="20" title="分页" class="ip" />/ <input type="text" name="t7" size="5" maxlength="10" title="排序" class="ip" /><span>排序可以为空，数字越小越靠前</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">列表模板：</div>
-                    <div class="form_input"><input type="text" name="t8" id="t8" size="40" maxlength="255" class="ip" readonly /><span id="list"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t8" />　可以为空</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">内容模板：</div>
-                    <div class="form_input"><input type="text" name="t9" id="t9" size="40" maxlength="255" class="ip" readonly /><span id="show"></span><span> <input type="button" value="清空" class="bnt_clear bnt_normal" config="t9" />　可以为空</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">优化标题：</div>
-                    <div class="form_input"><input type="text" name="t10" size="60" maxlength="255" class="ip" /><span>可以为空，为空时显示栏目名称</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">内容页规则：</div>
-                    <div class="form_input"><select name="t13" class="ip"><option value="id">自动编号</option><option value="dateid">日期+编号</option></select><span>静态模式下使用</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">关键字：</div>
-                    <div class="form_input"><input type="text" name="t11" size="60" maxlength="255" class="ip" onKeyUp="strlen_verify(this,'key_len',255)" />　还可输入<span id="key_len">255</span> 个字符　<br><span>META标签的keywords内容. 关键字之间使用 "," 分隔</span></div>
-                </div>
-                <div class="form_group">
-                    <div class="form_txt">描述信息：</div>
-                    <div class="form_input"><input type="text" name="t12" size="60" maxlength="255" class="ip" onKeyUp="strlen_verify(this,'key_desc',255)" />　还可输入<span id="key_desc">255</span> 个字符　<br><span>META标签的description内容</span></div>
-				</div> -->
+                
 				<div class="form_group">
-					<label for="form_txt">菜单栏小图</label>
+					<label class="form_txt">菜单栏小图</label>
 					<div class="form_input"><input type="file" class="form-control" name="thumb_photo_id"></div>
 				</div>
-				<div class="image-box">
+				<div class="image-box" style="padding-left: 30px">
 					<img class="thumb_photo_id" src="{%if form_data and form_data.thumb_photo_id %}{% build_photo_url form_data.thumb_photo_id 'page_thumb' %}{% endif %}" alt="图片预览" style="width: 450px;height: 150px;">
 				</div>
 				</div>

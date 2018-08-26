@@ -1,22 +1,23 @@
+{% load ui_method %}
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>管理页面</title>
-<link href="{webroot}theme/admin/css/iframe.css" rel="stylesheet" type="text/css" />
-<link href="{webroot}lib/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
-<script src="{webroot}lib/js/jquery.js"></script>
-<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
-<script src="{webroot}lib/tips/jquery.tips.js"></script>
-<script src="{webroot}lib/validator/jquery.validator.js"></script>
-<script src="{webroot}lib/validator/zh_CN.js"></script>
-<script src="{webroot}lib/js/base.js"></script>
-<script src="{webroot}theme/admin/js/admin.js"></script>
-<script src="{webroot}lib/dialog/artdialog.js"></script>
-<script src="{webroot}lib/js/jquery.ztree.core-3.5.min.js"></script>
-<script src="{webroot}lib/js/jquery.ztree.excheck-3.5.min.js"></script>
+<link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="/static/lib/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<script src="/static/lib/validator/jquery.validator.js"></script>
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script src="/static/lib/js/base.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<script src="/static/lib/dialog/artdialog.js"></script>
+<script src="/static/lib/js/jquery.ztree.core-3.5.min.js"></script>
+<script src="/static/lib/js/jquery.ztree.excheck-3.5.min.js"></script>
 <!--[if lt IE 9]>
-<script src="{webroot}lib/js/html5.js"></script>
+<script src="/static/lib/js/html5.js"></script>
 <![endif]-->
 <script>
 var setting={view:{dblClickExpand:false,selectedMulti:false},data:{simpleData:{enable:true}},callback:{beforeExpand:beforeExpand,onClick:onClick}};
@@ -108,12 +109,34 @@ $(function(){
 <body>
 
 <div class="layout-center">
-	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=addlink">添加外部链接</a></div>
+	<div class="right_subject">当前位置：栏目 > <a href="{% url 'column_manage' %}">栏目管理</a> > <a href="?act=addlink">添加外部链接</a></div>
     <div class="right_body">
 
         <div class="table_form">
             <form class="formname" method="post">
-                <div class="form_group">
+					{% csrf_token %}
+					<div class="form_group">
+						<div class="form_txt">栏目名称</div>
+						<div class="form_input"><input type="text" name="column_name" value="{% if form_data.column_name %}{{ form_data.column_name }}{% endif %}" size="40" maxlength="50" class="ip">{% if form_errors and form_errors.column_name %}<span style="color: red">{{ form_errors.column_name }}</span>{% endif %}</div>
+					</div>
+					<div class="form_group">
+						<div class="form_txt">所属父级栏目</div>
+						<div class="form_input">
+							<select name="parent_id" class="form-control">
+								<option value="">选择父级</option>
+								{% build_child_select columns_select as select_list %}
+								{% for i in select_list %}
+									{% if form_data.parent_id == i.columns_id %}
+										<option value="{{ i.columns_id }}" selected>{{ i.column_name }}</option>
+									{% else %}
+										<option value="{{ i.columns_id }}" >{{ i.column_name }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+							{% if form_errors and form_errors.parent_id %}<span style="color: red">{{ form_errors.parent_id }}</span>{% endif %}
+						</div>
+					</div>
+                <!-- <div class="form_group">
                     <div class="form_txt">栏目名称：</div>
                     <div class="form_input"><input type="text" name="t0" id="t0" size="40" maxlength="50" class="ip" data-rule="栏目名称:required;" /></div>
                 </div>
@@ -136,7 +159,7 @@ $(function(){
                 <div class="form_group">
                     <div class="form_txt">栏目排序：</div>
                     <div class="form_input"><input type="text" name="t5" size="10" maxlength="10" class="ip" title="排序" /><span>可以为空，数字越小越靠前</span></div>
-                </div>
+                </div> -->
                 <div class="form_group">
                     <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
                 </div>
@@ -149,35 +172,35 @@ $(function(){
 	<ul id="ztree" class="ztree" style="margin-top:0;width:160px;"></ul>
 </div>
 <script>
-$(".formname").validator(
-	{
-		stopOnError:true,
-        theme:'yellow_top',
-		ignore:':hidden',
-		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
-		valid:function(form)
-		{
-			$.fn.tips({type:'loading',content:'数据提交中'});
-			$.ajax(
-			{
-				url:"?act=addlinkdb",
-				type:"post",
-				data:$(form).serialize(),
-				success:function(data){
-					data=jQuery.parseJSON(data);
-					var type="warn";
-					if(data.status=="y"){type="ok";}
-					$.fn.tips({type:type,content:data.info});
-					if(data.status=="y"){setTimeout("location.href='?'",1500);}
-					else
-					{$("input[type='submit']").attr("disabled",false);}
+// $(".formname").validator(
+// 	{
+// 		stopOnError:true,
+//         theme:'yellow_top',
+// 		ignore:':hidden',
+// 		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+// 		valid:function(form)
+// 		{
+// 			$.fn.tips({type:'loading',content:'数据提交中'});
+// 			$.ajax(
+// 			{
+// 				url:"?act=addlinkdb",
+// 				type:"post",
+// 				data:$(form).serialize(),
+// 				success:function(data){
+// 					data=jQuery.parseJSON(data);
+// 					var type="warn";
+// 					if(data.status=="y"){type="ok";}
+// 					$.fn.tips({type:type,content:data.info});
+// 					if(data.status=="y"){setTimeout("location.href='?'",1500);}
+// 					else
+// 					{$("input[type='submit']").attr("disabled",false);}
 					
-				}
-			});
-		},
-		invalid:function(){$("input[type='submit']").attr("disabled",false);}
-	}
-);
+// 				}
+// 			});
+// 		},
+// 		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+// 	}
+// );
 </script>
 </body>
 </html>
