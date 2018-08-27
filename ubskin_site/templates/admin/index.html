@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>优贝施官网后台</title>
+<link href="/static/admin/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="/static/admin/css/base.css" rel="stylesheet" type="text/css" />
+<link href="/static/lib/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
+<link href="/static/admin/css/iconfont.css" rel="stylesheet" type="text/css" />
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/js/jquery-ui.min.js"></script>
+<script src="/static/admin/js/jquery.layout-latest.min.js"></script>
+<script src="/static/lib/js/jquery.ztree.core-3.5.min.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<script src="/static/lib/dialog/artdialog.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+<script>
+var myLayout;
+$(document).ready(function () {
+	myLayout = $("body").layout({
+	/*	全局配置 */
+		closable:					true	/* 是否显示点击关闭隐藏按钮*/
+	,	resizable:					true	/* 是否允许拉动*/
+	,   maskContents:               true    /* 加入此参数，框架内容页就可以拖动了*/
+	/*	顶部配置 */
+	,	north__spacing_open:		0		/* 顶部边框大小*/
+	/*  底部配置 */
+	,	south__spacing_open:		0		/* 底部边框大小*/
+	/*	some pane-size settings*/
+	,	west__minSize:				200     /*左侧最小宽度*/
+	,   west__maxSize:				500     /*左侧最大宽度*/
+	/*	左侧配置 */
+	,   west__slidable:	            false
+	//,	west__animatePaneSizing:	false
+//	,	west__fxSpeed_size:			"slow"	/* 'fast' animation when resizing west-pane*/
+//	,	west__fxSpeed_open:			1000	/* 1-second animation when opening west-pane*/
+//	,	west__fxSettings_open:		{easing:"easeOutBounce"} // 左侧展开效果
+//	,	west__fxName_close:			"none"	/* NO animation when closing west-pane*/
+//	,	stateManagement__enabled:	false   /*是否读取cookies*/
+//	,	showDebugMessages:			false 
+	}); 
+});
+var lastCtrl = new Object();
+function DoLocation(ctrl)
+{
+	if(ctrl!=lastCtrl){
+		lastCtrl.className="";
+	}
+	ctrl.className="hover";
+	lastCtrl = ctrl;
+}
+
+var zNodes=[{id:-1,pId:0,name:"首页",open:true}
+,{id:1,pId:-1,name:"管理首页",url:"{% url 'admin_info' %}",target:"iframe_body"}
+,{id:2,pId:-1,name:"修改密码",url:"{% url 'change_password' %}",target:"iframe_body"}
+,{id:3,pId:-1,name:"退出登录",url:"{% url 'signout' %}",target:"_parent"}
+]
+
+	var setting={view:{dblClickExpand:false,showLine:true},data:{simpleData:{enable:true}},callback:{beforeExpand:beforeExpand,onExpand:onExpand,onClick:onClick}};
+	var curExpandNode=null;
+	function beforeExpand(treeId,treeNode) {
+		var pNode=curExpandNode?curExpandNode.getParentNode():null;
+		var treeNodeP=treeNode.parentTId?treeNode.getParentNode():null;
+		var zTree=$.fn.zTree.getZTreeObj("tree");
+		for(var i=0,l=!treeNodeP?0:treeNodeP.children.length;i<l; i++){
+			if(treeNode!==treeNodeP.children[i]){zTree.expandNode(treeNodeP.children[i],false);}
+		};
+		while (pNode){
+			if(pNode===treeNode){break;}
+			pNode=pNode.getParentNode();
+		};
+		if(!pNode){singlePath(treeNode);}
+	};
+	function singlePath(newNode) {
+		if (newNode === curExpandNode) return;
+		if (curExpandNode && curExpandNode.open==true) {
+			var zTree = $.fn.zTree.getZTreeObj("tree");
+			if (newNode.parentTId === curExpandNode.parentTId) {
+				zTree.expandNode(curExpandNode, false);
+			} else {
+				var newParents = [];
+				while (newNode) {
+					newNode = newNode.getParentNode();
+					if (newNode === curExpandNode) {
+						newParents = null;
+						break;
+					} else if (newNode) {
+						newParents.push(newNode);
+					}
+				}
+				if (newParents!=null) {
+					var oldNode = curExpandNode;
+					var oldParents = [];
+					while (oldNode) {
+						oldNode = oldNode.getParentNode();
+						if (oldNode) {
+							oldParents.push(oldNode);
+						}
+					}
+					if (newParents.length>0) {
+						zTree.expandNode(oldParents[Math.abs(oldParents.length-newParents.length)-1], false);
+					} else {
+						zTree.expandNode(oldParents[oldParents.length-1], false);
+					}
+				}
+			}
+		}
+		curExpandNode = newNode;
+	};
+	
+	function onExpand(event,treeId,treeNode){curExpandNode=treeNode;};
+	
+	function onClick(e,treeId,treeNode){
+		var zTree=$.fn.zTree.getZTreeObj("tree");
+		zTree.expandNode(treeNode,null,null,null,true);
+	}
+$(function(){
+	$.fn.zTree.init($("#tree"),setting,zNodes);
+	$("#tree_2_a").click();
+	$(".ui-layout-north li:first-child").click();
+	$(".menu_left").click(function(){
+		var menu_type=$(this).attr("menu_type");
+		var config=$(this).html();
+		$(".left_subject").html("<span>&#xe60c;</span>"+config);
+		var db;
+		$.ajax({
+			type:"get",
+			async:false,
+			cache:false,
+			url:"{% url 'request_menu_type' %}?menu_type="+menu_type,
+			success:function(_){zNodes=eval(_);}
+		})
+		$.fn.zTree.init($("#tree"),setting,zNodes);
+		$("#tree_2_a").click();
+		var url=$("#tree_2_a").attr("href");
+		if(!url){url="#a";}
+		parent.iframe_body.location=url;
+	})
+	$("#tree_4_a").click(function(){
+		dialog({title:"\u9000\u51fa\u767b\u5f55",content:'\u786e\u5b9a\u8981\u9000\u51fa\u767b\u5f55\uff1f',ok:function(){location.href="login.asp?act=out";},cancel:true}).showModal();
+	})
+	
+});
+</script>
+</head>
+<body>
+
+<div class="ui-layout-north">
+    <!-- <span><a href="../" target="_blank">预览网站</a><a href="sd_cache.asp" target="iframe_body">缓存管理</a><a href="sd_errlog.asp" target="iframe_body">错误日志</a></span> -->
+	<div class="logo"></div>
+    <ul>
+        <li onClick="DoLocation(this);" class="hover"><a href="./">首页</a></li>
+		<li onClick="DoLocation(this);" ><a href="#a" class="menu_left" menu_type="column_manage">栏目</a></li>
+		<li onClick="DoLocation(this);" ><a href="#a" class="menu_left" menu_type="content_manage">内容</a></li>
+		<li onClick="DoLocation(this);" ><a href="#a" class="menu_left" menu_type="extends_manage">扩展</a></li>
+        <!-- <li onClick="DoLocation(this);"><a href="javascript:;" class="menu_left" menuid="{$rs[id]}">....</a></li> -->
+        <!-- {/sdcms:rs} -->
+        <li class="last"></li>
+    </ul>
+</div>
+
+<div class="ui-layout-west">
+	<div class="left_subject iconfont"><span>&#xe60c;</span>首页</div>
+    <div class="left_tree">
+        <div id="tree" class="ztree"></div>
+    </div>
+</div>
+
+<!--<div class="ui-layout-south">
+	Powered By Sdcms.Cn &copy; 2008-{year(now())} sdcms lab inc.
+</div>-->
+
+<div class="ui-layout-center">
+	 <iframe name="iframe_body" id="iframe_body" src="{% url 'admin_info' %}" width="100%" height="98.96%" frameborder="0"></iframe>
+</div>
+</body>
+</html>

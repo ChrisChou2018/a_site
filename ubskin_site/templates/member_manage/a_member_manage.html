@@ -99,6 +99,9 @@
 
 {% block content %}
 
+    
+</div>
+
 <div style="overflow: auto;padding: 15px;"> 
     <table class="table table-striped member_table" >
         <thead>
@@ -236,7 +239,7 @@
             )
             
         }
-
+        
         //添加用户或着编辑用户
         function add_or_edit_member(is_edit){
             var post_url = is_edit ? '{% url "edit_member" %}?member_id=' + member_id : '{% url "create_member" %}'

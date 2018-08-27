@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="{webroot}theme/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="{webroot}lib/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css">
+<script src="{webroot}lib/js/jquery.js"></script>
+<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="{webroot}lib/tips/jquery.tips.js"></script>
+<script src="{webroot}lib/validator/jquery.validator.js"></script>
+<script src="{webroot}lib/validator/zh_CN.js"></script>
+<script src="{webroot}lib/js/base.js"></script>
+<script src="{webroot}theme/admin/js/admin.js"></script>
+<script src="{webroot}lib/dialog/artdialog.js"></script>
+<script src="{webroot}lib/js/jquery.ztree.core-3.5.min.js"></script>
+<script src="{webroot}lib/js/jquery.ztree.excheck-3.5.min.js"></script>
+<!--[if lt IE 9]>
+<script src="{webroot}lib/js/html5.js"></script>
+<![endif]-->
+<script>
+var setting={check:{enable:true,chkStyle:"radio",radioType:"all"},data:{simpleData:{enable:true}},callback:{onCheck:onCheck}};
+var zNodes=[{get_tree}];
+function onCheck(e,treeId,treeNode){$("#t0").attr("value",treeNode.id);}
+$(function(){$.fn.zTree.init($("#ztree"),setting,zNodes);})
+</script>
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=move&id={id}">移动栏目</a></div>
+    <div class="right_body">
+
+        <div class="table_form">
+            <form class="formname" method="post">
+                <div class="form_group">
+                    <div class="form_txt">当前栏目：</div>
+                    <div class="form_input">{fname}</div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">目标栏目：</div>
+                    <div class="form_input"><input type="hidden" name="t0" id="t0" value="{fid}"><ul id="ztree" class="ztree"></ul></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(".formname").validator(
+	{
+		stopOnError:true,
+        theme:'yellow_top',
+		ignore:':hidden',
+		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+		valid:function(form)
+		{
+			$.fn.tips({type:'loading',content:'数据提交中'});
+			$.ajax(
+			{
+				url:"?act=movedb&id={id}",
+				type:"post",
+				data:$(form).serialize(),
+				success:function(data){
+					data=jQuery.parseJSON(data);
+					var type="warn";
+					if(data.status=="y"){type="ok";}
+					$.fn.tips({type:type,content:data.info});
+					if(data.status=="y"){setTimeout("location.href='?'",1500);}
+					else
+					{$("input[type='submit']").attr("disabled",false);}
+					
+				}
+			});
+		},
+		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+	}
+);
+</script>
+</body>
+</html>

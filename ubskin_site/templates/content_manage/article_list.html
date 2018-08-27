@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="{webroot}theme/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="{webroot}theme/admin/css/iconfont.css" rel="stylesheet" type="text/css" />
+<link href="{webroot}lib/css/jquery.vtip.css" rel="stylesheet" type="text/css">
+<script src="{webroot}lib/js/jquery.js"></script>
+<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="{webroot}lib/js/base.js"></script>
+<script src="{webroot}lib/tips/jquery.tips.js"></script>
+<script src="{webroot}lib/js/jquery.vtip.js"></script>
+<script src="{webroot}lib/validator/jquery.validator.js"></script>
+<script src="{webroot}lib/validator/zh_CN.js"></script>
+<script src="{webroot}theme/admin/js/admin.js"></script>
+<script src="{webroot}lib/dialog/artdialog.js"></script>
+<!--[if lt IE 9]>
+<script src="{webroot}lib/js/html5.js"></script>
+<![endif]-->
+<script>
+
+$(function(){
+	$(".del").click(function(){
+		var id=$(this).attr("rel");
+			top.dialog({
+				content:'\u786e\u5b9a\u8981\u5220\u9664\uff1f\u0028\u53ef\u901a\u8fc7\u56de\u6536\u7ad9\u6062\u590d\u0029',
+				ok:function(){
+					var url,data;
+					url='?act=del&id='+id+'&classid={classid}';
+					$.ajax({
+					type:"get",
+					cache:false,
+					url:url,
+					success:function(_)
+					{
+						var act=_.substring(0,1);
+						var info=_.substring(1);
+						switch(act)
+						{
+							case "0":
+								$.fn.tips({type:"error",content:info});
+								break;
+							case "1":
+								$.fn.tips({type:"ok",content:"\u5220\u9664\u6210\u529f"});
+								$("#content_"+id).fadeOut('slow');
+								setTimeout('location.href="?classid={classid}"',1000);
+								break;
+							default:
+								alert(_);
+								break;
+						}
+					}
+					});
+									
+					},
+				cancel:true 
+			}).showModal();
+		
+		})
+		
+		
+
+		$(".delall").click(function(){
+		    var arrchk=$("input[name='id']:checked");
+			var idarr="";
+			$(arrchk).each(function(){
+				if(idarr==""){idarr+=this.value}else{idarr+=","+this.value}                   
+			}); 
+			if(idarr=="")
+			{
+				$.fn.tips({content:"\u81f3\u5c11\u9009\u62e9\u4e00\u6761\u4fe1\u606f"});
+			}
+			else
+			{
+				top.dialog({
+				content:'\u786e\u5b9a\u8981\u5220\u9664\u4e48\uff1f',
+				ok:function(){
+					var url='?act=delall&id='+idarr+'&classid={classid}';
+					$.ajax({
+					type:"get",
+					cache:false,
+					url:url,
+					success:function(_)
+					{
+						var act=_.substring(0,1);
+						var info=_.substring(1);
+						switch(act)
+						{
+							case "0":
+								$.fn.tips({type:"error",content:info});
+								break;
+							case "1":
+								$.fn.tips({type:"ok",content:"\u5220\u9664\u6210\u529f"});
+								var idnum;
+								idnum=idarr.split(",")
+								for(i=0;i<=idnum.length;i++)
+								{
+									$("#content_"+idnum[i]).fadeOut('slow');
+								}
+								setTimeout('location.href="?classid={classid}"',1000);
+								break;
+							default:
+								alert(_);
+								break;
+						}
+					}
+					});
+									
+					},
+				cancel:true 
+			}).showModal();
+			}
+		})
+		
+		// //批量清空
+		// $(".dosome").click(function(){
+		//     var arrchk=$("input[name='id']:checked");
+		// 	var idarr="";
+		// 	$(arrchk).each(function(){
+		// 		if(idarr==""){idarr+=this.value}else{idarr+=","+this.value}                   
+		// 	}); 
+		// 	if(idarr=="")
+		// 	{
+		// 		$.fn.tips({content:"\u81f3\u5c11\u9009\u62e9\u4e00\u6761\u4fe1\u606f"});
+		// 	}
+		// 	else
+		// 	{
+		// 		top.dialog({
+		// 			content:'\u786e\u5b9a\u8981\u8fd8\u539f\uff1f',
+		// 			ok:function(){
+		// 				var url='?act=redo&id='+idarr+'&classid={classid}';
+		// 				$.ajax({
+		// 				type:"get",
+		// 				cache:false,
+		// 				url:url,
+		// 				success:function(_)
+		// 				{
+		// 					var act=_.substring(0,1);
+		// 					var info=_.substring(1);
+		// 					switch(act)
+		// 					{
+		// 						case "0":
+		// 							$.fn.tips({type:"error",content:info});
+		// 							break;
+		// 						case "1":
+		// 							$.fn.tips({type:"ok",content:"\u8fd8\u539f\u6210\u529f"});
+		// 							var idnum;
+		// 							idnum=idarr.split(",")
+		// 							for(i=0;i<=idnum.length;i++)
+		// 							{
+		// 								$("#content_"+idnum[i]).fadeOut('slow');
+		// 							}
+		// 							setTimeout('location.href="classid={classid}"',1000);
+		// 							break;
+		// 						default:
+		// 							alert(_);
+		// 							break;
+		// 					}
+		// 				}
+		// 				});
+										
+		// 				},
+		// 				cancel:true 
+		// 			}).showModal();
+		// 	}
+		// })
+
+		//
+		// $(".islock").click(function(){doset("islock");})
+		// $(".nolock").click(function(){doset("nolock");})
+		// $(".isnice").click(function(){doset("isnice");})
+		// $(".nonice").click(function(){doset("nonice");})
+		// $(".istop").click(function(){doset("istop");})
+		// $(".notop").click(function(){doset("notop");})
+		// $(".iscomment").click(function(){doset("iscomment");})
+		// $(".nocomment").click(function(){doset("nocomment");})
+})
+function doset(t0)
+{
+	var arrchk=$("input[name='id']:checked");
+	var idarr="";
+	$(arrchk).each(function(){
+		if(idarr==""){idarr+=this.value}else{idarr+=","+this.value}                   
+	}); 
+	if(idarr=="")
+	{
+		$.fn.tips({content:"\u81f3\u5c11\u9009\u62e9\u4e00\u6761\u4fe1\u606f"});
+	}
+	else
+	{
+		var url='?act=doset&go='+t0+'&id='+idarr+'&classid={classid}';
+		$.ajax({
+		type:"get",
+		cache:false,
+		url:url,
+		success:function(_)
+		{
+			var act=_.substring(0,1);
+			var info=_.substring(1);
+			switch(act)
+			{
+				case "0":
+					$.fn.tips({type:"error",content:info});
+					break;
+				case "1":
+					location.href="?classid={classid}&page={page}&keyword={keyword}";
+					break;
+				default:
+					alert(_);
+					break;
+			}
+		}
+		});
+	}
+}
+</script>
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：内容 > 内容管理 > <a href="?classid={classid}">{catename}</a></div>
+    <div class="right_body">
+        <div class="nav_menu">
+            <div class="search"><form action="?" method="get" onSubmit="return checksearch(this)"><input type="hidden" name="classid" value="{classid}"><input type="text" name="keyword" class="ip" value="请输入关键字" onFocus="if(this.value==defaultValue)this.value=''" onBlur="if(this.value=='')this.value=defaultValue" /><input type="submit" class="bnt" value="查询" /></form></div>
+            <ul>
+            <!-- {if checkcatestatus(1)} -->
+            <li class="dropdown"><a href="{adminurl}{classid}&act=add"><span class="iconfont">&#xe618;</span>发布内容</a><dl>
+                <dt><a href="{adminurl}{classid}&act=add">发布内容</a></dt>
+                <!-- <dt><a href="?classid={classid}&act=add">发布外链</a></dt> -->
+            </dl></li>
+            <!-- {/if} -->
+            <!-- {if checkcatestatus(5)}
+            <li class="dropdown"><a href="javascript:;"><span class="iconfont">&#xe617;</span>批量操作↓</a><dl>
+                <dt><a href="javascript:;" class="islock">设置为已发</a></dt>
+                <dt><a href="javascript:;" class="nolock">设置为草稿</a></dt>
+                {if checkcatestatus(3)}<dt><a href="javascript:;" class="delall">批量删除</a></dt>{/if}
+                <dt><a href="javascript:;" class="isnice">设置为推荐</a></dt>
+                <dt><a href="javascript:;" class="nonice">取消推荐</a></dt>
+                <dt><a href="javascript:;" class="istop">设置为置顶</a></dt>
+                <dt><a href="javascript:;" class="notop">取消置顶</a></dt>
+                <dt><a href="javascript:;" class="iscomment">允许评论</a></dt>
+                <dt><a href="javascript:;" class="nocomment">禁止评论</a></dt>
+            </dl></li>
+            {/if} -->
+            <!-- <li class="dropdown"><a href="javascript:;"><span class="iconfont">&#xe619;</span>{statitle}</a><dl>
+                <dt><a href="?classid={classid}&sta=1">已发</a></dt>
+                <dt><a href="?classid={classid}&sta=2">草稿</a></dt>
+            </dl></li> -->
+            <!-- <li class="dropdown"><a href="javascript:;"><span class="iconfont">&#xe619;</span>{nattitle}</a><dl>
+                <dt><a href="?classid={classid}&nat=0">全部</a></dt>
+                <dt><a href="?classid={classid}&nat=1">有缩略图</a></dt>
+                <dt><a href="?classid={classid}&nat=2">无缩略图</a></dt>
+                <dt><a href="?classid={classid}&nat=3">已推荐</a></dt>
+                <dt><a href="?classid={classid}&nat=4">未推荐</a></dt>
+                <dt><a href="?classid={classid}&nat=5">已置顶</a></dt>
+                <dt><a href="?classid={classid}&nat=6">未置顶</a></dt>
+                <dt><a href="?classid={classid}&nat=7">允许评论</a></dt>
+                <dt><a href="?classid={classid}&nat=8">禁止评论</a></dt>
+                <dt><a href="?classid={classid}&nat=9">外部链接</a></dt>             
+            </dl></li> -->
+            <!-- <li class="dropdown"><a href="javascript:;"><span class="iconfont">&#xe619;</span>{ordtitle}</a><dl>
+                <dt><a href="?classid={classid}&order=0">正常排序</a></dt>
+                <dt><a href="?classid={classid}&order=1">访问人气↑</a></dt>
+                <dt><a href="?classid={classid}&order=2">访问人气↓</a></dt>
+                <dt><a href="?classid={classid}&order=3">发表日期↑</a></dt>
+                <dt><a href="?classid={classid}&order=4">发表日期↓</a></dt>
+                <dt><a href="?classid={classid}&order=5">评论数量↑</a></dt>
+                <dt><a href="?classid={classid}&order=6">评论数量↓</a></dt>
+            </dl></li> -->
+            </ul>
+        </div>
+        
+        <div class="table_title">
+        {catename}
+        </div>
+        <form>
+        <table id="tablelist">
+            <thead>
+                <tr>
+                    <th width="20"><input type="checkbox" name="chkall" onClick="checkall(this.form)" title="全选/取消" /></th>
+                    <th>标题</th>
+                    <th width="40">人气</th>
+                    <th width="40">缩图</th>
+                    <th width="40">发布</th>
+                    <th width="40">推荐</th>
+                    <th width="40">置顶</th>
+                    <th width="40">评论</th>
+                    <th width="40">外链</th>
+                    <th width="70">管理</th>
+                </tr>
+            </thead>
+            <tbody>
+            {dim islist:islist=1}
+            {sdcms:rs table="sd_content" where="classid=[classid][sqlwhere][wherekey]" order="[orderby]" pagesize="20" isadminurl="0"}
+            {rs:eof}
+            <%islist=0%>
+            <tr>
+                <td colspan="10">没有资料</td>
+            </tr>
+            {/rs:eof}
+            <tr id="content_{$rs[id]}">
+                <td><input name="id" type="checkbox" value="{$rs[id]}" /></td>
+                <td title="编号：{$rs[id]}<br>评论：{$rs[comments]}<br>发布：{$rs[createdate]}<br>更新：{$rs[lastupdate]}" class="vtip txt_left"><a href="{if $rs[isurl]=0}../show.asp?id={$rs[id]}{else}{$rs[url]}{/if}" target="_blank" {$rs[style]}>{$rs[title]}</a></td>
+                <td>{$rs[hits]}</td>
+                <td>{sdcms.iif($rs[ispic]=0,"<span>否</span>","是")}</td>
+                <td>{sdcms.iif($rs[islock]=0,"<span>否</span>","是")}</td>
+                <td>{sdcms.iif($rs[isnice]=0,"<span>否</span>","是")}</td>
+                <td>{sdcms.iif($rs[ontop]=0,"<span>否</span>","是")}</td>
+                <td>{sdcms.iif($rs[iscomment]=0,"<span>禁止</span>",$rs[comments])}</td>
+                <td>{sdcms.iif($rs[isurl]=0,"<span>否</span>","是")}</td>
+                <td>{if checkcatestatus(2)}<a href="{if $rs[isurl]=0}{adminurl}{else}?classid={/if}{classid}&act=edit&id={$rs[id]}&page={page}&sta={sta}&nat={nat}&order={order}&keyword={keyword}">编辑</a>　{/if}{if checkcatestatus(3)}<a href="javascript:;" class="del" rel="{$rs[id]}">删除</a>{/if}</td>
+            </tr>
+            {/sdcms:rs}            
+            </tbody>
+        </table>
+        </form>
+        <!-- {if islist=1}
+        <div class="table_bottom">
+            {if checkcatestatus(4)}<input type="button" value="批量移动" class="move">{/if}<ul>{showpage}</ul>
+        </div>
+        {/if} -->
+    </div>
+</div>
+
+</body>
+</html>

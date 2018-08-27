@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理首页</title>
+<link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<link href="/static/admin/css/iconfont.css" rel="stylesheet" type="text/css" />
+<script src="/static/lib/js/jquery.js"></script>
+<script src="/static/lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<script src="/static/lib/validator/jquery.validator.js"></script>
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script src="/static/admin/js/admin.js"></script>
+<script src="/static/lib/dialog/artdialog.js"></script>
+<!--[if lt IE 9]>
+<script src="/static/lib/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：管理首页</div>
+    <div class="right_body">
+        <div class="row-fluid">
+             <div class="span5">
+                 <div class="box_subject">用户信息</div>
+                 <div class="box_body mt15">
+                     <!-- {sdcms:rs table="sd_admin" where="adminid=[adminid]"} -->
+                      <ul class="userinfo">
+                          <li>您好：<span>{{ request.user.member_name }}</span></li>
+                          <li>您已登录：0 次</li>
+                          <li>最后登录IP: {{request.META.REMOTE_ADDR}}</li>
+                          <li>最后登录日期: {{ request.user.last_login }}</li>
+                      </ul>   
+                      <!-- {/sdcms:rs} -->
+                      <span id="tips" class="dis"></span>          
+                 </div>
+                 
+                 <!-- <div class="box_subject">版权信息</div>
+                 <div class="box_body">
+                      <ul class="userinfo">
+                          <li>程序信息： 唐普科技网站管理系统</li> 
+                          <li>当前版本： 0.01</li>
+                          <li>程序架构：唐普科技 </li>
+                          <li>程序开发：唐普科技</li> 
+                          <li>界面设计：唐普科技 </li>
+                      </ul>              
+                 </div> -->
+                 
+             </div>
+        </div>
+    </div>
+</div>
+<script>$(function(){get_tips();Get_Notice(0,"notice");Get_Notice(1,"nice");})</script>
+</body>
+</html>

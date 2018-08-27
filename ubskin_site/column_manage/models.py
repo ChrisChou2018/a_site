@@ -4,7 +4,7 @@ from django.db import models
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Count
-
+from django.urls import reverse
 
 
 class Columns(models.Model):
@@ -16,7 +16,7 @@ class Columns(models.Model):
     type_choises = (
         (1, '导航栏目'),
         (2, '单网页'),
-        (3, '菜单'),
+        (3, '子栏目'),
     )
     columns_type = models.SmallIntegerField(choices=type_choises, db_column='columns_type', verbose_name='菜单类型')
     link = models.CharField(db_column="link", verbose_name="链接地址", max_length=1000, null=True, blank=True)
@@ -24,11 +24,11 @@ class Columns(models.Model):
     thumb_photo_id = models.CharField(db_column="thumb_photo_id", null=True, blank=True, verbose_name='小图片ID', max_length=255)
     parent_id = models.BigIntegerField(db_column='parent_id', verbose_name='父级菜单ID', null=True, blank=True,)
     page_type_choices = (
-        (1, '文本图片'),
+        (1, '文本图片页面'),
         (2, '留言页面'),
         (3, '店铺查询页面'),
-        (4, '文章列表类型页面'),
-        (5, '重点店铺页面'),
+        (4, '文章列表页面'),
+        (5, '大图标题列表页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -122,12 +122,88 @@ class Columns(models.Model):
         photo_dict['photo_id'] = parent_obj.photo_id
         photo_dict['thumb_photo_id'] = parent_obj.thumb_photo_id
         return photo_dict
+    
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            column_name = '栏目名称',
+            columns_id = '菜单栏ID',
+            columns_type = '栏目类型',
+            page_type = '页面类型',
+            more = '更多'
+        )
+
+    @classmethod
+    def get_columns_by_admin(cls):
+        data_list = cls.objects.filter(columns_type=1, status='normal').values()
+        for i in data_list:
+            child  = cls.objects.filter(parent_id=i['columns_id'], status='normal')
+            if child:
+                i['has_child'] = True
+        return data_list
+    
+    @classmethod
+    def find_child(cls, data_id):
+        data_list = cls.objects.filter(parent_id=data_id, status='normal').values()
+        for i in data_list:
+            child = cls.objects.filter(parent_id=i['columns_id'],  status='normal').values()
+            if child:
+                i['has_child'] = True
+        return data_list
+    
+    @classmethod
+    def build_column_tree(cls):
+        '''
+        {'id':-1, 'pId':0, 'name':"栏目", 'open':True},
+        {'id':1, 'pId':-1, 'name':"栏目管理", 'url': reverse('column_manage'), 'target':"iframe_body"},
+        '''
+        data = cls.objects.filter(status='normal').values().order_by('pk')
+        data_list = list()
+        x = 1
+        for i in data:
+            if i['columns_type'] == 1:
+                if x == 1:
+                    data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'], 'open': True
+                    })
+                else: 
+                    data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'],
+                    })
+                x += 1
+            elif i['columns_type'] == 2:
+                url_dict = {
+                    1: reverse('editor_page_content'),
+                    2: '',
+                    3: reverse('shop_manage'),
+                    4: reverse('article_list'),
+                    5: reverse('foucs_shop_manage'),
+                }
+                data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'], 'url': url_dict[i['page_type']] + '?data_id=' + str(i['columns_id']),
+                        'target':"iframe_body",
+                    })
+            else:
+                data_list.append({
+                        'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
+                        'name': i['column_name'],
+                    })
+        return data_list
+        
 
 
 class Article(models.Model):
 
     article_id  = models.AutoField(db_column="article_id", primary_key=True, verbose_name="文章ID")
     columns_id = models.BigIntegerField(db_column="columns_id", verbose_name="所属栏目ID", null=True, blank=True)
+    article_type_choices = (
+        (1, '普通文章类型'),
+        (2, '大图片标题类型'),
+    )
+    article_type = models.SmallIntegerField(db_column='article_type', verbose_name='文章列表类型', default=1)
     article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255, null=True, blank=True)
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
@@ -167,6 +243,14 @@ class Article(models.Model):
     @classmethod
     def has_articlr_by_columns_id(cls, data_id):
         return cls.objects.filter(columns_id=data_id, status='normal').first()
+    
+    @classmethod
+    def get_campany_news(cls):
+        company_active = Columns.objects.filter(column_name='企业动态', status='normal').first()
+        data_list = None
+        if company_active:
+            data_list = cls.objects.filter(columns_id=company_active.columns_id, status='normal').order_by('-pk')[0:8]
+        return data_list if data_list else list()
 
 
 class ColumnScrollingImage(models.Model):

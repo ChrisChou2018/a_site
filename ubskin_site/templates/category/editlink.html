@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理页面</title>
+<link href="{webroot}theme/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+<script src="{webroot}lib/js/jquery.js"></script>
+<script src="{webroot}lib/js/jquery-migrate-1.1.0.min.js"></script>
+<script src="{webroot}lib/tips/jquery.tips.js"></script>
+<script src="{webroot}lib/validator/jquery.validator.js"></script>
+<script src="{webroot}lib/validator/zh_CN.js"></script>
+<script src="{webroot}lib/js/base.js"></script>
+<script src="{webroot}theme/admin/js/admin.js"></script>
+<script src="{webroot}lib/dialog/artdialog.js"></script>
+<!--[if lt IE 9]>
+<script src="{webroot}lib/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="layout-center">
+	<div class="right_subject">当前位置：栏目 > <a href="?">栏目管理</a> > <a href="?act=editlink&id={data(0,0)}">修改外部链接</a></div>
+    <div class="right_body">
+
+        <div class="table_form">
+            <form class="formname" method="post">
+                <div class="form_group">
+                    <div class="form_txt">栏目名称：</div>
+                    <div class="form_input"><input type="text" name="t0" id="t0" size="40" maxlength="50" class="ip" value="{data(1,0)}" data-rule="栏目名称:required;" /></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">属性设置：</div>
+                    <div class="form_input"><input type="checkbox" name="t1" id="t1" {if data(4,0)=1}checked{/if} value="1" /><label for="t1">导航显示</label></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">栏目图片：</div>
+                    <div class="form_input"><input type="text" name="t2" size="50" maxlength="255" class="ip" value="{data(5,0)}" /><input type="button" value="上传" config="t2:1:{id}:3" class="bnt bnt_save" />　<span>可以为空</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">链接地址：</div>
+                    <div class="form_input"><input type="text" name="t3" size="40" maxlength="255" class="ip" value="{data(13,0)}" /></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_txt">栏目排序：</div>
+                    <div class="form_input"><input type="text" name="t4" size="10" maxlength="10" class="ip" title="排序" value="{data(7,0)}" /><span>可以为空，数字越小越靠前</span></div>
+                </div>
+                <div class="form_group">
+                    <div class="form_bnt"><input type="submit" value="保存" class="bnt_save"><input type="button" value="返回" class="bnt_normal goback"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(".formname").validator(
+	{
+		stopOnError:true,
+        theme:'yellow_top',
+		ignore:':hidden',
+		beforeSubmit:function(){$("input[type='submit']").attr("disabled",true);},
+		valid:function(form)
+		{
+			$.fn.tips({type:'loading',content:'数据提交中'});
+			$.ajax(
+			{
+				url:"?act=editlinkdb&id={data(0,0)}",
+				type:"post",
+				data:$(form).serialize(),
+				success:function(data){
+					data=jQuery.parseJSON(data);
+					var type="warn";
+					if(data.status=="y"){type="ok";}
+					$.fn.tips({type:type,content:data.info});
+					if(data.status=="y"){setTimeout("location.href='?'",1500);}
+					else
+					{$("input[type='submit']").attr("disabled",false);}
+					
+				}
+			});
+		},
+		invalid:function(){$("input[type='submit']").attr("disabled",false);}
+	}
+);
+</script>
+</body>
+</html>

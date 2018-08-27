@@ -1,5 +1,6 @@
 {% extends './web_layout.html' %}
 {% block css %}
+{% load ui_method %}
 <style>
 #slides{
   display: none;
@@ -14,8 +15,8 @@
       width: 1200,
       start: 1,//控制从第几张图开始播放 
       navigation:{  //控制前后按钮
-        active: false,//是否开启左右按钮
-        effect: "slide"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
+        active: true,//是否开启左右按钮
+        effect: "fade"//触发按钮时，焦点图切换的特效，可选参数"slide"和"fade"
       }
     });
   })
@@ -31,12 +32,12 @@
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
       <img src="/static/web/2018081751005313.jpg">
-      <img src="/static/web/2018081751005313.jpg">
+      <!-- <img src="/static/web/2018081751005313.jpg"> -->
     </div>
-    <div class="slidesjs-navigation">
+    <!-- <div class="slidesjs-navigation">
       <a href="javascript:;" class="slidesjs-previous slidesjs-navigation" title=""></a>
       <a href="javascript:;" class="slidesjs-next slidesjs-navigation" title=""></a>
-    </div>
+    </div> -->
       <!-- <a class="slidesjs-play slidesjs-navigation slidesjs-playing" href="#" title="Play" style="display: none;">Play</a>
       <a class="slidesjs-stop slidesjs-navigation" href="#" title="Stop" style="">Stop</a>
       <ul class="slidesjs-pagination">
@@ -78,6 +79,22 @@
     </div> -->
 
   </div>
+  <div class="y_banner_m1">  
+      <div class="slide_container">
+       <ul class="rslides slide slide1" id="slider">
+        
+        <li id="slide1_s0" class="slide1_on" style="display: block; float: left; position: relative; opacity: 1; z-index: 2; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=180"><img src="/static/web/2018081751212421.jpg" alt="移动端首页banner1" border="0"></a></li>   
+        
+        <li id="slide1_s1" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=154"><img src="/static/web/2018051761433325.jpg" alt="移动端首页banner2" border="0"></a></li>   
+        
+        <li id="slide1_s2" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=42"><img src="/static/web/2018072735674265.jpg" alt="移动端首页banner3" border="0"></a></li>   
+        
+        <li id="slide1_s3" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=27"><img src="/static/web/2018021242520941.jpg" alt="移动端首页banner4" border="0"></a></li>   
+         
+       </ul><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav prev">Previous</a><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav next">Next</a>
+     </div> 
+    </div>
+  </header>
 {% endblock %}
 
 <!-- <li><a href="list.asp?classid=3" class="nav_a">关于优贝施</a>
@@ -102,23 +119,11 @@
       <span>NEWS:</span> 
       <div id="wenchuan">
       
+      {% for i in campany_news %}
+        <p><a href="{% url 'public_page' i.columns_id %}?article_id={{ i.article_id }}" title="{{ i.article_title }}">{{ i.article_title }}</a></p>
+      {% endfor %}
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      <p><a href="show.asp?id=174" title="【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你">【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你</a></p>
+      <!-- <p><a href="show.asp?id=174" title="【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你">【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你</a></p>
       
       
       <p><a href="show.asp?id=169" title="【报道】优贝施荣获2018中国化妆品年度杰出零售商">【报道】优贝施荣获2018中国化妆品年度杰出零售商</a></p>
@@ -126,14 +131,25 @@
       
       <p><a href="show.asp?id=168" title="【新品】欧洲四大顶级药妆之一！十分钟急救面膜，多糟糕的脸都能救">【新品】欧洲四大顶级药妆之一！十分钟急救面膜，多糟糕的脸都能救</a></p>
       
-      <p><a href="show.asp?id=181" title="刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？">刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？</a></p><p><a href="show.asp?id=180" title="用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕">用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕</a></p><p><a href="show.asp?id=178" title="【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆">【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆</a></p><p><a href="show.asp?id=177" title="全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！">全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！</a></p><p><a href="show.asp?id=176" title="七夕礼物攻略，一份最走心的礼物清单">七夕礼物攻略，一份最走心的礼物清单</a></p></div> 
+      <p><a href="show.asp?id=181" title="刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？">刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？</a></p>
+      
+      <p><a href="show.asp?id=180" title="用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕">用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕</a></p>
+      
+      <p><a href="show.asp?id=178" title="【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆">【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆</a></p>
+      
+      <p><a href="show.asp?id=177" title="全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！">全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！</a></p>
+      
+      <p><a href="show.asp?id=176" title="七夕礼物攻略，一份最走心的礼物清单">七夕礼物攻略，一份最走心的礼物清单</a></p> -->
+    
+    </div> 
+
       <script type="text/javascript" src="/static/web/index_textgd.js"></script>
     </div>
     <ul class="index_qtype">
-      <li><a href="list.asp?classid=6"><img src="/static/web/y_01.jpg" border="0" alt=""></a></li>
-      <li><a href="list.asp?classid=16"><img src="/static/web/y_02.jpg" border="0" alt=""></a></li>
+      <li><a href="#a"><img src="/static/web/y_01.jpg" border="0" alt=""></a></li>
+      <li><a href="#a"><img src="/static/web/y_02.jpg" border="0" alt=""></a></li>
       <li><a href="#a"><img src="/static/web/y_03.jpg" border="0" alt=""></a></li>
-      <li class="index_right"><a href="list.asp?classid=45"><img src="/static/web/y_04.jpg" border="0" alt=""></a></li>
+      <li class="index_right"><a href="#a"><img src="/static/web/y_04.jpg" border="0" alt=""></a></li>
     </ul>
     <div class="clean"></div>
     <div class="index_h1"></div>
@@ -210,13 +226,16 @@
       </ul>
       <div class="clean"></div>
       <div id="tabdiv">
+        
         <span class="cooper_info">
           <div class="cooper_img">
-            <a href="#a"><img src="/static/web/2018020837823177.jpg" border="0" alt="优贝施品牌"></a>
+            <a href="#a"><img src="{% if team_work_data.brand_top %}{% build_photo_url team_work_data.brand_top.photo_id 'top_team' %}{% else %}/static/web/2018020837823177.jpg{% endif %}" border="0" alt="{% if team_work_data.brand_top %}{{team_work_data.brand_top.team_name}}{% else %}优贝施品牌{% endif %}"></a>
           </div>
           <ul class="cooper_ul">
-            
-            <li><a href="#A"><img src="/static/web/2016080708345449.jpg" border="0" alt="HABA"></a></li>
+            {% for i in team_work_data.brand_list %}
+              <li><a href="{{ i.team_link }}"><img src="{% build_photo_url i.photo_id 'team' %}" border="0" alt="{{i.team_name}}"></a></li>
+            {% endfor %}
+            <!-- <li><a href="#A"><img src="/static/web/2016080708345449.jpg" border="0" alt="HABA"></a></li>
             
             <li><a href="#A"><img src="/static/web/2017111537256933.jpg" border="0" alt="AMZ"></a></li>
             
@@ -254,18 +273,20 @@
             
             <li><a href="#a"><img src="/static/web/2017111537529981.jpg" border="0" alt="欧兰"></a></li>
             
-            <li><a href="#a"><img src="/static/web/2016082637434849.jpg" border="0" alt="海丝蓓康"></a></li>
+            <li><a href="#a"><img src="/static/web/2016082637434849.jpg" border="0" alt="海丝蓓康"></a></li> -->
             
           </ul>
           <div class="clean"></div>
         </span>
         <span class="cooper_info" style="display:none;">
           <div class="cooper_img">
-            <a href="#a"><img src="/static/web/2018021240044005.jpg" border="0" alt="优贝施商场"></a>
+            <a href="#a"><img src="{% if team_work_data.shop_top %}{% build_photo_url team_work_data.shop_top.photo_id 'top_team' %}{% else %}/static/web/2018021240044005.jpg{% endif %}" border="0" alt="{% if team_work_data.shop_top %}{{team_work_data.shop_top.team_name}}{% else %}优贝施商场{% endif %}"></a>
           </div>
           <ul class="cooper_ul">
-            
-            <li><a href="#a"><img src="/static/web/2016080708855264.jpg" border="0" alt="大悦城"></a></li>
+              {% for i in team_work_data.shop_list %}
+                <li><a href="{{ i.team_link }}"><img src="{% build_photo_url i.photo_id 'team' %}" border="0" alt="{{i.team_name}}"></a></li>
+              {% endfor %}
+            <!-- <li><a href="#a"><img src="/static/web/2016080708855264.jpg" border="0" alt="大悦城"></a></li>
             
             <li><a href="#a"><img src="/static/web/2016080708892992.jpg" border="0" alt="凯德"></a></li>
             
@@ -303,7 +324,7 @@
             
             <li><a href="#a"><img src="/static/web/2016090359727365.jpg" border="0" alt="星摩尔"></a></li>
             
-            <li><a href="#a"><img src="/static/web/2016090359687033.jpg" border="0" alt="麦凯乐"></a></li>
+            <li><a href="#a"><img src="/static/web/2016090359687033.jpg" border="0" alt="麦凯乐"></a></li> -->
             
           </ul>
           <div class="clean"></div>

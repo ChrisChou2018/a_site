@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'ubskin_site.member_manage',
     'ubskin_site.column_manage',
     'ubskin_site.web',
-    'ubskin_site.extands_manage',
+    'ubskin_site.extends_manage',
     'ubskin_site.global_app',
 ]
 
@@ -142,6 +142,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'ubskin_site/static'),
 )
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "..", 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "ubskin_site", 'media')
 
 MEDIA_URL = "/media/"

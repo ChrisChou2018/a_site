@@ -13,12 +13,14 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
-    
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
     
 </head>
 <body>
-    <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>     
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="#">店铺查询</a> &gt; <a href="#">添加店铺</a></div>
+    </div>  
     <div class="box box-primary" style="padding: 30px">
         <div class="box-header">
           <h3 class="box-title">添加店铺</h3>
@@ -52,7 +54,7 @@
                 {% if form_errors and form_errors.address %}<span style="color: red">{{ form_errors.address }}</span>{% endif %}
             </div>
           <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">提交</button> <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>   
           </div>
         </form>
       </div>

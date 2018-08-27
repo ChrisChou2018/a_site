@@ -13,31 +13,47 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
-    
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
     
 </head>
 <body>
-    <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>   
-    <div class="row" style="padding: 20px;" >
-        <span>内容区:</span>
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="#">{% get_column_name_by_id columns_id %}</a> &gt; <a href="#">添加{% get_column_name_by_id columns_id %}</a></div>
+    </div>
+    <div class="row" style="padding-left: 40px;padding-right: 40px;" >
+        <div class="form-group">
+            <label for="from_country">文章标题</label>
+            <input class="form-control article_title" type="text"  placeholder="输入文章标题" value="{%if form_data and form_data.article_title %}{{ form_data.article_title }}{% endif %}">
+            {% if form_errors and form_errors.article_title %}<span style="color: red">{{ form_errors.article_title }}</span>{% endif %}
+        </div>
+        <div class="form-group">
+            <label for="from_country">文章类型选择(默认普通文章类型如：“企业动态”)</label>
+            <select name="article_type" class="form-control">
+                {% for i in article_type_choices %}
+                    {% if form_data.article_type == i.0 %}
+                    <option value="{{i.0}}" selected>{{i.1}}</option>
+                    {% else %}
+                    <option value="{{i.0}}">{{i.1}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            {% if form_errors and form_errors.article_title %}<span style="color: red">{{ form_errors.article_title }}</span>{% endif %}
+        </div>
         <div class="form-group">
             <label for="from_country">设置文章缩略图</label>
             <input type="file" class="form-control" name="photo_id">
         </div>
-        <div class="image-box" style="width: 250px;height: 350px;border: 1px solid darkgray">
-            <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'article_thumb_image' %}{% endif %}" alt="图片预览" style="max-height: 100%;max-width: 100%;">
+        <div class="image-box" style="width: 350px;height: 400px;border: 1px solid darkgray;">
+            <img class="photo_id" src="{% if form_data and form_data.photo_id %}{% if form_data.article_type == 1 %}{% build_photo_url form_data.photo_id 'article_thumb_image' %}{% else %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}{% endif %}" alt="图片预览" style="max-height: 100%;max-width: 100%;">
         </div>
-        <input class="form-control article_title" type="text"  placeholder="输入文章标题" value="{%if form_data and form_data.article_title %}{{ form_data.article_title }}{% endif %}">
-        {% if form_errors and form_errors.article_title %}<span style="color: red">{{ form_errors.article_title }}</span>{% endif %}
         <div id="toolbar" style="border: darkgray solid 1px;width: 100%;">
 
         </div>
         <div id="editor" style="border: darkgray solid 1px;width: 100%;min-height: 390px;">
-        {% if form_data and form_data.article_content %}{{ form_data.article_content |safe }}{% endif %}
+            {% if form_data and form_data.article_content %}{{ form_data.article_content |safe }}{% endif %}
         </div>
-        <button type="button" class="btn btn-info submit_btn">提交</button>
-        
+        <button type="button" class="btn btn-info submit_btn">提交</button> <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>   
     </div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
@@ -88,11 +104,12 @@ $(function(){
         'image',  // 插入图片
         'table',  // 表格
         'video',  // 插入视频
-        'code',  // 插入代码
         'undo',  // 撤销
         
     ]
     editor.customConfig.uploadImgShowBase64 = true 
+    editor.customConfig.uploadImgServer = '{% url "upload_file" %}'
+    editor.customConfig.uploadImgMaxSize = 5 * 1024 * 1024
     editor.create()
 
     $('input[name="photo_id"]').change(function(){
@@ -109,14 +126,17 @@ $(function(){
         $image_item.attr('src', url)
     })
     $('.submit_btn').click(function(){
+        $('.submit_btn').unbind('click')
         var formData = new FormData();
         let article_content = editor.txt.html();
         let $file_input = $('input[name="photo_id"]');
         let $title_input = $('.article_title')
+        let $article_type = $('select[name="article_type"]')
         formData.append('article_content', article_content)
         formData.append('csrfmiddlewaretoken', getCookie('csrftoken'))
         formData.append($file_input.attr('name'), $file_input[0].files[0])
         formData.append('article_title', $title_input.val())
+        formData.append('article_type', $article_type.val())
         $.ajax({
             type:'post',
             url:"{{ request.uri }}",

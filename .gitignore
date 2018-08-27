@@ -57,7 +57,8 @@ coverage.xml
 local_settings.py
 ubskin_site/member_manage/migrations/
 ubskin_site/column_manage/migrations/
-ubskin_site/column_manage/expand_manage/
+ubskin_site/extends_manage/migrations/
+./Pipfile
 
 # Flask stuff:
 instance/
