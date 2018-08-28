@@ -192,6 +192,11 @@ class Columns(models.Model):
                         'name': i['column_name'],
                     })
         return data_list
+    
+    @classmethod
+    def get_all_page_for_select(cls):
+        data_list = cls.objects.filter(columns_type=2, status='normal').values_list('columns_id', 'column_name')
+        return data_list
 
 
 class Article(models.Model):

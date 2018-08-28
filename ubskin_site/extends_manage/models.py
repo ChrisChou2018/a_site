@@ -62,11 +62,12 @@ class Ad(models.Model):
         (1, '首页轮播图'),
         (2, 'm_首页轮播图'),
         (3, '广告位a'),
-        (4, '广告位bleft'),
-        (5, '广告位bcenter'),
-        (6, '广告为bright'),
+        (4, '广告位b_left'),
+        (5, '广告位b_center'),
+        (6, '广告为b_right'),
     )
     location = models.SmallIntegerField(db_column='location', verbose_name='location')
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='广告图', max_length=255)
     status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
 
@@ -82,6 +83,19 @@ class Ad(models.Model):
             location = '广告位置',
             more = '更多',
         )
+    
+    @classmethod
+    def get_ad_dict_for_page(cls):
+        data_dict = dict()
+        for i in cls.location_choices:
+            data = cls.objects.filter(location=i[0]).values()
+            if data:
+                data_dict[i] = data
+        return data_dict
+
+class Message(models.Model):
+    pass
+
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:

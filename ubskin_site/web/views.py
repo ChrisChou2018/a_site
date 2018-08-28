@@ -88,6 +88,7 @@ def public_page(request, data_id):
         data_count = data_count,
         select_columns_ids = select_columns_ids,
         article_obj = article_obj,
+        ad_dict = extends_models.Ad.get_ad_dict_for_page,
     )
     
 
