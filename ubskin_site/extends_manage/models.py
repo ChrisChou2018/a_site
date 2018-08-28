@@ -52,14 +52,36 @@ class TeamWork(models.Model):
 
 class Ad(models.Model):
     ad_id = models.AutoField(db_column="team_work_id", primary_key=True, verbose_name="合作商ID")
+    ad_name = models.CharField(db_column='ad_name', verbose_name='广告名称', max_length=255)
+    ad_title = models.CharField(db_column='ad_title', verbose_name='广告标题', max_length=255)
+    ad_e_title = models.CharField(db_column='ad_e_title', verbose_name='广告英文标题', max_length=255)
+    ad_text = models.CharField(db_column='ad_text', verbose_name='广告文字说明', max_length=1000)
+    columns_id = models.BigIntegerField(db_column='columns_id', verbose_name='设置跳转的页面')
+    # link = models.CharField(db_column='link', verbose_name='自定义链接', max_length=255, default='#a')
     location_choices = (
-        (1, '首页轮播图')
+        (1, '首页轮播图'),
+        (2, 'm_首页轮播图'),
+        (3, '广告位a'),
+        (4, '广告位bleft'),
+        (5, '广告位bcenter'),
+        (6, '广告为bright'),
     )
     location = models.SmallIntegerField(db_column='location', verbose_name='location')
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
 
     class Meta:
         db_table = 'ad'
 
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            ad_id = '广告ID',
+            ad_name = '广告名',
+            location = '广告位置',
+            more = '更多',
+        )
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):
     if search_value:

@@ -192,7 +192,6 @@ class Columns(models.Model):
                         'name': i['column_name'],
                     })
         return data_list
-        
 
 
 class Article(models.Model):
@@ -225,7 +224,7 @@ class Article(models.Model):
             columns_id = '所属栏目',
             more = '更多'
         )
-    
+
     @classmethod
     def get_article_obj_by_columns_id(cls, columns_id):
         return cls.objects.filter(columns_id=columns_id, status='normal').first()

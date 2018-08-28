@@ -142,3 +142,50 @@ def add_team_work(request):
         return redirect(reverse('team_manage'))
 
 
+def ad_manage(request):
+    if request.method == "GET":
+        search_dict = {
+            'team_name': 'team_name__icontains',
+        }
+        search_value = dict()
+        current_page = request.GET.get('page', 1)
+        filter_args = ""
+        for i in search_dict:
+            value = request.GET.get(i)
+            if value is not None:
+                search_value[search_dict[i]] = value
+                filter_args  += "&{}={}".format(i, value)
+        else:
+            if not filter_args:
+                filter_args = None
+        if search_value:
+            data_list = extends_models.get_data_list(
+                extends_models.Ad,
+                current_page,
+                search_value=search_value
+            )
+            data_count = extends_models.get_data_count(
+                extends_models.Ad,
+                search_value,
+            )
+        else:
+            data_list = extends_models.get_data_list(
+                extends_models.Ad,
+                current_page,
+            )
+            data_count = extends_models.get_data_count(
+                extends_models.Ad,
+            )
+        return my_render(
+            request,
+            'extends_manage/ad_manage.html',
+            current_page = current_page,
+            form_data = request.GET,
+            filter_args = filter_args,
+            data_list = data_list,
+            data_count = data_count,
+            table_head = extends_models.Ad.get_style_table_head,
+        )
+
+def add_ad(request):
+    pass
