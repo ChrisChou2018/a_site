@@ -28,10 +28,13 @@
 <div class="y_banner y_banner1">
 
     <div id="slides">
-      <img src="/static/web/2018081751005313.jpg">
-      <img src="/static/web/2018081751005313.jpg">
-      <img src="/static/web/2018081751005313.jpg">
-      <img src="/static/web/2018081751005313.jpg">
+      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
+      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
+      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
+      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
+      {% for i in ad_dict %}
+        <a href="{% url 'public_page' i.columns_id %}"> <img src="{% build_photo_url i.photo_id 'page_title' %}" alt=""> </a>
+      {% endfor %}
       <!-- <img src="/static/web/2018081751005313.jpg"> -->
     </div>
     <!-- <div class="slidesjs-navigation">

@@ -88,7 +88,11 @@ class Ad(models.Model):
     def get_ad_dict_for_page(cls):
         data_dict = dict()
         for i in cls.location_choices:
-            data = cls.objects.filter(location=i[0]).values()
+            data = cls.objects.filter(location=i[0]).values().order_by('-pk')
+            if i == 3:
+                data = data[:4]
+            elif i == 5:
+                data = data[:3]
             if data:
                 data_dict[i] = data
         return data_dict
