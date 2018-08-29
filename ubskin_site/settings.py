@@ -13,10 +13,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 
-try:
-    import settings_local
-except:
-    pass
+
+from . import settings_local
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
