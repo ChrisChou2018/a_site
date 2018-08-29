@@ -98,7 +98,16 @@ class Ad(models.Model):
         return data_dict
 
 class Message(models.Model):
-    pass
+    message_id = models.AutoField(db_column="message_id", primary_key=True, verbose_name="留言ID")
+    user_name = models.CharField(db_column="user_name", verbose_name="留言折姓名", max_length=255)
+    gender = models.CharField(db_column="gender", verbose_name="性别", max_length=255)
+    phone_number = models.CharField(db_column="phone_number", verbose_name="手机号码", max_length=255, null=True, blank=True)
+    message_text = models.TextField(db_column="message_text", verbose_name="留言文本", null=True, blank=True)
+    create_time = models.IntegerField(db_column='create_time', verbose_name='留言时间', default=int(time.time()))
+
+
+    class Meta:
+        db_table = 'message'
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

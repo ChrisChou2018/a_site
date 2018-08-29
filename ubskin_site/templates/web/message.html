@@ -1,0 +1,142 @@
+{% extends './web_layout.html' %}
+{% load ui_method %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/lib/validator/css/jquery.validator.css">
+<link rel="stylesheet" type="text/css" href="/static/lib/tips/css/jquery.tip.css">
+{% endblock %}
+{% block js %}
+<script src="/static/lib/tips/jquery.tips.js"></script>
+<script src="/static/lib/validator/jquery.validator.js"></script>
+<script src="/static/lib/validator/zh_CN.js"></script>
+<script>
+$(function(){
+    $(".form_book").validator(
+    {
+        stopOnError:true,
+        theme:'yellow_top',
+        ignore:':hidden',
+        valid:function(form)
+        {
+            $.fn.tips({type:'loading',content:'数据提交中'});
+            $.ajax(
+            {
+                url:"plug/book.asp?act=add",
+                type:"post",
+                data:$(form).serialize(),
+                success:function(data){
+                    data=jQuery.parseJSON(data);
+                    if(data.status!="y"){$.fn.tips({content:data.info});}
+                    if(data.status=="y")
+                    {
+                        var info=data.info.substring(1);
+                        $.fn.tips({type:"ok",content:info});
+                        $(".form_book")[0].reset();
+                        if(data.info.substring(0,1)==2){setTimeout(function(){location.href='#a';},1500)}
+                    }
+                }
+            });
+        }
+    });
+})
+</script>
+{% endblock %}
+
+
+{% block photo_id %}
+<div class="y_banner center">
+  <div class="t_banner">
+    <img src="{% build_photo_url photo_dict.photo_id 'page_title' %}" alt="企业简介banner" border="0">
+  </div>
+</div>
+{% endblock %}
+
+{% block column_list %}
+  {% for i in column_data %}
+    <li><a href="#" class="nav_a">{{ i.column_name }}</a>
+      <div class="nav_tt">
+        {% if i.child %}
+          {% for j in i.child %}
+            <p><a href="#">{{ j.column_name }}</a></p>
+          {% endfor %}
+        {% endif %}
+        
+      </div>
+    </li>
+  {% endfor %}
+{% endblock %}
+
+
+{% block content %}
+<section>
+        <div class="y_content_bg2">
+            <div class="content_div center">
+            <div class="y_left">
+                <div class="left_tit left_t4">联系我们</div>
+                <ul class="left_ul">
+                  
+                  {% build_page_tree_column column_data_list select_columns_ids as str_data %}
+                  {{ str_data|safe }}
+                </ul>
+                <div class="clean"></div>
+            </div>
+            <div class="y_right">
+        
+            <ul class="right_nav">
+                
+                
+                <li><a href="/list.asp?classid=44" title="公司地址">公司地址</a></li>
+                
+                
+                <li><a href="/list.asp?classid=45" title="人才招聘">人才招聘</a></li>
+                
+                
+                <li class="right_p"><a href="/list.asp?classid=48" title="给我留言">给我留言</a></li>
+                
+                </ul>
+                <div class="clean"></div>
+                <div class="right_tit">给我留言</div>
+                <!--<div class="cont_page">
+                    
+                </div>-->
+                <div class="cont_page">
+                    <div class="book_tit"><span>如有任何需求或建议，欢迎您留言</span></div>
+                    <div class="book_div">
+                    <form class="form_book nice-validator n-yellow" method="post" novalidate="novalidate">
+                        <p><strong>姓名</strong><input type="text" name="t0" id="nicekname" class="input_text" aria-required="true" required></p>
+                        <div class="clean"></div>
+                        <p><strong>性别</strong><input type="radio" name="t3" class="input_radio" checked="" value="1">男<input type="radio" name="t3" class="input_radio" value="2">女</p>
+                        <div class="clean"></div>
+                        <p><strong>电话</strong><input type="text" name="t2" class="input_text" aria-required="true"></p>
+                        <div class="clean"></div>
+                        <p style=" display:none;"><strong>邮箱</strong><input type="text" name="t10" class="input_text"></p>
+                        <div class="clean"></div>
+                        <p><strong>留言</strong><textarea name="t1" aria-required="true"></textarea></p>
+                        <div class="clean"></div>
+                        <p><input type="submit" value="提交" class="input_bnt"></p>
+                    </form>
+                    </div>
+                </div>
+            </div>
+         
+        <div class="clean"></div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block bottom_column_list %}
+    {% for i in column_data %}
+    <ul class="bottom_ul">
+        <b><a href="#" target="">{{ i.column_name }}</a></b>
+        {% if i.child %}
+          {% for j in i.child %}
+            <li><a href="#" target="">{{ j.column_name }}</a></li>
+          {% endfor %}
+        {% endif %}
+      
+    </ul>
+    {% endfor %}
+{% endblock %}
