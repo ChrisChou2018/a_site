@@ -156,6 +156,7 @@ def request_menu_type(request):
                     {'id':-1, 'pId':0, 'name':"扩展", 'open':True},
                     {'id':1, 'pId':-1, 'name':"合作管理", 'url': reverse('team_manage'), 'target':"iframe_body"},
                     {'id':2, 'pId':-1, 'name':"广告管理", 'url': reverse('ad_manage'), 'target':"iframe_body"},
+                    {'id':3, 'pId':-1, 'name':"留言管理", 'url': reverse('message_manage'), 'target':"iframe_body"},
                 ],
                 safe=False
             )

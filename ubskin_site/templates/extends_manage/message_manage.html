@@ -20,19 +20,19 @@
 </head>
 <body style="">
     <div class="layout-center">
-            <div class="right_subject">当前位置：拓展 &gt; <a href="{% url 'team_manage' %}">合作管理</a></div>
+            <div class="right_subject">当前位置：拓展 &gt; <a href="{% url 'team_manage' %}">留言管理</a></div>
     </div>
     <div class="row" style="padding: 15px;" >
         <div class="col-md-3">
-            <form action="" method="GET" class="search_input" ">
+            <!-- <form action="" method="GET" class="search_input" ">
                 <div class="input-group" style="max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="搜索合作商名称名称" name="search_value" value="{{ form_data.search_value }}">
+                    <input type="text" class="form-control" placeholder="搜索广告名称"" name="search_value" value="{{ form_data.search_value }}">
                     <input type="text" style="display: none;" name="data_id" value="{{ form_data.data_id }}">
                     <span class="input-group-btn">
                         <button class="btn btn-default search_input_btn" type="submit">搜索</button>
                     </span>
-                </div><!-- /input-group -->
-            </form>
+                </div>
+            </form> -->
         </div>
     </div>
     <div class="row">
@@ -40,7 +40,7 @@
             <!-- <a href="{% url 'add_team_work' %}" type="button" class="btn btn-info" type="button" >添加合作商<span class="glyphicon glyphicon-plus"></span></a>
             <button type="button" class="btn btn-default choose_member" type="button">选择<span class="glyphicon glyphicon-saved"></span></button>
             <button type="button" class="btn btn-danger delete_member" type="button">删除<span class="glyphicon glyphicon-trash"></span></button> -->
-            <a href="{% url 'add_team_work' %}" type="button" class="btn btn-info" type="button" >添加合作商<span class="glyphicon glyphicon-plus"></span></a>
+            <!-- <a href="{% url 'add_ad' %}" type="button" class="btn btn-info" type="button" >添加广告<span class="glyphicon glyphicon-plus"></span></a> -->
             <div class="dropdown" style="display: inline-block">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 批量操作
@@ -66,19 +66,20 @@
                     <tr>
                         {% for key, value in table_head.items %}
                             {% if key != 'more' %}
-                                {% if key == 'team_type' %}
-                                    {% get_value_by_key i key as team_id %}
-                                    <td>{% get_value_by_key team_dict team_id %}</td>
-                                {% elif key == 'team_work_id' %}
-                                    <td><input type="checkbox" name="" id="" > {% get_value_by_key i key %}</td>
+                                {% if key == 'message_id' %}
+                                    <td><input type="checkbox"> {% get_value_by_key i key %}</td>
+                                {% elif key == 'create_time' %}
+                                    {% get_value_by_key i key as create_time %}
+                                    <td>{% parse_timestamps create_time %}</td>
+                                {% elif key == 'message_text' %}
+                                    {% get_value_by_key i key as message_text %}
+                                    <td>{% str_step message_text 13 %}</td> 
                                 {% else %}
-                                    <td>
-                                        {% get_value_by_key i key %}
-                                    </td>
+                                    <td>{% get_value_by_key i key %}</td>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
-                        <td><a href="{% url 'add_team_work' %}?data_id={{ i.team_work_id }}">编辑</a></td>
+                        <td><a href="">查看</a></td>
                     </tr>
                 {% endfor %}
             <tbody>

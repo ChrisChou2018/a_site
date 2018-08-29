@@ -103,11 +103,25 @@ class Message(models.Model):
     gender = models.CharField(db_column="gender", verbose_name="性别", max_length=255)
     phone_number = models.CharField(db_column="phone_number", verbose_name="手机号码", max_length=255, null=True, blank=True)
     message_text = models.TextField(db_column="message_text", verbose_name="留言文本", null=True, blank=True)
+    user_ip = models.CharField(db_column="user_ip", verbose_name="用户IP地址", max_length=255, null=True, blank=True)
     create_time = models.IntegerField(db_column='create_time', verbose_name='留言时间', default=int(time.time()))
-
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
 
     class Meta:
         db_table = 'message'
+    
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            message_id = '留言ID',
+            user_name = '姓名',
+            message_text = '内容',
+            gender = '性别',
+            phone_number = '联系电话',
+            create_time = '留言时间',
+            more = '更多',
+        )
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

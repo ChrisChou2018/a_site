@@ -67,7 +67,7 @@
                         {% for key, value in table_head.items %}
                             {% if key != 'more' %}
                                 {% if key == 'ad_id' %}
-                                    <td><input type="checkbox" name="" id="" >{% get_value_by_key i key %}</td>
+                                    <td><input type="checkbox" name="" id="" > {% get_value_by_key i key %}</td>
                                 {% else %}
                                     <td>
                                         {% get_value_by_key i key %}

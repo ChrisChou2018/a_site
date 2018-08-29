@@ -611,4 +611,3 @@ def add_foucs_shop(request):
         
         return redirect(reverse('foucs_shop_manage') + '?data_id=' + columns_id)
 
-

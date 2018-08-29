@@ -255,3 +255,47 @@ def add_ad(request):
             else:
                 model_obj.save()
         return redirect(reverse('ad_manage'))
+
+def message_manage(request):
+    if request.method == "GET":
+        search_dict = {
+        }
+        search_value = dict()
+        current_page = request.GET.get('page', 1)
+        filter_args = ""
+        for i in search_dict:
+            value = request.GET.get(i)
+            if value is not None:
+                search_value[search_dict[i]] = value
+                filter_args  += "&{}={}".format(i, value)
+        else:
+            if not filter_args:
+                filter_args = None
+        if search_value:
+            data_list = extends_models.get_data_list(
+                extends_models.Message,
+                current_page,
+                search_value=search_value
+            )
+            data_count = extends_models.get_data_count(
+                extends_models.Message,
+                search_value,
+            )
+        else:
+            data_list = extends_models.get_data_list(
+                extends_models.Message,
+                current_page,
+            )
+            data_count = extends_models.get_data_count(
+                extends_models.Message,
+            )
+        return my_render(
+            request,
+            'extends_manage/message_manage.html',
+            current_page = current_page,
+            form_data = request.GET,
+            filter_args = filter_args,
+            data_list = data_list,
+            data_count = data_count,
+            table_head = extends_models.Message.get_style_table_head(),
+        )

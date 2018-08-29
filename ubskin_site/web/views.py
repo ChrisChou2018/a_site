@@ -1,5 +1,8 @@
+import time
+
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.http import JsonResponse
 
 from ubskin_site.column_manage import models as column_models
 from ubskin_site.extends_manage import models as extends_models
@@ -134,4 +137,18 @@ def message(request, data_id):
             photo_dict = photo_dict,
         )
     else:
-        pass
+        filds_list = [
+            'user_name', 'gender', 'phone_number',
+            'message_text'
+        ]
+        p_get = request.POST.get
+        form_data = { i: p_get(i) for i in filds_list }
+        form_data.update(
+            {'create_time': int(time.time()), 'user_ip': request.META.get('REMOTE_ADDR')}
+        )
+        extends_models.create_model_data(
+            extends_models.Message,
+            form_data
+        )
+        return JsonResponse({'status': 'success'})
+        

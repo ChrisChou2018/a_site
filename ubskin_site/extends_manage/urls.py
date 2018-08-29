@@ -8,6 +8,7 @@ urlpatterns = [
     path('myadmin/add_team_work/', views.add_team_work, name='add_team_work'),
     path('myadmin/ad_manage/', views.ad_manage, name='ad_manage'),
     path('myadmin/add_ad/', views.add_ad, name='add_ad'),
+    path('myadmin/message_manage/', views.message_manage, name='message_manage'),
 ]
 
 urlpatterns += [
