@@ -59,6 +59,7 @@ ubskin_site/member_manage/migrations/
 ubskin_site/column_manage/migrations/
 ubskin_site/extends_manage/migrations/
 ./Pipfile
+./Pipfile.lock
 
 # Flask stuff:
 instance/
@@ -107,4 +108,3 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-.settings_local.py

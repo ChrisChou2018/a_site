@@ -66,6 +66,8 @@ def public_page(request, data_id):
             page_type = 5
             page_content = column_models.FocusShop.get_focus_shops_by_columns_id(data_id, page)
             data_count = column_models.FocusShop.get_focus_shops_count_by_columns_id(data_id)
+        elif model_obj.page_type == 2:
+            return redirect(reverse('message', kwargs = {'data_id': model_obj.columns_id}))
         photo_dict = {
             'photo_id': model_obj.photo_id,
             'thumb_photo_id': model_obj.thumb_photo_id
@@ -88,6 +90,7 @@ def public_page(request, data_id):
         data_count = data_count,
         select_columns_ids = select_columns_ids,
         article_obj = article_obj,
+        ad_dict = extends_models.Ad.get_ad_dict_for_page,
     )
     
 
@@ -109,3 +112,26 @@ def shop_search(request, data_id):
         photo_dict = photo_dict,
         shop_data_dict = shop_data_dict,
     )
+
+def message(request, data_id):
+    column_data = column_models.Columns.build_column_links()
+    column_data_list, select_columns_ids = column_models.Columns.get_page_columns_list(data_id)
+    model_obj = extends_models.get_model_by_pk(
+        column_models.Columns,
+        data_id,
+    )
+    photo_dict = {
+        'photo_id': model_obj.photo_id,
+        'thumb_photo_id': model_obj.thumb_photo_id
+    }
+    if request.method == 'GET':
+        return my_render(
+            request,
+            'web/message.html',
+            column_data = column_data,
+            column_data_list = column_data_list,
+            select_columns_ids = select_columns_ids,
+            photo_dict = photo_dict,
+        )
+    else:
+        pass

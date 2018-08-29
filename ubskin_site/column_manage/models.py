@@ -32,7 +32,9 @@ class Columns(models.Model):
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
+    order_num = models.SmallIntegerField(db_column='order_num', verbose_name='排序数', default=1)
     status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+    
 
 
     class Meta:
@@ -40,7 +42,10 @@ class Columns(models.Model):
     
     @classmethod
     def get_all_select_columns(cls, self_id=None, is_chld_column=False):
-        column_index_list = cls.objects.filter(columns_type=1,status='normal').values('columns_id', 'column_name')
+        column_index_list = cls.objects.filter(columns_type=1, status='normal').values('columns_id', 'column_name')
+        child = None
+        if not column_index_list:
+            return list()
         for i in column_index_list:
             if self_id:
                 child = cls.objects.filter(~Q(columns_id=self_id), parent_id=i['columns_id'], status='normal', columns_type=3).values('columns_id', 'column_name')
@@ -50,10 +55,7 @@ class Columns(models.Model):
                 for j in child:
                     j['column_name'] = i['column_name'] + '__' + j['column_name']
                 i['child'] = child
-        if column_index_list:
-            return column_index_list
-        else:
-            return list()
+        return column_index_list
     
     @classmethod
     def get_column_link(cls):
@@ -192,7 +194,11 @@ class Columns(models.Model):
                         'name': i['column_name'],
                     })
         return data_list
-        
+    
+    @classmethod
+    def get_all_page_for_select(cls):
+        data_list = cls.objects.filter(columns_type=2, status='normal').values_list('columns_id', 'column_name')
+        return data_list
 
 
 class Article(models.Model):
@@ -225,7 +231,7 @@ class Article(models.Model):
             columns_id = '所属栏目',
             more = '更多'
         )
-    
+
     @classmethod
     def get_article_obj_by_columns_id(cls, columns_id):
         return cls.objects.filter(columns_id=columns_id, status='normal').first()
