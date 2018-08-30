@@ -68,14 +68,15 @@
                             {% if key != 'more' %}
                                 {% if key == 'ad_id' %}
                                     <td><input type="checkbox" name="" id="" > {% get_value_by_key i key %}</td>
+                                {% elif key == 'location' %}
+                                    {% get_value_by_key i key as location_id %}
+                                    <td>{% get_value_by_key location_choices location_id %}</td>
                                 {% else %}
-                                    <td>
-                                        {% get_value_by_key i key %}
-                                    </td>
+                                    <td>{% get_value_by_key i key %}</td>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
-                        <td><a href="">编辑</a></td>
+                        <td><a href="{% url 'add_ad' %}?data_id={{ i.ad_id }}">编辑</a></td>
                     </tr>
                 {% endfor %}
             <tbody>

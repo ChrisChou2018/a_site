@@ -52,7 +52,7 @@
             <select name="columns_id" class="form-control">
                 <option value="">选择跳转页面</option>
                 {% for i in page_select %}
-                    {% if form_data.team_type == i.0 %}
+                    {% if form_data.columns_id == i.0 %}
                         <option value="{{ i.0 }}" selected>{{ i.1 }}</option>
                     {% else %}
                         <option value="{{ i.0 }}" >{{ i.1 }}</option>
@@ -65,7 +65,7 @@
             <select name="location" class="form-control">
                 <option value="">选择位置</option>
                 {% for i in location_choices %}
-                    {% if form_data.team_type == i.0 %}
+                    {% if form_data.location == i.0 %}
                         <option value="{{ i.0 }}" selected>{{ i.1 }}</option>
                     {% else %}
                         <option value="{{ i.0 }}" >{{ i.1 }}</option>
