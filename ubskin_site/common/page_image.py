@@ -9,10 +9,11 @@ photo_specs = [
     {"type": "page_title", "width": 1200, 'height': 313, "is_square": False},
     {"type": "page_thumb", "width": 260, 'height': 91, "is_square": False},
     {"type": "article_thumb_image", "width": 301},
-    # {"type": "article2", "width": 9448},
     {"type": "shop_image", "width": 760},
     {"type": "team", "width": 173, 'height': 76, "is_square": False},
     {"type": "top_team", "width": 400, "height": 365, 'is_crop': True},
+    {"type": "ad_b_big", "width": 384, "height": 257, 'is_crop': True},
+    {"type": "ad_a", "width": 248, "height": 76, 'is_crop': True},
 ]
 
 
@@ -26,6 +27,7 @@ def convert_photo(photo_id, base_static_path, photo_type="photo",
     else:
         f_path_raw = os.path.join(base_static_path, 'photos', "raw", photo_id[0:2], photo_id + ".jpg")
     image_obj = Image.open(f_path_raw)
+    image_obj = image_obj.convert('RGB')
     target_specs = photo_specs
     target_path_name = "photos"
     

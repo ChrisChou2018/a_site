@@ -52,13 +52,76 @@ class TeamWork(models.Model):
 
 class Ad(models.Model):
     ad_id = models.AutoField(db_column="team_work_id", primary_key=True, verbose_name="合作商ID")
+    ad_name = models.CharField(db_column='ad_name', verbose_name='广告名称', max_length=255)
+    ad_title = models.CharField(db_column='ad_title', verbose_name='广告标题', max_length=255)
+    ad_e_title = models.CharField(db_column='ad_e_title', verbose_name='广告英文标题', max_length=255)
+    ad_text = models.CharField(db_column='ad_text', verbose_name='广告文字说明', max_length=1000)
+    columns_id = models.BigIntegerField(db_column='columns_id', verbose_name='设置跳转的页面')
+    # link = models.CharField(db_column='link', verbose_name='自定义链接', max_length=255, default='#a')
     location_choices = (
-        (1, '首页轮播图')
+        (1, '首页轮播图'),
+        (2, 'm_首页轮播图'),
+        (3, '广告位a'),
+        (4, '广告位b_left'),
+        (5, '广告位b_center'),
+        (6, '广告为b_right'),
     )
     location = models.SmallIntegerField(db_column='location', verbose_name='location')
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='广告图', max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
 
     class Meta:
         db_table = 'ad'
+
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            ad_id = '广告ID',
+            ad_name = '广告名',
+            location = '广告位置',
+            more = '更多',
+        )
+    
+    @classmethod
+    def get_ad_dict_for_page(cls):
+        data_dict = dict()
+        for i in cls.location_choices:
+            data = cls.objects.filter(location=i[0]).values().order_by('-pk')
+            if i == 3:
+                data = data[:4]
+            elif i == 5:
+                data = data[:3]
+            if data:
+                data_dict[i] = data
+        return data_dict
+
+class Message(models.Model):
+    message_id = models.AutoField(db_column="message_id", primary_key=True, verbose_name="留言ID")
+    user_name = models.CharField(db_column="user_name", verbose_name="留言折姓名", max_length=255)
+    gender = models.CharField(db_column="gender", verbose_name="性别", max_length=255)
+    phone_number = models.CharField(db_column="phone_number", verbose_name="手机号码", max_length=255, null=True, blank=True)
+    message_text = models.TextField(db_column="message_text", verbose_name="留言文本", null=True, blank=True)
+    user_ip = models.CharField(db_column="user_ip", verbose_name="用户IP地址", max_length=255, null=True, blank=True)
+    create_time = models.IntegerField(db_column='create_time', verbose_name='留言时间', default=int(time.time()))
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+    class Meta:
+        db_table = 'message'
+    
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            message_id = '留言ID',
+            user_name = '姓名',
+            message_text = '内容',
+            gender = '性别',
+            phone_number = '联系电话',
+            create_time = '留言时间',
+            more = '更多',
+        )
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

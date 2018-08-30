@@ -13,18 +13,20 @@
     <!-- fullCalendar -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
-    
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
     <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
     
 </head>
 <body>
-    <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="#">{% get_column_name_by_id columns_id %}</a> &gt; <a href="#">添加店铺</a></div>
+    </div>  
     <div class="box box-primary" style="padding: 30px">
     <div class="box-header">
         <h3 class="box-title">添加重点店铺</h3>
     </div><!-- /.box-header -->
     <!-- form start -->
-    <form role="form" method="POST" action="" enctype="multipart/form-data">
+    <form role="form" method="POST" action="?columns_id={{ columns_id }}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="box-body">
         <div class="form-group">
@@ -43,13 +45,13 @@
         </div>
         <div class="form-group">
             <label for="from_country">设置店铺图</label>
-            <input type="file" class="form-control" name="photo_id">
+            <input type="file" class="form-control" name="photo_id" >
         </div>
         <div class="image-box" style="width: 760px;height: 200px;border: 1px solid darkgray">
             <img class="photo_id" src="{%if form_data and form_data.photo_id %}{% build_photo_url form_data.photo_id 'shop_image' %}{% endif %}" alt="图片预览" style="max-height: 100%;max-width: 100%;">
         </div>
         <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">提交</button> <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>
         </div>
     </form>
     </div>  

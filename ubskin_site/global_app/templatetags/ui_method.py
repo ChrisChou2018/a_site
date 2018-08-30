@@ -263,7 +263,7 @@ def build_child_select(data_list):
         for i in data_list:
             select_list.append(i)
             if i.get('child'):
-                return build_func(i['child'], select_list)
+                build_func(i['child'], select_list)
         else:
             return select_list
     return build_func(data_list, select_list)

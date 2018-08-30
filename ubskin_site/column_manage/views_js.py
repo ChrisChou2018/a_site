@@ -1,6 +1,11 @@
+import uuid
+import os
+
 from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from ubskin_site.column_manage import models as column_models
 
@@ -142,3 +147,40 @@ def request_menu_type(request):
                 {'id':-1, 'pId':0, 'name':"栏目", 'open':True},
                 {'id':1, 'pId':-1, 'name':"栏目管理", 'url': reverse('column_manage'), 'target':"iframe_body"},
             ], safe=False)
+        elif menu_type == 'content_manage':
+            data_list = column_models.Columns.build_column_tree()
+            return JsonResponse(data_list, safe=False)
+        elif menu_type == 'extends_manage':
+            return JsonResponse(
+                [
+                    {'id':-1, 'pId':0, 'name':"扩展", 'open':True},
+                    {'id':1, 'pId':-1, 'name':"合作管理", 'url': reverse('team_manage'), 'target':"iframe_body"},
+                    {'id':2, 'pId':-1, 'name':"广告管理", 'url': reverse('ad_manage'), 'target':"iframe_body"},
+                    {'id':3, 'pId':-1, 'name':"留言管理", 'url': reverse('message_manage'), 'target':"iframe_body"},
+                ],
+                safe=False
+            )
+
+@csrf_exempt
+def upload_file(request):
+    if request.method == "POST":
+        media_root = settings.MEDIA_ROOT
+        server_root = '/media/'
+        page_path_name = 'web_image'
+        page_image_path = os.path.join(media_root, page_path_name)
+        server_root = os.path.join(server_root, page_path_name)
+        if not os.path.exists(page_image_path):
+            os.makedirs(page_image_path)
+        files = request.FILES
+        url_list = list()
+        for i in files:
+            photo_id = uuid.uuid4().hex
+            f_path = os.path.join(page_image_path, photo_id)
+            server_file_root = os.path.join(server_root, photo_id)
+            with open(f_path, 'wb') as w:
+                for chunk in files[i].chunks():
+                    w.write(chunk)
+            url_list.append(server_file_root)
+        return JsonResponse({"errno": 0, "data": url_list})
+
+        

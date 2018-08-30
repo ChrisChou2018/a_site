@@ -113,7 +113,7 @@ $(function(){
     <div class="right_body">
 
         <div class="table_form">
-            <form class="formname" method="post">
+            <form class="formname" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="form_group">
 				<div class="form_txt">栏目名称</div>
@@ -221,6 +221,36 @@ $(function(){
 	<ul id="ztree" class="ztree" style="margin-top:0;width:160px;"></ul>
 </div>
 <script>
+	$(function(){
+		$('.column_manage').addClass('active');
+		$('input[name="photo_id"]').change(function(){
+			file = this.files[0]
+			var $image_item = $('.photo_id')
+			var url = null ;
+			if (window.createObjectURL!=undefined) { // basic
+				url = window.createObjectURL(file) ;
+			} else if (window.URL!=undefined) { // mozilla(firefox)
+				url = window.URL.createObjectURL(file) ;
+			} else if (window.webkitURL!=undefined) { // webkit or chrome
+				url = window.webkitURL.createObjectURL(file) ;
+			}
+			$image_item.attr('src', url)
+		})
+		$('input[name="thumb_photo_id"]').change(function(){
+			file = this.files[0]
+			var $image_item = $('.thumb_photo_id')
+			var url = null ;
+			if (window.createObjectURL!=undefined) { // basic
+				url = window.createObjectURL(file) ;
+			} else if (window.URL!=undefined) { // mozilla(firefox)
+				url = window.URL.createObjectURL(file) ;
+			} else if (window.webkitURL!=undefined) { // webkit or chrome
+				url = window.webkitURL.createObjectURL(file) ;
+			}
+			$image_item.attr('src', url)
+		})
+	})
+	
 // $(".formname").validator(
 // 	{
 // 		stopOnError:true,
