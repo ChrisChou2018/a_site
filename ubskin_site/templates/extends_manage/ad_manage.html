@@ -154,7 +154,7 @@ $(function(){
         })
         if(member_id_list.length>0){
             $.post(
-                '{% url "delete_team" %}',
+                '{% url "delete_ad" %}',
                 {'data_id_list':member_id_list, 'csrfmiddlewaretoken':getCookie('csrftoken')},
                 function(value){
                     if(value.status == 'success'){

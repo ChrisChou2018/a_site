@@ -1,0 +1,85 @@
+{% load ui_method %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>查看内容</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/ionicons/4.0.0-19/css/ionicons.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/fullcalendar/4.0.0-alpha/fullcalendar.print.css" media="print">
+    <link href="/static/admin/css/iframe.css" rel="stylesheet" type="text/css" />
+    <!-- <link rel="stylesheet" href="/static/css/myadmin/_all-skins.min.css"> -->
+    
+</head>
+<body>
+    <div class="layout-center">
+            <div class="right_subject">当前位置：内容 &gt; <a href="{% url 'team_manage' %}">留言管理</a> &gt; <a href="">查看留言</a></div>
+    </div>
+    <div class="box box-primary" style="padding: 30px">
+    <!-- <div class="box-header">
+        <h3 class="box-title">添加合作商</h3>
+    </div>/.box-header -->
+    <!-- form start -->
+    <form role="form" method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="box-body">
+        <div class="form-group">
+            <label for="form-control">用户名称</label>
+            <input readonly name="user_name" type="text" class="form-control" value="{% if form_data and form_data.user_name %}{{ form_data.user_name }}{% endif %}" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="form-control">性别</label>
+            <input readonly name="gender" type="text" class="form-control" value="{% if form_data and form_data.gender %}{{ form_data.gender }}{% endif %}" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="form-control">联系电话</label>
+            <input readonly name="phone_number" type="text" class="form-control" value="{% if form_data and form_data.phone_number %}{{ form_data.phone_number }}{% endif %}" placeholder="">
+        </div>
+        <div class="form-group">
+            <label for="form-control">留言内容</label>
+            <textarea readonly name="message_text" cols="30" rows="10" class="form-control" placeholder="输入广告的详细说明">{% if form_data and form_data.message_text %}{{ form_data.message_text }}{% endif %}</textarea>
+        </div>
+        <div class="box-footer">
+            <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>
+        </div>
+    </form>
+    </div>  
+    
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/static/js/myadmin/wangEditor/release/wangEditor.min.js"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Slimscroll -->
+<script src="https://cdn.bootcss.com/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+<!-- <script src="/static/js/myadmin/js-xss-master/dist/xss.min.js"></script> -->
+
+<script>
+$(function(){
+    
+    $('input[name="photo_id"]').change(function(){
+        file = this.files[0]
+        var $image_item = $('.photo_id')
+        var url = null ;
+        if (window.createObjectURL!=undefined) { // basic
+            url = window.createObjectURL(file) ;
+        } else if (window.URL!=undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file) ;
+        } else if (window.webkitURL!=undefined) { // webkit or chrome
+            url = window.webkitURL.createObjectURL(file) ;
+        }
+        $image_item.attr('src', url)
+    })
+    
+})
+</script>
+</html>

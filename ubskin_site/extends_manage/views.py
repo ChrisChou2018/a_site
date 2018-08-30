@@ -299,3 +299,16 @@ def message_manage(request):
             data_count = data_count,
             table_head = extends_models.Message.get_style_table_head(),
         )
+
+def check_message(request):
+    if request.method == "GET":
+        data_id = request.GET.get('data_id')
+        model_obj = extends_models.get_model_by_pk(
+            extends_models.Message,
+            data_id
+        )
+        return my_render(
+            request,
+            'extends_manage/check_message.html',
+            form_data = model_obj
+        )

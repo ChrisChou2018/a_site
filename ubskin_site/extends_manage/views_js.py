@@ -15,3 +15,25 @@ def delete_team(request):
                 {'status': 'deleted'}
             )
         return JsonResponse({'status': 'success'})
+
+def delete_message(request):
+    if request.method == "POST":
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            extends_models.update_model_data_by_pk(
+                extends_models.Message,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})
+
+def delete_ad(request):
+    if request.method == "POST":
+        data_id_list = request.POST.getlist('data_id_list[]')
+        for i in data_id_list:
+            extends_models.update_model_data_by_pk(
+                extends_models.Ad,
+                i,
+                {'status': 'deleted'}
+            )
+        return JsonResponse({'status': 'success'})

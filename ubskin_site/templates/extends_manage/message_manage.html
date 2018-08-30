@@ -79,7 +79,7 @@
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
-                        <td><a href="">查看</a></td>
+                        <td><a href="{% url 'check_message' %}?data_id={{ i.message_id }}">查看</a></td>
                     </tr>
                 {% endfor %}
             <tbody>
@@ -157,7 +157,7 @@ $(function(){
         })
         if(member_id_list.length>0){
             $.post(
-                '{% url "delete_team" %}',
+                '{% url "delete_message" %}',
                 {'data_id_list':member_id_list, 'csrfmiddlewaretoken':getCookie('csrftoken')},
                 function(value){
                     if(value.status == 'success'){
