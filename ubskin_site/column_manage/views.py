@@ -497,10 +497,9 @@ def add_area(request):
         return redirect(reverse('shop_manage'))
 
 def foucs_shop_manage(request):
-    data_id = request.GET.get('data_id')
     if request.method == "GET":
         search_dict = {
-            'columns_id': data_id,
+            'data_id': 'columns_id',
             # 'search_value': 'shopname__icontains',
         }
         search_value = dict()
@@ -518,7 +517,7 @@ def foucs_shop_manage(request):
             data_list = column_models.get_data_list(
                 column_models.FocusShop,
                 current_page,
-                search_value=search_value
+                search_value
             )
             data_count = column_models.get_data_count(
                 column_models.FocusShop,

@@ -70,9 +70,20 @@ def public_page(request, data_id):
             page_type = 5
             page_content = column_models.get_data_list(
                 column_models.CompanyAddr,
-                current_page=page
+                current_page=page,
                 )
             data_count = column_models.get_data_count(column_models.CompanyAddr)
+        elif model_obj.page_type == 6:
+            page_type = 6
+            page_content = column_models.get_data_list(
+                column_models.FocusShop,
+                current_page=page,
+                search_value={'columns_id': model_obj.columns_id}
+                )
+            data_count = column_models.get_data_count(
+                column_models.FocusShop,
+                search_value={'columns_id': model_obj.columns_id}
+                )
         elif model_obj.page_type == 2:
             return redirect(reverse('message', kwargs = {'data_id': model_obj.columns_id}))
         photo_dict = {
