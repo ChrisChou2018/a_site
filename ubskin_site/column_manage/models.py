@@ -185,6 +185,7 @@ class Columns(models.Model):
                     3: reverse('shop_manage'),
                     4: reverse('article_list'),
                     5: reverse('company_addr_manage'),
+                    6: '',
                 }
                 data_list.append({
                         'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
