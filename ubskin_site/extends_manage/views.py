@@ -254,6 +254,19 @@ def add_ad(request):
                     setattr(model_obj, i, p_get(i))
             else:
                 model_obj.save()
+            files = request.FILES
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
         return redirect(reverse('ad_manage'))
 
 def message_manage(request):

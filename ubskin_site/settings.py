@@ -31,7 +31,7 @@ SECRET_KEY = 'svi1dad(-j-q0hpg)6_(k_c&x8f1)4f6gqd770!5)-f%@vo2u6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -147,3 +147,9 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = os.path.join(BASE_DIR, "ubskin_site", 'media')
 
 MEDIA_URL = "/media/"
+
+
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, 'ubskin_site/column_manage/fixtures/'),
+   os.path.join(BASE_DIR, 'ubskin_site/extends_manage/fixtures/'),
+)

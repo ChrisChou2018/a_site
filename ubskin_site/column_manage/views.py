@@ -198,7 +198,6 @@ def add_a_page(request):
             if parent_id:
                 column_obj.parent_id = parent_id
             column_obj.save()
-            print(files)
             if files:
                 for i in files:
                     file_obj = files[i]
@@ -349,6 +348,7 @@ def add_article(request):
         article_content = request.POST.get('article_content')
         article_title = request.POST.get('article_title')
         article_type = request.POST.get('article_type', 1)
+        description = request.POST.get('description')
         files = request.FILES 
         if not model_obj:
             new_obj = column_models.create_model_data(
@@ -359,6 +359,7 @@ def add_article(request):
                     'article_title': article_title,
                     'create_time': int(time.time()),
                     'columns_id': columns_id,
+                    'description': description,
                 }
             )
             if files:
@@ -374,13 +375,14 @@ def add_article(request):
                         setattr(new_obj, i, data['photo_id'])
                         new_obj.save()
         else:
-            print(article_type)
             if article_title:
                 model_obj.article_title = article_title
             if article_content:
                 model_obj.article_content = article_content
             if article_type:
                 model_obj.article_type = article_type
+            if description:
+                model_obj.description = description
             model_obj.save()
             if files:
                 for i in files:
@@ -611,3 +613,113 @@ def add_foucs_shop(request):
         
         return redirect(reverse('foucs_shop_manage') + '?data_id=' + columns_id)
 
+
+def company_addr_manage(request):
+    search_dict = {
+    }
+    search_value = dict()
+    current_page = request.GET.get('page', 1)
+    filter_args = ""
+    for i in search_dict:
+        value = request.GET.get(i)
+        if value is not None:
+            search_value[search_dict[i]] = value
+            filter_args  += "&{}={}".format(i, value)
+    else:
+        if not filter_args:
+            filter_args = None
+    if search_value:
+        data_list = column_models.get_data_list(
+            column_models.CompanyAddr,
+            current_page,
+            search_value=search_value
+        )
+        data_count = column_models.get_data_count(
+            column_models.CompanyAddr,
+            search_value,
+        )
+    else:
+        data_list = column_models.get_data_list(
+            column_models.CompanyAddr,
+            current_page,
+        )
+        data_count = column_models.get_data_count(
+            column_models.CompanyAddr,
+        )
+    return my_render(
+        request,
+        'content_manage/company_addr_manage.html',
+        current_page = current_page,
+        form_data = request.GET,
+        filter_args = filter_args,
+        data_list = data_list,
+        data_count = data_count,
+        table_head = column_models.CompanyAddr.get_style_table_head(),
+    )
+
+def add_company_addr(request):
+    data_id = request.GET.get('data_id')
+    model_obj = None
+    if data_id:
+        model_obj = column_models.get_model_by_pk(
+            column_models.CompanyAddr,
+            data_id
+        )
+    if request.method == "GET":
+        return my_render(
+            request,
+            'content_manage/add_company_addr.html',
+            form_data = model_obj,
+        )
+    else:
+        fild_list = [
+            'company_name', 'phone_number', 'company_addr'
+        ]
+        p_get = request.POST.get
+        if not model_obj:
+            form_data = {  i: p_get(i) for i in fild_list if p_get(i) }
+            model_obj = column_models.create_model_data(
+                column_models.CompanyAddr,
+                form_data
+            )
+            files = request.FILES
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        else:
+            for i in fild_list:
+                if p_get(i):
+                    setattr(model_obj, i, p_get(i))
+            else:
+                model_obj.save(0)
+            files = request.FILES
+            if files:
+                for i in files:
+                    file_obj = files[i]
+                    if not os.path.exists(settings.MEDIA_ROOT,):
+                        os.makedirs(settings.MEDIA_ROOT,)
+                    data = page_image.save_upload_photo(
+                        file_obj,
+                        settings.MEDIA_ROOT,
+                    )
+                    if data:
+                        setattr(model_obj, i, data['photo_id'])
+                        model_obj.save()
+        return redirect(reverse('company_addr_manage'))
+
+
+
+def page_empty(request):
+    return my_render(
+        request,
+        'content_manage/page_empty.html'
+    )

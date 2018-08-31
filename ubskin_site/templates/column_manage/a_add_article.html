@@ -28,6 +28,11 @@
             {% if form_errors and form_errors.article_title %}<span style="color: red">{{ form_errors.article_title }}</span>{% endif %}
         </div>
         <div class="form-group">
+            <label for="from_country">简要说明</label>
+            <input class="form-control description" type="text"  placeholder="输入简要说明" value="{%if form_data and form_data.description %}{{ form_data.description }}{% endif %}">
+            {% if form_errors and form_errors.description %}<span style="color: red">{{ form_errors.description }}</span>{% endif %}
+        </div>
+        <div class="form-group">
             <label for="from_country">文章类型选择(默认普通文章类型如：“企业动态”)</label>
             <select name="article_type" class="form-control">
                 {% for i in article_type_choices %}
@@ -44,13 +49,13 @@
             <label for="from_country">设置文章缩略图</label>
             <input type="file" class="form-control" name="photo_id">
         </div>
-        <div class="image-box" style="width: 350px;height: 400px;border: 1px solid darkgray;">
+        <div class="image-box" style="width: 400px;height: 350px;border: 1px solid darkgray;">
             <img class="photo_id" src="{% if form_data and form_data.photo_id %}{% if form_data.article_type == 1 %}{% build_photo_url form_data.photo_id 'article_thumb_image' %}{% else %}{% build_photo_url form_data.photo_id 'page_title' %}{% endif %}{% endif %}" alt="图片预览" style="max-height: 100%;max-width: 100%;">
         </div>
-        <div id="toolbar" style="border: darkgray solid 1px;width: 100%;">
+        <!-- <div id="toolbar" style="border: darkgray solid 1px;width: 100%;">
 
-        </div>
-        <div id="editor" style="border: darkgray solid 1px;width: 100%;min-height: 390px;">
+        </div> -->
+        <div id="editor" style="border: darkgray solid 1px;width: 100%;height: auto;">
             {% if form_data and form_data.article_content %}{{ form_data.article_content |safe }}{% endif %}
         </div>
         <button type="button" class="btn btn-info submit_btn">提交</button> <a type="button" class="btn btn-default back_btn" onclick="history.back()" >🔙 后退</a>   
@@ -85,7 +90,7 @@ $(function(){
         return cookieValue;
     }
     var E = window.wangEditor
-    var editor = new E('#toolbar', '#editor')
+    var editor = new E('#editor')
     editor.customConfig.menus = [
         'head',  // 标题
         'bold',  // 粗体
@@ -105,7 +110,7 @@ $(function(){
         'table',  // 表格
         'video',  // 插入视频
         'undo',  // 撤销
-        
+        'code',
     ]
     editor.customConfig.uploadImgShowBase64 = true 
     editor.customConfig.uploadImgServer = '{% url "upload_file" %}'
@@ -132,11 +137,13 @@ $(function(){
         let $file_input = $('input[name="photo_id"]');
         let $title_input = $('.article_title')
         let $article_type = $('select[name="article_type"]')
+        let $description = $('.description')
         formData.append('article_content', article_content)
         formData.append('csrfmiddlewaretoken', getCookie('csrftoken'))
         formData.append($file_input.attr('name'), $file_input[0].files[0])
         formData.append('article_title', $title_input.val())
         formData.append('article_type', $article_type.val())
+        formData.append('description', $description.val())
         $.ajax({
             type:'post',
             url:"{{ request.uri }}",

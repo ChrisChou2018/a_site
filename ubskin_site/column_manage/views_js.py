@@ -50,7 +50,7 @@ def select_tree_item(request):
         2: '留言页面',
         3: reverse('shop_manage'),
         4: reverse('article_list'),
-        5: reverse('foucs_shop_manage'),
+        5: reverse('article_list'),
     }
     data_id = request.GET.get('data_id')
     model_obj = column_models.get_model_by_pk(
@@ -90,11 +90,12 @@ def delete_item_tree(request):
         'status': 'error',
         'message': '',
     }
-    if request.method == 'POST':
-        data_id = request.POST.get('data_id')
+    if request.method == 'GET':
+        data_id = request.GET.get('data_id')
         column_models.Columns.delete_columns(data_id)
         return_value['status'] = 'success'
-        return JsonResponse(return_value)
+        return redirect(reverse('column_manage'))
+
 
 def delete_articles(request):
     if request.method == 'POST':
