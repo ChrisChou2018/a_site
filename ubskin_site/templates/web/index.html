@@ -28,91 +28,24 @@
 <div class="y_banner y_banner1">
 
     <div id="slides">
-      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
-      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
-      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
-      <a href=""><img src="/static/web/2018081751005313.jpg"></a>
-      {% for i in ad_dict %}
-        <a href="{% url 'public_page' i.columns_id %}"> <img src="{% build_photo_url i.photo_id 'page_title' %}" alt=""> </a>
+      {% for i in ad_dict.1 %}
+        <a href="{% if not i.columns_id %}{{ i.link }}{% else %}{% url 'public_page' i.columns_id %}{% endif %}"> <img src="{% build_photo_url i.photo_id 'raw' %}" alt=""> </a>
       {% endfor %}
-      <!-- <img src="/static/web/2018081751005313.jpg"> -->
     </div>
-    <!-- <div class="slidesjs-navigation">
-      <a href="javascript:;" class="slidesjs-previous slidesjs-navigation" title=""></a>
-      <a href="javascript:;" class="slidesjs-next slidesjs-navigation" title=""></a>
-    </div> -->
-      <!-- <a class="slidesjs-play slidesjs-navigation slidesjs-playing" href="#" title="Play" style="display: none;">Play</a>
-      <a class="slidesjs-stop slidesjs-navigation" href="#" title="Stop" style="">Stop</a>
-      <ul class="slidesjs-pagination">
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="0" class="">1</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="1" class="">2</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="2" class="">3</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="3" class="active">4</a></li>
-      </ul> -->
-    <!-- <div id="slides" style="overflow: hidden;">
-      <div class="slidesjs-container" style="overflow: hidden; position: relative; width: 1200px; height: 310px;">
-        <div class="slidesjs-control" style="position: relative; left: 0px; width: 1200px; height: 310px;">
-          <a href="show.asp?id=180" class="slidesjs-slide" slidesjs-index="0" style="position: absolute; top: 0px; left: 1200px; width: 100%; z-index: 0; backface-visibility: hidden; display: block;">
-            <img src="/static/web/2018081751005313.jpg" alt="首页banner1" border="0">
-          </a>
-          <a href="list.asp?classid=10" class="slidesjs-slide" slidesjs-index="1" style="position: absolute; top: 0px; left: 0px; width: 100%; z-index: 0; display: none; backface-visibility: hidden;">
-            <img src="/static/web/2018021239451017.jpg" alt="首页banner2" border="0">
-          </a>
-          <a href="list.asp?classid=27" class="slidesjs-slide" slidesjs-index="2" style="position: absolute; top: 0px; left: -1200px; width: 100%; z-index: 0; display: block; backface-visibility: hidden;">
-            <img src="/static/web/2018021242485649.jpg" alt="首页banner3" border="0">
-          </a>
-          <a href="list.asp?classid=42" class="slidesjs-slide" slidesjs-index="3" style="position: absolute; top: 0px; left: 0px; width: 100%; z-index: 10; display: block; backface-visibility: hidden;">
-            <img src="/static/web/2018021238989625.jpg" alt="首页banner4" border="0">
-          </a>
-        </div>
-      </div>
-  
-      <div class="slidesjs-navigation">
-        <a href="javascript:;" class="slidesjs-previous " title=""></a>
-        <a href="javascript:;" class="slidesjs-next" title=""></a>
-      </div>
-      <a class="slidesjs-play slidesjs-navigation slidesjs-playing" href="#" title="Play" style="display: none;">Play</a>
-      <a class="slidesjs-stop slidesjs-navigation" href="#" title="Stop" style="">Stop</a>
-      <ul class="slidesjs-pagination">
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="0" class="">1</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="1" class="">2</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="2" class="">3</a></li>
-        <li class="slidesjs-pagination-item"><a href="#" data-slidesjs-item="3" class="active">4</a></li>
-      </ul>
-    </div> -->
 
   </div>
   <div class="y_banner_m1">  
       <div class="slide_container">
        <ul class="rslides slide slide1" id="slider">
-        
-        <li id="slide1_s0" class="slide1_on" style="display: block; float: left; position: relative; opacity: 1; z-index: 2; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=180"><img src="/static/web/2018081751212421.jpg" alt="移动端首页banner1" border="0"></a></li>   
-        
-        <li id="slide1_s1" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/show.asp?id=154"><img src="/static/web/2018051761433325.jpg" alt="移动端首页banner2" border="0"></a></li>   
-        
-        <li id="slide1_s2" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=42"><img src="/static/web/2018072735674265.jpg" alt="移动端首页banner3" border="0"></a></li>   
-        
-        <li id="slide1_s3" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="http://www.ubskin.net/list.asp?classid=27"><img src="/static/web/2018021242520941.jpg" alt="移动端首页banner4" border="0"></a></li>   
+        {% for i in ad_dict.1 %}
+          <li id="slide1_s3" class="" style="float: none; position: absolute; opacity: 0; z-index: 1; display: list-item; transition: opacity 400ms ease-in-out 0s;"><a href="{% if not i.columns_id %}{{ i.link }}{% else %}{% url 'public_page' i.columns_id %}{% endif %}"><img src="{% build_photo_url i.photo_id 'page_title' %}" alt="移动端首页banner4" border="0"></a></li> 
+        {% endfor %}
          
-       </ul><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav prev">Previous</a><a href="http://www.ubskin.net/#" class="slide_nav slide1_nav next">Next</a>
+       </ul><a href="#a" class="slide_nav slide1_nav prev">Previous</a><a href="#a" class="slide_nav slide1_nav next">Next</a>
      </div> 
     </div>
   </header>
 {% endblock %}
-
-<!-- <li><a href="list.asp?classid=3" class="nav_a">关于优贝施</a>
-  <div class="nav_tt">
-    
-    <p><a href="list.asp?classid=2">什么是药妆？</a></p>
-    
-    <p><a href="list.asp?classid=3">企业简介</a></p>
-    
-    <p><a href="list.asp?classid=4">发展历程</a></p>
-    
-    <p><a href="list.asp?classid=6">企业动态</a></p>
-    
-  </div>
-</li> -->
 
 
 {% block content %}
@@ -125,34 +58,15 @@
       {% for i in campany_news %}
         <p><a href="{% url 'public_page' i.columns_id %}?article_id={{ i.article_id }}" title="{{ i.article_title }}">{{ i.article_title }}</a></p>
       {% endfor %}
-      
-      <!-- <p><a href="show.asp?id=174" title="【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你">【新店】优贝施8月9店同开 药妆新体验，超值买赠，N重福利等你</a></p>
-      
-      
-      <p><a href="show.asp?id=169" title="【报道】优贝施荣获2018中国化妆品年度杰出零售商">【报道】优贝施荣获2018中国化妆品年度杰出零售商</a></p>
-      
-      
-      <p><a href="show.asp?id=168" title="【新品】欧洲四大顶级药妆之一！十分钟急救面膜，多糟糕的脸都能救">【新品】欧洲四大顶级药妆之一！十分钟急救面膜，多糟糕的脸都能救</a></p>
-      
-      <p><a href="show.asp?id=181" title="刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？">刷爆朋友圈的韩国香蒲丽， 到底值不值得种草？</a></p>
-      
-      <p><a href="show.asp?id=180" title="用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕">用着享誉全球法国殿堂级mATIS眼霜，熬夜追《延禧攻略》再晚也不怕</a></p>
-      
-      <p><a href="show.asp?id=178" title="【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆">【药妆小课堂】药妆发展简史 扒一扒如雷贯耳的欧洲药妆</a></p>
-      
-      <p><a href="show.asp?id=177" title="全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！">全世界最好用的玫瑰水，敷完闺蜜问我是不是偷偷去打了水光针！</a></p>
-      
-      <p><a href="show.asp?id=176" title="七夕礼物攻略，一份最走心的礼物清单">七夕礼物攻略，一份最走心的礼物清单</a></p> -->
     
     </div> 
 
       <script type="text/javascript" src="/static/web/index_textgd.js"></script>
     </div>
     <ul class="index_qtype">
-      <li><a href="#a"><img src="/static/web/y_01.jpg" border="0" alt=""></a></li>
-      <li><a href="#a"><img src="/static/web/y_02.jpg" border="0" alt=""></a></li>
-      <li><a href="#a"><img src="/static/web/y_03.jpg" border="0" alt=""></a></li>
-      <li class="index_right"><a href="#a"><img src="/static/web/y_04.jpg" border="0" alt=""></a></li>
+      {% for i in ad_dict.3 %}
+        <li style="margin-right:3.5%"><a href="{% if not i.columns_id %}{{ i.link }}{% else %}{% url 'public_page' i.columns_id %}{% endif %}"><img src="{% build_photo_url i.photo_id 'raw' %}" border="0" alt="" style="display: inline-block;"></a></li>
+      {% endfor %}
     </ul>
     <div class="clean"></div>
     <div class="index_h1"></div>
@@ -160,62 +74,48 @@
   <div class="y_content_bg1">
     <div class="content_div center">
       <div class="index_float">
-        <div class="float_div">
-          <img src="/static/web/y_07.jpg" border="0" alt="">
-          <div class="div1_text" onclick="self.location=&#39;/list.asp?classid=2&#39;;">
-            <b>什么是药妆？</b>
-            <p>What is the cosmeceuticals?</p>
+
+         <div class="float_div">
+          <img src="{% build_photo_url ad_dict.4.0.photo_id 'raw' %}" border="0" alt="">
+          <div class="div1_text" >
+            <b>{{ad_dict.4.0.ad_title}}</b>
+            <p>{{ad_dict.4.0.ad_e_title}}</p>
           </div>
-          <a class="div1_layer" href="#">药妆是采用制药标准生产的护肤品，它介于药品和化妆品之间，是目前世界公认的最安全、最有效的化妆品。</a>
+          <a class="div1_layer" href="{% if not ad_dict.4.0.columns_id %}{{ ad_dict.4.0.link }}{% else %}{% url 'public_page' ad_dict.4.0.columns_id %}{% endif %}">{{ad_dict.4.0.ad_text}}</a>
         </div>
+
         <div class="float_div box_hide"><i class="sds"><a href="http://v.youku.com/v_show/id_XNzI4MDQxMTM2.html?beta&amp;" target="_blank"><img src="/static/web/y_08.jpg" border="0" alt=""></a></i><i class="sda"><embed src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&amp;v=20161117&amp;vid=z0566nrpcju&amp;auto=0" allowfullscreen="true" quality="high" width="385" height="188" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></i></div>
       </div>
       <div class="index_float">
+      {% for i in ad_dict.5 %}
         <div class="float_div float_div2">
-          <img src="/static/web/y_09.jpg" border="0" alt="">
-          <div class="div2_text" onclick="self.location=&#39;/list.asp?classid=7&#39;;">
-            <b>全国店铺<br>进口药妆店</b>
-            <p>Pharmacy with the most<br> nationwide chain stores</p>
+          <img src="{% build_photo_url i.photo_id 'raw' %}" border="0" alt="">
+          <div class="div2_text">
+            <b>{{i.ad_title| safe}}</b>
+            <p>{{i.ad_e_title| safe}}</p>
           </div>
           <div class="clean"></div>
-          <a class="div2_layer" href="#">遍布34个省市自治区，全国超200家实体店铺</a>
+          <a class="div2_layer" href="{% if not i.columns_id %}{{ i.link }}{% else %}{% url 'public_page' i.columns_id %}{% endif %}">{{i.ad_text}}</a>
         </div>
-        <div class="float_div float_div2">
-          <img src="/static/web/y_10.jpg" border="0" alt="">
-          <div class="div2_text" onclick="self.location=&#39;/list.asp?classid=10&#39;;">
-            <b>和一线商场<br>达成战略合作的药妆店</b>
-            <p>Strategic cooperation<br>  with first-tier malls</p>
-          </div>
-          <div class="clean"></div>
-          <a class="div2_layer" href="#">优贝施已与万达、凯德等知名一线商场、shoppingmall达成长期战略合作</a>
-        </div>
-        <div class="float_div float_div2">
-          <img src="/static/web/y_11.jpg" border="0" alt="">
-          <div class="div2_text" onclick="self.location=&#39;/list.asp?classid=27&#39;;">
-            <b>跨境直邮+门店同款</b>
-            <p>Offline store + O2O<br> oversea purchase</p>
-          </div>
-          <div class="clean"></div>
-          <a class="div2_layer" href="#">覆盖线上线下，满足一站式购物需求</a>
-        </div>
+      {% endfor %}
       </div>
       <div class="index_float box_right">
         <div class="float_div float_div2">
-          <img src="/static/web/y_12.jpg" border="0" alt="">
-          <div class="div2_text" onclick="self.location=&#39;/list.asp?classid=3&#39;;">
-            <b>优贝施<br>中国进口药妆品牌</b>
-            <p>UBSKIN·The leader of<br> cosmeceuticals</p>
+          <img src="{% build_photo_url ad_dict.6.0.photo_id 'raw' %}" border="0" alt="">
+          <div class="div2_text" >
+            <b>{{ad_dict.6.0.ad_title| safe}}</b>
+            <p>{{ad_dict.6.0.ad_e_title| safe}}</p>
           </div>
           <div class="clean"></div>
-          <a class="div2_layer" href="#">21世纪初，药妆迈入产业化时代，迅速风靡全球。极具市场感召力的优贝施率先将国外先进药妆零售模式引进中国。</a>
+          <a class="div2_layer" href="{% if not ad_dict.6.0.columns_id %}{{ ad_dict.6.0.link }}{% else %}{% url 'public_page' ad_dict.6.0.columns_id %}{% endif %}">{{ad_dict.6.0.ad_text}}</a>
         </div>
         <div class="float_div float_div1">
-          <img src="/static/web/y_13.jpg" border="0" alt="">
-          <div class="div1_text" onclick="self.location=&#39;/list.asp?classid=16&#39;;">
-            <b>甄选来自50个国家、200多种优质品牌</b>
-            <p>UBSKIN·Brand positioning</p>
+          <img src="{% build_photo_url ad_dict.6.1.photo_id 'raw' %}" border="0" alt="">
+          <div class="div1_text">
+            <b>{{ad_dict.6.1.ad_title}}</b>
+            <p>{{ad_dict.6.1.ad_e_title}}</p>
           </div>
-          <a class="div1_layer" href="#">满足从女性到老人，从男性到孕婴不同人群的进口护理需求。</a>
+          <a class="div1_layer" href="{% if not ad_dict.6.1.columns_id %}{{ ad_dict.6.1.link }}{% else %}{% url 'public_page' ad_dict.6.1.columns_id %}{% endif %}">{{ad_dict.6.1.ad_text}}</a>
         </div>
       </div>
       <div class="clean"></div>

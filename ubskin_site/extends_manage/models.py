@@ -56,11 +56,10 @@ class Ad(models.Model):
     ad_title = models.CharField(db_column='ad_title', verbose_name='广告标题', max_length=255)
     ad_e_title = models.CharField(db_column='ad_e_title', verbose_name='广告英文标题', max_length=255)
     ad_text = models.CharField(db_column='ad_text', verbose_name='广告文字说明', max_length=1000)
-    columns_id = models.BigIntegerField(db_column='columns_id', verbose_name='设置跳转的页面')
-    # link = models.CharField(db_column='link', verbose_name='自定义链接', max_length=255, default='#a')
+    columns_id = models.BigIntegerField(db_column='columns_id', verbose_name='设置跳转的页面', null=True, blank=True)
+    link = models.CharField(db_column='link', verbose_name='自定义链接', max_length=255, default='#a')
     location_choices = (
         (1, '首页轮播图'),
-        (2, 'm_首页轮播图'),
         (3, '广告位a'),
         (4, '广告位b_left'),
         (5, '广告位b_center'),
@@ -88,13 +87,13 @@ class Ad(models.Model):
     def get_ad_dict_for_page(cls):
         data_dict = dict()
         for i in cls.location_choices:
-            data = cls.objects.filter(location=i[0]).values().order_by('-pk')
+            data = cls.objects.filter(location=i[0], status='normal').values().order_by('pk')
             if i == 3:
                 data = data[:4]
             elif i == 5:
                 data = data[:3]
             if data:
-                data_dict[i] = data
+                data_dict[i[0]] = data
         return data_dict
 
 class Message(models.Model):

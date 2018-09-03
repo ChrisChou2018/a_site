@@ -61,6 +61,10 @@
             </select>
         </div>
         <div class="form-group">
+            <input type="checkbox" class="self_link"> <label for="form-control">自定义跳转链接</label>
+            <input name="link" type="text" class="form-control" value="{% if form_data and form_data.link %}{{ form_data.link }}{% endif %}" readonly>
+        </div>
+        <div class="form-group">
             <label for="exampleInputEmail1">广告位置</label>
             <select name="location" class="form-control">
                 <option value="">选择位置</option>
@@ -101,7 +105,13 @@
 
 <script>
 $(function(){
-    
+    $('.self_link').click(function(){
+        if($(this).prop('checked')){
+            $('input[name=link]').prop('readonly', false)
+        }else(
+            $('input[name=link]').prop('readonly', true)
+        )
+    })
     $('input[name="photo_id"]').change(function(){
         file = this.files[0]
         var $image_item = $('.photo_id')

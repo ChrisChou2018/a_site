@@ -210,7 +210,7 @@ $(function(){
 								{% endif %}
 							{% endif %}
 						{% endfor %}
-						<td><a href="{% url 'add_column_link' %}?data_id={{ i.columns_id }}">编辑</a>|<a href="#a">删除</a></td>
+						<td><a href="{% url 'add_column_link' %}?data_id={{ i.columns_id }}">编辑</a>|<a href="{% url 'delete_item_tree' %}?data_id={{ i.columns_id }}">删除</a></td>
 					</tr>
 				{% endfor %}
             <!-- {sdcms:rs top="0" field="cateid,followid,ordnum,catename,modeid,modelname,ismenu,sonid" table="view_category" where="followid=0" order="ordnum,cateid"} -->

@@ -299,7 +299,7 @@ def build_page_tree_column(data_list, select_columns_ids):
                     j['column_name']
                 )
             else:
-                li_str += '</ui>'
+                li_str += '</ul>'
         else:
             li_str += '<li class="{}"><a href="{}" title="{}">{}</a></li>'.format(
                 '' if i['columns_id'] not in select_columns_ids else 'left_p',

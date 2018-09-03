@@ -28,7 +28,8 @@ class Columns(models.Model):
         (2, '留言页面'),
         (3, '店铺查询页面'),
         (4, '文章列表页面'),
-        (5, '大图标题列表页面'),
+        (5, '公司地址页面'),
+        (6, '重点店铺页面'),
     )
     page_type = models.SmallIntegerField(choices=page_type_choices, db_column='page_type', verbose_name='单页面类型', null=True, blank=True)
     has_scrolling_image = models.BooleanField(db_column="has_scrolling_image", verbose_name="是否有轮播图", default=False)
@@ -80,8 +81,9 @@ class Columns(models.Model):
                 for i in child:
                     id_list.append(i['columns_id'])
                     find_all_child(i['columns_id'], id_list)
-        find_all_child(data_id, id_list)
-        cls.objects.filter(pk__in=id_list).update(status='deleted')
+            return id_list
+        id_list = find_all_child(data_id, id_list)
+        cls.objects.filter(pk__in=id_list, status='normal').update(status='deleted')
         Article.objects.filter(status='normal', columns_id__in=id_list).update(status='deleted')
     
     @classmethod
@@ -161,6 +163,7 @@ class Columns(models.Model):
         '''
         data = cls.objects.filter(status='normal').values().order_by('pk')
         data_list = list()
+
         x = 1
         for i in data:
             if i['columns_type'] == 1:
@@ -178,10 +181,11 @@ class Columns(models.Model):
             elif i['columns_type'] == 2:
                 url_dict = {
                     1: reverse('editor_page_content'),
-                    2: '',
+                    2: reverse('message_manage'),
                     3: reverse('shop_manage'),
                     4: reverse('article_list'),
-                    5: reverse('foucs_shop_manage'),
+                    5: reverse('company_addr_manage'),
+                    6: reverse('foucs_shop_manage'),
                 }
                 data_list.append({
                         'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
@@ -193,7 +197,10 @@ class Columns(models.Model):
                         'id': i['columns_id'], 'pId': i['parent_id'] if i['parent_id'] else 0,
                         'name': i['column_name'],
                     })
-        return data_list
+        if data_list:
+            return data_list
+        else:
+            return [{'id':-1, 'pId':0, 'name':"内容", 'open':True},{'id':1, 'pId':-1, 'name':"空", 'url': reverse('page_empty'), 'target':"iframe_body"}]
     
     @classmethod
     def get_all_page_for_select(cls):
@@ -211,6 +218,7 @@ class Article(models.Model):
     )
     article_type = models.SmallIntegerField(db_column='article_type', verbose_name='文章列表类型', default=1)
     article_title = models.CharField(db_column="article_title", verbose_name="文章标题", max_length=255, null=True, blank=True)
+    description = models.CharField(db_column="description", verbose_name="简短说明", max_length=1000, null=True, blank=True)
     article_content = models.TextField(db_column="article_content", verbose_name="文章内容", null=True, blank=True)
     photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='图片ID', max_length=255)
     create_time = models.IntegerField(db_column="create_time", verbose_name="创建时间", default=int(time.time()))
@@ -383,6 +391,28 @@ class FocusShop(models.Model):
     def get_focus_shops_count_by_columns_id(cls, columns_id):
         return cls.objects.filter(status='normal', columns_id=columns_id).count()
 
+
+class CompanyAddr(models.Model):
+    company_addr_id = models.AutoField(db_column="company_addr_id", primary_key=True, verbose_name="公司地址ID")
+    company_name = models.CharField(db_column="company_name", null=True, blank=True, verbose_name='公司名称', max_length=255)
+    phone_number = models.CharField(db_column="phone_number", null=True, blank=True, verbose_name='公司电话', max_length=255)
+    company_addr = models.CharField(db_column="company_addr", null=True, blank=True, verbose_name='公司地址', max_length=255)
+    photo_id = models.CharField(db_column="photo_id", null=True, blank=True, verbose_name='公司图', max_length=255)
+    status = models.CharField(db_column="status", verbose_name="数据状态", default="normal", max_length=255)
+
+    class Meta:
+        db_table = 'company_addr'
+
+
+    @classmethod
+    def get_style_table_head(cls):
+        return dict(
+            company_addr_id = '公司地址ID',
+            company_name = '公司名称',
+            phone_number = '公司电话',
+            company_addr = '公司地址',
+            more = '更多',
+        )
 
 
 def get_data_list(model, current_page, search_value=None, order_by="-pk", search_value_type='dict'):

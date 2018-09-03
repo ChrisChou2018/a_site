@@ -14,6 +14,9 @@ urlpatterns = [
     path('myadmin/add_area/', views.add_area, name='add_area'),
     path('myadmin/foucs_shop_manage/', views.foucs_shop_manage, name='foucs_shop_manage'),
     path('myadmin/add_foucs_shop/', views.add_foucs_shop, name='add_foucs_shop'),
+    path('myadmin/page_empty/', views.page_empty, name='page_empty'),
+    path('myadmin/company_addr_manage/', views.company_addr_manage, name='company_addr_manage'),
+    path('myadmin/add_company_addr/', views.add_company_addr, name='add_company_addr'),
 ]
 
 urlpatterns += [

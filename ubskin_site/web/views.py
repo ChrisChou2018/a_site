@@ -23,6 +23,7 @@ def index(request):
             column_data = column_data,
             team_work_data = team_work_data,
             campany_news = campany_news,
+            ad_dict = extends_models.Ad.get_ad_dict_for_page(),
         )
 
 
@@ -67,8 +68,22 @@ def public_page(request, data_id):
             return redirect(reverse('shop_search', kwargs = {'data_id': model_obj.columns_id}))
         elif model_obj.page_type == 5:
             page_type = 5
-            page_content = column_models.FocusShop.get_focus_shops_by_columns_id(data_id, page)
-            data_count = column_models.FocusShop.get_focus_shops_count_by_columns_id(data_id)
+            page_content = column_models.get_data_list(
+                column_models.CompanyAddr,
+                current_page=page,
+                )
+            data_count = column_models.get_data_count(column_models.CompanyAddr)
+        elif model_obj.page_type == 6:
+            page_type = 6
+            page_content = column_models.get_data_list(
+                column_models.FocusShop,
+                current_page=page,
+                search_value={'columns_id': model_obj.columns_id}
+                )
+            data_count = column_models.get_data_count(
+                column_models.FocusShop,
+                search_value={'columns_id': model_obj.columns_id}
+                )
         elif model_obj.page_type == 2:
             return redirect(reverse('message', kwargs = {'data_id': model_obj.columns_id}))
         photo_dict = {
@@ -80,10 +95,10 @@ def public_page(request, data_id):
         page_content = []
     
     column_data = column_models.Columns.build_column_links()
-    # print(request.path, '...')
     return my_render(
         request,
         'web/public_page.html',
+        model_obj = model_obj,
         column_data_list = column_data_list,
         page_type = page_type,
         page_content = page_content,
@@ -93,7 +108,6 @@ def public_page(request, data_id):
         data_count = data_count,
         select_columns_ids = select_columns_ids,
         article_obj = article_obj,
-        ad_dict = extends_models.Ad.get_ad_dict_for_page,
     )
     
 
