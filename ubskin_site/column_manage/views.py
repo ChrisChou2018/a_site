@@ -63,7 +63,10 @@ def column_manage(request):
                             3: 'add_child_column',
                         }
                         view_name = column_type_page_view[i['columns_type']]
-                        tr_str += '<td><a href="{}">编辑</a>|<a href="#a">删除</a></td>'.format(reverse(view_name) + '?data_id=' + str(i['columns_id']))
+                        tr_str += '<td><a href="{}">编辑</a>|<a href="{}">删除</a></td>'.format(
+                            reverse(view_name) + '?data_id=' + str(i['columns_id']),
+                            reverse('delete_item_tree') + '?data_id=' + str(i['columns_id'])
+                        )
                         tr_str += '</tr>'
                     tr_data += tr_str
                     
